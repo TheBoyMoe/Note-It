@@ -33,4 +33,6 @@ public class ContractFragment<T> extends Fragment{
         return mContract;
     }
 
+
+
 }

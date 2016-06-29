@@ -3,15 +3,12 @@ package com.example.demoapp.ui.activity;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.Process;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
@@ -60,22 +57,26 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                 public void onClick(View view) {
 
                     // launch dialog to allow user to create task
-                    new MaterialDialog.Builder(MainActivity.this)
-                            .title("Define a task you wish to complete")
-                            .inputType(InputType.TYPE_CLASS_TEXT)
-                            .inputRange(2, 100)
-                            .input(null, null, new MaterialDialog.InputCallback() {
-                                @Override
-                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                    // fetch entered text and save to dbase
-                                    long taskId = Utils.generateCustomId();
-                                    String title = input.toString();
-                                    new InsertItemThread(taskId, title, "add description").start();
-                                }
-                            })
-                            .positiveText("Save")
-                            .negativeText("Cancel")
-                            .show();
+//                    new MaterialDialog.Builder(MainActivity.this)
+//                            .title("Define a task you wish to complete")
+//                            .inputType(InputType.TYPE_CLASS_TEXT)
+//                            .inputRange(2, 100)
+//                            .input(null, null, new MaterialDialog.InputCallback() {
+//                                @Override
+//                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+//                                    // fetch entered text and save to dbase
+//                                    long taskId = Utils.generateCustomId();
+//                                    String title = input.toString();
+//                                    new InsertItemThread(taskId, title, "add description").start();
+//                                }
+//                            })
+//                            .positiveText("Save")
+//                            .negativeText("Cancel")
+//                            .show();
+
+
+                    // launch text note activity
+                    TextNoteActivity.launch(MainActivity.this);
                 }
             });
         }

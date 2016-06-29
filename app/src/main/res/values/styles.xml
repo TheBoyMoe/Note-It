@@ -20,4 +20,20 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 
+    <style name="TextStyle"/>
+
+    <style name="TextStyle.TextNote">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextStyle.TextNote.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextStyle.TextNote.Description">
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>
