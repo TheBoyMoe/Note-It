@@ -32,10 +32,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     public interface Contract {
         // database tasks
         void deleteItemTask(long itemId);
-        void updateItemTask(long itemId, String title, String description);
 
         // onClick method
-        void onItemClick(String title);
+        void onItemClick(long id, String title, String description);
         void onItemLongClick(long itemId);
     }
 
@@ -58,9 +57,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         recyclerView.addItemDecoration(new CustomItemDecoration(
                 getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space),
                 getResources().getDimensionPixelSize(R.dimen.dimen_horizontal_space)));
-
-        // query the database and populate the adapter
-        // Utils.queryAllItems(getActivity());
 
         mAdapter = new CustomCursorRecyclerViewAdapter(getActivity(), mCursor);
         if (isAdded())
@@ -126,6 +122,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             implements View.OnClickListener, View.OnLongClickListener {
 
         TextView mTitle;
+        long mId;
+        String mTitleText;
+        String mDescriptionText;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
@@ -135,14 +134,17 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         }
 
         public void bindListItem(Cursor cursor) {
-            String title = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
-            mTitle.setText(title);
+            mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
+            mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
+            mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
+
+            mTitle.setText(mTitleText);
         }
 
         @Override
         public void onClick(View v) {
             // forward up to hosting activity via interface
-            getContract().onItemClick(mTitle.getText().toString());
+            getContract().onItemClick(mId, mTitleText, mDescriptionText);
         }
 
         @Override

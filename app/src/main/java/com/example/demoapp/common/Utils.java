@@ -1,6 +1,7 @@
 package com.example.demoapp.common;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -92,6 +93,12 @@ public class Utils {
         }
     }
 
-
+    public static ContentValues setContentValues(long id, String title, String description) {
+        ContentValues cv = new ContentValues();
+        cv.put(Constants.ITEM_ID, id);
+        cv.put(Constants.ITEM_TITLE, title);
+        cv.put(Constants.ITEM_DESCRIPTION, description);
+        return cv;
+    }
 
 }

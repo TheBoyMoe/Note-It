@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.activity;
 
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.design.widget.FloatingActionButton;
@@ -83,20 +82,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
     }
 
+
+    // contract methods
     @Override
     public void deleteItemTask(long itemId) {
         new DeleteItemThread(itemId).start();
     }
 
-    @Override
-    public void updateItemTask(long itemId, String title, String description) {
-        // TODO ?? move
-    }
 
     @Override
-    public void onItemClick(String title) {
-        // TODO launch activity displaying note
-        Utils.showToast(this, "Item clicked on: " + title);
+    public void onItemClick(long id, String title, String description) {
+        // launch activity displaying note
+        TextNoteActivity.launch(MainActivity.this, id, title, description);
     }
 
     @Override
@@ -104,34 +101,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         // TODO ?? delete item or delete multiple(via cab)
         Utils.showToast(this, "Item clicked on: " + itemId);
     }
+    // END
 
 
-    // insert item into database via a bkgd thread
-    class InsertItemThread extends Thread {
-        private long mItemId;
-        private String mTitle;
-        private String mDescription;
-
-        public InsertItemThread(long itemId, String title, String description) {
-            super();
-            mItemId = itemId;
-            mTitle = title;
-            mDescription = description;
-        }
-
-        @Override
-        public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            try {
-                DatabaseHelper.getInstance(MainActivity.this).
-                        insertTaskItem(MainActivity.this, mItemId, mTitle, mDescription);
-            } catch (Exception e) {
-                Timber.e("%s: error adding item to dbase, %s", Constants.LOG_TAG, e.getMessage());
-            }
-            // query the dbase so as to trigger an update of the ui
-            Utils.queryAllItems(MainActivity.this);
-        }
-    }
 
     // delete item from database via a bkgd thread
     class DeleteItemThread extends Thread {
@@ -155,27 +127,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
     }
 
-    // update database item via bkgd thread
-    class UpdateItemThread extends Thread {
-
-        private ContentValues mValues;
-
-        public UpdateItemThread(ContentValues values) {
-            mValues = values;
-        }
-
-        @Override
-        public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            try {
-                DatabaseHelper.getInstance(MainActivity.this).updateTaskItem(MainActivity.this, mValues);
-            } catch (Exception e) {
-                Timber.e("%s: error deleting item from the database, %s", Constants.LOG_TAG, e.getMessage());
-            }
-            // trigger ui update
-            Utils.queryAllItems(MainActivity.this);
-        }
-    }
 
 
 }

@@ -50,14 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     // insert Item
-    public void insertTaskItem(Context context, long itemID, String title, String description) {
+    public void insertTaskItem(Context context, ContentValues values) {
         // Timber.i("%s: inserting item into the dbase", Constants.LOG_TAG);
         SQLiteDatabase db = getDb(context);
-        ContentValues cv = new ContentValues();
-        cv.put(Constants.ITEM_ID, itemID);
-        cv.put(Constants.ITEM_TITLE, title);
-        cv.put(Constants.ITEM_DESCRIPTION, description);
-        db.insert(Constants.TABLE, Constants.ITEM_ID, cv);
+        db.insert(Constants.TABLE, Constants.ITEM_ID, values);
     }
 
     // load item
