@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +33,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         // database tasks
         void deleteItemTask(long itemId);
 
-        // onClick method
+        // onClick methods
         void onItemClick(long id, String title, String description);
-        void onItemLongClick(long itemId);
+        void onItemLongClick(long itemId); // TODO
     }
 
     public MainActivityFragment() {}
@@ -52,7 +52,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // instantiate view and adapter
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setHasFixedSize(true);
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, 1);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new CustomItemDecoration(
                 getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space),
