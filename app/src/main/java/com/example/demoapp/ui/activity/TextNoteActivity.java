@@ -36,7 +36,7 @@ public class TextNoteActivity extends AppCompatActivity
     @Override
     public void saveTextNote(String title, String description) {
         // save note to database
-        ContentValues values = Utils.setContentValues(Utils.generateCustomId(), title, description);
+        ContentValues values = Utils.setContentValuesTextNote(Utils.generateCustomId(), title, description);
         new InsertItemThread(values).start();
         finish();
     }
@@ -44,7 +44,7 @@ public class TextNoteActivity extends AppCompatActivity
     @Override
     public void updateTextNote(long id, String title, String description) {
         // update note in database
-        ContentValues values = Utils.setContentValues(id, title, description);
+        ContentValues values = Utils.setContentValuesTextNote(id, title, description);
         new UpdateItemThread(values).start();
         finish();
     }
@@ -58,7 +58,7 @@ public class TextNoteActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_note);
+        setContentView(R.layout.activity_note_layout);
 
         // retrieve values from intent
         Intent intent = getIntent();

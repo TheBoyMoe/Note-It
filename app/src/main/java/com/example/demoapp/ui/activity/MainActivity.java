@@ -16,6 +16,7 @@ import com.example.demoapp.model.DatabaseHelper;
 import com.example.demoapp.ui.fragment.MainActivityFragment;
 import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import timber.log.Timber;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
     private static final String MODEL_FRAGMENT = "model_fragment";
+    private FloatingActionsMenu mBtnTrigger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         // button setup
+        mBtnTrigger = (FloatingActionsMenu) findViewById(R.id.button_trigger);
+
         FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_note);
         if(textNoteBtn != null) {
             textNoteBtn.setOnClickListener(this);
@@ -70,17 +74,6 @@ public class MainActivity extends AppCompatActivity
             audioNoteBtn.setOnClickListener(this);
             audioNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_audio_note), R.color.half_black));
         }
-
-//        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.fab);
-//        if (addItem != null) {
-//            addItem.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    // launch text note activity
-//                    TextNoteActivity.launch(MainActivity.this);
-//                }
-//            });
-//        }
 
     }
 
@@ -105,7 +98,7 @@ public class MainActivity extends AppCompatActivity
     }
     // END
 
-    // habdle button clicks
+    // handle button clicks
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -114,7 +107,7 @@ public class MainActivity extends AppCompatActivity
                 TextNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_video_note:
-                Toast.makeText(MainActivity.this, "clicked on video button", Toast.LENGTH_SHORT).show();
+                VideoNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_audio_note:
                 Toast.makeText(MainActivity.this, "clicked on audio button", Toast.LENGTH_SHORT).show();
@@ -122,6 +115,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // collapse the btn menu if req'd
+        if (mBtnTrigger.isExpanded()) {
+            mBtnTrigger.collapse();
+        }
+    }
 
     // delete item from database via a bkgd thread
     class DeleteItemThread extends Thread {

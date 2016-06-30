@@ -13,11 +13,16 @@ import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.example.demoapp.R;
 import com.example.demoapp.event.ModelLoadedEvent;
 import com.example.demoapp.model.DatabaseHelper;
 
@@ -93,12 +98,37 @@ public class Utils {
         }
     }
 
-    public static ContentValues setContentValues(long id, String title, String description) {
+    public static ContentValues setContentValuesTextNote(long id, String title, String description) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
         cv.put(Constants.ITEM_TITLE, title);
         cv.put(Constants.ITEM_DESCRIPTION, description);
         return cv;
+    }
+
+    public static ContentValues setContentValuesVideoNote(long id, String title, String filePath, String mimeType) {
+        ContentValues cv = new ContentValues();
+        cv.put(Constants.ITEM_ID, id);
+        cv.put(Constants.ITEM_TITLE, title);
+        cv.put(Constants.ITEM_FILE_PATH, filePath);
+        cv.put(Constants.ITEM_MIME_TYPE, mimeType);
+        return cv;
+    }
+
+    public static void setupToolbar(Activity activity, Toolbar toolbar) {
+        if (toolbar != null) {
+            ((AppCompatActivity)activity).setSupportActionBar(toolbar);
+            ActionBar actionBar = ((AppCompatActivity)activity).getSupportActionBar();
+            if (actionBar != null) {
+                // hide title by default
+                actionBar.setDisplayShowTitleEnabled(false);
+                // set navigation icon and color
+                toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
+                        .getDrawable(activity, R.drawable.action_back), R.color.colorButtonIcon));
+                // set title text color
+                toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryText));
+            }
+        }
     }
 
 }

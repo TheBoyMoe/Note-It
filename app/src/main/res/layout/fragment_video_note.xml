@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_normal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/video_note_title"
+            android:hint="@string/title_hint"
+            android:layout_marginBottom="@dimen/dimen_normal"
+            android:background="@android:color/transparent"
+            style="@style/TextStyle.TextNote.Title"
+            android:imeOptions="actionDone"/>
+
+        <LinearLayout
+            android:id="@+id/wrapper"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/video_note_thumbnail"
+                android:contentDescription="@string/image_view_description"
+                android:src="@mipmap/ic_launcher"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:layout_marginBottom="@dimen/dimen_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/video_selection_text"
+                android:text="@string/video_fragment_text_view"
+                android:layout_marginTop="@dimen/dimen_small"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

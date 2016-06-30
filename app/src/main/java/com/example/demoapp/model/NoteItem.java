@@ -7,6 +7,24 @@ public class NoteItem {
     private long mId;
     private String mTitle;
     private String mDescription;
+    private String mFilePath;
+    private String mMimeType;
+
+    public String getFilePath() {
+        return mFilePath;
+    }
+
+    public void setFilePath(String filePath) {
+        mFilePath = filePath;
+    }
+
+    public String getMimeType() {
+        return mMimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        mMimeType = mimeType;
+    }
 
     public String getDescription() {
         return mDescription;

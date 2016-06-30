@@ -27,6 +27,27 @@
                 android:value=".ui.activity.MainActivity"/>
         </activity>
 
+        <activity
+            android:name=".ui.activity.VideoNoteActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ui.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.MainActivity"/>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.VideoListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/video_list_activity_title"
+            android:parentActivityName=".ui.activity.VideoNoteActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.VideoNoteActivity"/>
+        </activity>
+
+
+
     </application>
 
 </manifest>

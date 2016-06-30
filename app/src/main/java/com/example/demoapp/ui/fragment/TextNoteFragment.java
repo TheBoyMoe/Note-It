@@ -54,7 +54,7 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
         // add the toolbar, enabling the up arrow to save notes
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            setupToolbar(toolbar);
+            Utils.setupToolbar(getActivity(), toolbar); // TODO replace
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,6 +95,7 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
     private void updateAndQuit(String title, String description) {
         getContract().updateTextNote(mId, title, description);
     }
+
 
     private void setupToolbar(Toolbar toolbar) {
         if (toolbar != null) {
