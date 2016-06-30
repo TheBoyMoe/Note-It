@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_text_note:
-                Toast.makeText(MainActivity.this, "clicked on text button", Toast.LENGTH_SHORT).show();
+                // launch text note activity
+                TextNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_video_note:
                 Toast.makeText(MainActivity.this, "clicked on video button", Toast.LENGTH_SHORT).show();
