@@ -28,14 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@drawable/action_add"/>-->
-
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions_bottom_left"
@@ -50,7 +42,7 @@
         app:fab_addButtonSize="mini"
         app:fab_addButtonPlusIconColor="@color/colorButtonIcon"
         app:fab_addButtonStrokeVisible="false"
-        app:fab_expandDirection="up"
+        app:fab_expandDirection="left"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp">
