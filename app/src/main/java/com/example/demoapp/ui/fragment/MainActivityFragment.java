@@ -158,27 +158,4 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
 
 
-    //    private class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
-//
-//        @Override
-//        public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            LayoutInflater inflater = LayoutInflater.from(getActivity());
-//            View view = inflater.inflate(R.layout.list_item, parent, false);
-//            return new ListItemViewHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(ListItemViewHolder holder, int position) {
-//            DummyItem item = mList.get(position);
-//            holder.bindListItem(item);
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return mList.size();
-//        }
-//
-//    }
-
-
 }

@@ -2,11 +2,9 @@ package com.example.demoapp.ui.activity;
 
 import android.os.Bundle;
 import android.os.Process;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
@@ -49,36 +47,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     .commit();
         }
 
-        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.fab);
-        if (addItem != null) {
-            addItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    // launch dialog to allow user to create task
-//                    new MaterialDialog.Builder(MainActivity.this)
-//                            .title("Define a task you wish to complete")
-//                            .inputType(InputType.TYPE_CLASS_TEXT)
-//                            .inputRange(2, 100)
-//                            .input(null, null, new MaterialDialog.InputCallback() {
-//                                @Override
-//                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-//                                    // fetch entered text and save to dbase
-//                                    long taskId = Utils.generateCustomId();
-//                                    String title = input.toString();
-//                                    new InsertItemThread(taskId, title, "add description").start();
-//                                }
-//                            })
-//                            .positiveText("Save")
-//                            .negativeText("Cancel")
-//                            .show();
-
-
-                    // launch text note activity
-                    TextNoteActivity.launch(MainActivity.this);
-                }
-            });
-        }
+//        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.fab);
+//        if (addItem != null) {
+//            addItem.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    // launch text note activity
+//                    TextNoteActivity.launch(MainActivity.this);
+//                }
+//            });
+//        }
 
     }
 
