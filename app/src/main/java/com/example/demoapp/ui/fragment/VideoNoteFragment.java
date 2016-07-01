@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.demoapp.R;
+import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
 
@@ -20,9 +21,9 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         implements View.OnClickListener, View.OnLongClickListener, TextWatcher{
 
     public interface Contract {
-        void saveVideoNote();
+        void saveVideoNote(String title, String filePath, String mimeType);
         void updateVideoNote();
-        void playVideo();
+        void playVideo(String filePath, String mimeType);
         void selectVideo();
         void quit();
     }
@@ -53,6 +54,11 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
                 @Override
                 public void onClick(View v) {
                     // TODO save/update/quit
+                    if (mTitle == null || mFilePath == null) {
+                        getContract().quit();
+                    } else {
+                        getContract().saveVideoNote(mTitle, mFilePath, mMimeType);
+                    }
                 }
             });
         }
@@ -64,13 +70,19 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         wrapper.setOnClickListener(this);
         wrapper.setOnLongClickListener(this);
 
+        if (savedInstanceState != null) {
+            mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
+            mImageView.setImageBitmap(Utils.generateBitmap(mFilePath));
+            mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
+        }
+
         return view;
     }
 
 
     @Override
     public void onClick(View v) {
-        getContract().playVideo();
+        getContract().playVideo(mFilePath, mMimeType);
     }
 
     @Override
@@ -94,11 +106,19 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         // no-op
     }
 
-    public void updateFragmentUI(String title, String filePath) {
-        mTitle = title;
+    public void updateFragmentUI(String title, String filePath, String mimeType) {
+        if(mTitle == null) mTitle = title;
         mFilePath = filePath;
+        mMimeType = mimeType;
         mEditText.setText(mTitle);
         mImageView.setImageBitmap(Utils.generateBitmap(mFilePath));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
+        outState.putString(Constants.ITEM_MIME_TYPE, mMimeType);
     }
 
 }

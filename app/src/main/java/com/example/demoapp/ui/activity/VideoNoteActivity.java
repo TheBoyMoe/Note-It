@@ -1,8 +1,10 @@
 package com.example.demoapp.ui.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -12,9 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
+import com.example.demoapp.thread.InsertItemThread;
 import com.example.demoapp.ui.fragment.VideoNoteFragment;
 
-import timber.log.Timber;
+import java.io.File;
 
 public class VideoNoteActivity extends AppCompatActivity
         implements VideoNoteFragment.Contract{
@@ -28,7 +31,6 @@ public class VideoNoteActivity extends AppCompatActivity
         Intent intent = new Intent(activity, VideoNoteActivity.class);
         activity.startActivity(intent);
     }
-
 
 
     @Override
@@ -49,33 +51,45 @@ public class VideoNoteActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.ITEM_VIDEO && resultCode == RESULT_OK) {
             String title = data.getStringExtra(Constants.ITEM_TITLE);
-            mFilePath = data.getStringExtra(Constants.ITEM_FILE_PATH);
-            mMimeType = data.getStringExtra(Constants.ITEM_MIME_TYPE);
-            Timber.i("%s: title: %s, filePath: %s, mimeType: %s", Constants.LOG_TAG,
-                    title, mFilePath, mMimeType);
+            String filePath = data.getStringExtra(Constants.ITEM_FILE_PATH);
+            String mimeType = data.getStringExtra(Constants.ITEM_MIME_TYPE);
 
             // update fragment UI and display title and thumbnail
             if (mFragment != null) {
-                mFragment.updateFragmentUI(title, mFilePath);
+                mFragment.updateFragmentUI(title, filePath, mimeType);
             }
         }
     }
 
     // impl  contract methods
     @Override
-    public void saveVideoNote() {
-
+    public void saveVideoNote(String title, String filePath, String mimeType) {
+        // save to database
+        ContentValues cv = new ContentValues();
+        cv.put(Constants.ITEM_ID, Utils.generateCustomId());
+        cv.put(Constants.ITEM_TITLE, title);
+        cv.put(Constants.ITEM_FILE_PATH, filePath);
+        cv.put(Constants.ITEM_MIME_TYPE, mimeType);
+        new InsertItemThread(this, cv).start();
+        finish();
     }
 
     @Override
     public void updateVideoNote() {
-
+        // TODO
     }
 
     @Override
-    public void playVideo() {
-        // TODO
-        Utils.showToast(this, "click to play");
+    public void playVideo(String filePath, String mimeType) {
+        // play video onClick
+        if(filePath != null && mimeType != null) {
+            Uri video = Uri.fromFile(new File(filePath));
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(video, mimeType);
+            startActivity(intent);
+        } else {
+            Utils.showToast(this, "Error, video file not found");
+        }
     }
 
     @Override
@@ -98,4 +112,6 @@ public class VideoNoteActivity extends AppCompatActivity
     public void quit() {
         finish();
     }
+
+
 }

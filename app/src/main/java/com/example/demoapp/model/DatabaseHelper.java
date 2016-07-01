@@ -33,7 +33,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + "_id INTEGER PRIMARY KEY, "
                 + Constants.ITEM_ID + " INTEGER, "
                 + Constants.ITEM_TITLE + " TEXT, "
-                + Constants.ITEM_DESCRIPTION + " TEXT"
+                + Constants.ITEM_DESCRIPTION + " TEXT, "
+                + Constants.ITEM_FILE_PATH + " TEXT, "
+                + Constants.ITEM_MIME_TYPE + " TEXT"
                 +  ");");
     }
 
