@@ -59,70 +59,21 @@ public class TextNoteActivity extends AppCompatActivity
         setContentView(R.layout.activity_note_layout);
 
         // retrieve values from intent
-        Intent intent = getIntent();
-        long id = intent.getLongExtra(Constants.ITEM_ID, 0);
-        String title = intent.getStringExtra(Constants.ITEM_TITLE);
-        String description = intent.getStringExtra(Constants.ITEM_DESCRIPTION);
-
+        long id = getIntent().getLongExtra(Constants.ITEM_ID, 0);
+        TextNoteFragment fragment = null;
         if (getSupportFragmentManager().findFragmentById(R.id.fragment_container) == null) {
             if (id > 0) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, TextNoteFragment.newInstance(id, title, description))
-                        .commit();
+                String title = getIntent().getStringExtra(Constants.ITEM_TITLE);
+                String description = getIntent().getStringExtra(Constants.ITEM_DESCRIPTION);
+                fragment = TextNoteFragment.newInstance(id, title, description);
             } else {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, TextNoteFragment.newInstance())
-                        .commit();
+                fragment = TextNoteFragment.newInstance();
             }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, fragment)
+                        .commit();
         }
     }
 
-
-    // insert item into database via a bkgd thread
-//    class InsertItemThread extends Thread {
-//
-//        private ContentValues mValues;
-//
-//        public InsertItemThread(ContentValues values) {
-//            super();
-//            mValues = values;
-//        }
-//
-//        @Override
-//        public void run() {
-//            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-//            try {
-//
-//                DatabaseHelper.getInstance(TextNoteActivity.this).
-//                        insertTaskItem(TextNoteActivity.this, mValues);
-//            } catch (Exception e) {
-//                Timber.e("%s: error adding item to dbase, %s", Constants.LOG_TAG, e.getMessage());
-//            }
-//            // query the dbase so as to trigger an update of the ui
-//            Utils.queryAllItems(TextNoteActivity.this);
-//        }
-//    }
-
-    // update database item via bkgd thread
-//    class UpdateItemThread extends Thread {
-//
-//        private ContentValues mValues;
-//
-//        public UpdateItemThread(ContentValues values) {
-//            mValues = values;
-//        }
-//
-//        @Override
-//        public void run() {
-//            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-//            try {
-//                DatabaseHelper.getInstance(TextNoteActivity.this).updateTaskItem(TextNoteActivity.this, mValues);
-//            } catch (Exception e) {
-//                Timber.e("%s: error deleting item from the database, %s", Constants.LOG_TAG, e.getMessage());
-//            }
-//            // trigger ui update
-//            Utils.queryAllItems(TextNoteActivity.this);
-//        }
-//    }
 
 }

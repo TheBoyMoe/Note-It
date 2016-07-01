@@ -6,4 +6,5 @@
     <string name="image_view_description">Video file</string>
     <string name="video_fragment_text_view">Press and hold to select video</string>
     <string name="video_list_activity_title">Pick a video</string>
+    <string name="video_thumbnail">Video thumbnail</string>
 </resources>

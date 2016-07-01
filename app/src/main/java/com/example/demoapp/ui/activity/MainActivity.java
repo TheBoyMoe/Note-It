@@ -83,8 +83,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(long id, String title, String description) {
-        // launch activity displaying note
+        // launch activity displaying text note
         TextNoteActivity.launch(MainActivity.this, id, title, description);
+    }
+
+    @Override
+    public void onItemClick(long id, String title, String filePath, String mimeType) {
+        // launch activity displaying video note
+        VideoNoteActivity.launch(MainActivity.this, id, title, filePath, mimeType);
     }
 
     @Override
@@ -92,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         // TODO ?? delete item or delete multiple(via cab)
         Utils.showToast(this, "Item clicked on: " + itemId);
     }
-    // END
+
 
     // handle button clicks
     @Override
@@ -119,29 +125,5 @@ public class MainActivity extends AppCompatActivity
             mBtnTrigger.collapse();
         }
     }
-
-    // delete item from database via a bkgd thread
-//    class DeleteItemThread extends Thread {
-//
-//        private long mId;
-//
-//        public DeleteItemThread(long itemId) {
-//            mId = itemId;
-//        }
-//
-//        @Override
-//        public void run() {
-//            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-//            try {
-//                DatabaseHelper.getInstance(MainActivity.this).deleteTaskItem(MainActivity.this, mId);
-//            } catch (Exception e) {
-//                Timber.e("%s: error deleting item from database, %s", Constants.LOG_TAG, e.getMessage());
-//            }
-//            // trigger ui update
-//            Utils.queryAllItems(MainActivity.this);
-//        }
-//    }
-
-
 
 }

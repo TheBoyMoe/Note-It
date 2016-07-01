@@ -62,7 +62,7 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
                     String title = mTitle.getText() != null ? mTitle.getText().toString() : "";
                     String description = mDescription.getText() != null ? mDescription.getText().toString() : "";
 
-                    if (title.isEmpty() && description.isEmpty()) {
+                    if (title.isEmpty()) {
                         getContract().quit();
                     } else {
                         if (mId > 0) {

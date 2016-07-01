@@ -30,6 +30,7 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
     private EditText mEditText;
     private ImageView mImageView;
+    private long mId;
     private String mTitle;
     private String mFilePath;
     private String mMimeType;
@@ -40,6 +41,17 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         return new VideoNoteFragment();
     }
 
+    public static VideoNoteFragment newInstance(long id, String title, String filePath, String mimeType) {
+        VideoNoteFragment fragment = new VideoNoteFragment();
+        Bundle args = new Bundle();
+        args.putLong(Constants.ITEM_ID, id);
+        args.putString(Constants.ITEM_TITLE, title);
+        args.putString(Constants.ITEM_FILE_PATH, filePath);
+        args.putString(Constants.ITEM_MIME_TYPE, mimeType);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -69,6 +81,15 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         LinearLayout wrapper = (LinearLayout) view.findViewById(R.id.wrapper);
         wrapper.setOnClickListener(this);
         wrapper.setOnLongClickListener(this);
+
+        if(getArguments() != null) {
+            mId = getArguments().getLong(Constants.ITEM_ID);
+            mTitle = getArguments().getString(Constants.ITEM_TITLE);
+            mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
+            mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
+            mEditText.setText(mTitle);
+            mImageView.setImageBitmap(Utils.generateBitmap(mFilePath));
+        }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);

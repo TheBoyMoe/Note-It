@@ -9,12 +9,14 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.CursorRecyclerViewAdapter;
+import com.example.demoapp.common.Utils;
 import com.example.demoapp.custom.CustomItemDecoration;
 import com.example.demoapp.event.ModelLoadedEvent;
 import com.example.demoapp.model.NoteItem;
@@ -35,6 +37,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // onClick methods
         void onItemClick(long id, String title, String description);
+        void onItemClick(long id, String title, String filePath, String mimeType);
         void onItemLongClick(long itemId); // TODO
     }
 
@@ -106,16 +109,43 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.list_item, parent, false);
-            return new CustomViewHolder(view);
+            View view = null;
+            switch (viewType) {
+                case Constants.ITEM_TEXT_NOTE:
+                    view = inflater.inflate(R.layout.text_note_item, parent, false);
+                    break;
+                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_AUDIO_NOTE:
+                    view = inflater.inflate(R.layout.media_note_item, parent, false);
+                    break;
+            }
+            return new CustomViewHolder(view, viewType);
         }
 
         @Override
         public void onBindViewHolder(CustomViewHolder holder, Cursor cursor) {
             // retrieve item from cursor
             if(cursor != null) {
-                holder.bindListItem(cursor);
+                holder.bindViewHolder(cursor);
             }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            // default type returned 0, define the specific value to return,
+            // which can be tested for in onCreateViewHolder()
+            Cursor cursor = getCursor();
+            cursor.moveToPosition(position);
+            int type = cursor.getInt(cursor.getColumnIndex(Constants.ITEM_TYPE));
+            switch (type) {
+                case Constants.ITEM_TEXT_NOTE:
+                    return Constants.ITEM_TEXT_NOTE;
+                case Constants.ITEM_VIDEO_NOTE:
+                    return Constants.ITEM_VIDEO_NOTE;
+                case Constants.ITEM_AUDIO_NOTE:
+                    return Constants.ITEM_AUDIO_NOTE;
+            }
+            return -1;
         }
 
     }
@@ -124,29 +154,64 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             implements View.OnClickListener, View.OnLongClickListener {
 
         TextView mTitle;
+        ImageView mThumbnail;
+
         long mId;
+        int mViewType;
         String mTitleText;
         String mDescriptionText;
+        String mFilePath;
+        String mMimeType;
 
-        public CustomViewHolder(View itemView) {
+
+        public CustomViewHolder(View itemView, int viewType) {
             super(itemView);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-            mTitle = (TextView) itemView.findViewById(R.id.item_title);
+            mViewType = viewType;
+            switch (viewType) {
+                case Constants.ITEM_TEXT_NOTE:
+                    mTitle = (TextView) itemView.findViewById(R.id.item_title);
+                    break;
+                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_AUDIO_NOTE:
+                    mThumbnail = (ImageView) itemView.findViewById(R.id.item_thumbnail);
+                    break;
+            }
         }
 
-        public void bindListItem(Cursor cursor) {
+        public void bindViewHolder(Cursor cursor) {
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
             mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
-            mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
 
-            mTitle.setText(mTitleText);
+            switch (mViewType) {
+                case Constants.ITEM_TEXT_NOTE:
+                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
+                    mTitle.setText(mTitleText);
+                    break;
+                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_AUDIO_NOTE:
+                    mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    mThumbnail.setImageBitmap(Utils.generateBitmap(mFilePath));
+                    break;
+            }
+
         }
 
         @Override
         public void onClick(View v) {
-            // forward up to hosting activity via interface
-            getContract().onItemClick(mId, mTitleText, mDescriptionText);
+
+            switch (mViewType) {
+                case Constants.ITEM_TEXT_NOTE:
+                    getContract().onItemClick(mId, mTitleText, mDescriptionText);
+                    break;
+                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_AUDIO_NOTE:
+                    getContract().onItemClick(mId, mTitleText, mFilePath, mMimeType);
+                    break;
+            }
+
         }
 
         @Override
@@ -154,6 +219,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             getContract().onItemLongClick(v.getId());
             return true;
         }
+
     }
 
 
