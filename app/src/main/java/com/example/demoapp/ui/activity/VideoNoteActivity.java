@@ -15,6 +15,7 @@ import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
 import com.example.demoapp.thread.InsertItemThread;
+import com.example.demoapp.thread.UpdateItemThread;
 import com.example.demoapp.ui.fragment.VideoNoteFragment;
 
 import java.io.File;
@@ -93,9 +94,13 @@ public class VideoNoteActivity extends AppCompatActivity
     }
 
     @Override
-    public void updateVideoNote() {
-        // TODO
+    public void updateVideoNote(long id, String title, String filePath, String mimeType) {
+        ContentValues values = Utils.setContentValuesMediaNote(
+            id, Constants.ITEM_VIDEO_NOTE, title, filePath, mimeType);
+        new UpdateItemThread(this, values).start();
+        finish();
     }
+
 
     @Override
     public void playVideo(String filePath, String mimeType) {

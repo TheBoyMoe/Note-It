@@ -22,7 +22,7 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
     public interface Contract {
         void saveVideoNote(String title, String filePath, String mimeType);
-        void updateVideoNote();
+        void updateVideoNote(long id, String title, String filePath, String mimeType);
         void playVideo(String filePath, String mimeType);
         void selectVideo();
         void quit();
@@ -65,11 +65,15 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO save/update/quit
+                    // TODO update to prevent duplicates
                     if (mTitle == null || mFilePath == null) {
                         getContract().quit();
                     } else {
-                        getContract().saveVideoNote(mTitle, mFilePath, mMimeType);
+                        if (mId > 0) {
+                            getContract().updateVideoNote(mId, mTitle, mFilePath, mMimeType);
+                        } else {
+                            getContract().saveVideoNote(mTitle, mFilePath, mMimeType);
+                        }
                     }
                 }
             });
