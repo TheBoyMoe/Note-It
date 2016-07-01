@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.activity;
 
 import android.os.Bundle;
-import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,15 +9,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.demoapp.R;
-import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
-import com.example.demoapp.model.DatabaseHelper;
 import com.example.demoapp.ui.fragment.MainActivityFragment;
 import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
@@ -81,7 +76,8 @@ public class MainActivity extends AppCompatActivity
     // contract methods
     @Override
     public void deleteItemTask(long itemId) {
-        new DeleteItemThread(itemId).start();
+        // TODO
+        // new DeleteItemThread(itemId).start();
     }
 
 
@@ -125,26 +121,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     // delete item from database via a bkgd thread
-    class DeleteItemThread extends Thread {
-
-        private long mId;
-
-        public DeleteItemThread(long itemId) {
-            mId = itemId;
-        }
-
-        @Override
-        public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            try {
-                DatabaseHelper.getInstance(MainActivity.this).deleteTaskItem(MainActivity.this, mId);
-            } catch (Exception e) {
-                Timber.e("%s: error deleting item from database, %s", Constants.LOG_TAG, e.getMessage());
-            }
-            // trigger ui update
-            Utils.queryAllItems(MainActivity.this);
-        }
-    }
+//    class DeleteItemThread extends Thread {
+//
+//        private long mId;
+//
+//        public DeleteItemThread(long itemId) {
+//            mId = itemId;
+//        }
+//
+//        @Override
+//        public void run() {
+//            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+//            try {
+//                DatabaseHelper.getInstance(MainActivity.this).deleteTaskItem(MainActivity.this, mId);
+//            } catch (Exception e) {
+//                Timber.e("%s: error deleting item from database, %s", Constants.LOG_TAG, e.getMessage());
+//            }
+//            // trigger ui update
+//            Utils.queryAllItems(MainActivity.this);
+//        }
+//    }
 
 
 

@@ -5,10 +5,19 @@ import com.example.demoapp.common.Constants;
 public class NoteItem {
 
     private long mId;
+    private int mType;
     private String mTitle;
     private String mDescription;
     private String mFilePath;
     private String mMimeType;
+
+    public int getType() {
+        return mType;
+    }
+
+    public void setType(int type) {
+        mType = type;
+    }
 
     public String getFilePath() {
         return mFilePath;

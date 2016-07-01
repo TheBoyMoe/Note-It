@@ -49,7 +49,7 @@ public class VideoNoteActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.ITEM_VIDEO && resultCode == RESULT_OK) {
+        if (requestCode == Constants.ITEM_VIDEO_NOTE && resultCode == RESULT_OK) {
             String title = data.getStringExtra(Constants.ITEM_TITLE);
             String filePath = data.getStringExtra(Constants.ITEM_FILE_PATH);
             String mimeType = data.getStringExtra(Constants.ITEM_MIME_TYPE);
@@ -65,11 +65,11 @@ public class VideoNoteActivity extends AppCompatActivity
     @Override
     public void saveVideoNote(String title, String filePath, String mimeType) {
         // save to database
-        ContentValues cv = new ContentValues();
-        cv.put(Constants.ITEM_ID, Utils.generateCustomId());
-        cv.put(Constants.ITEM_TITLE, title);
-        cv.put(Constants.ITEM_FILE_PATH, filePath);
-        cv.put(Constants.ITEM_MIME_TYPE, mimeType);
+        ContentValues cv = Utils.setContentValuesMediaNote(
+                Utils.generateCustomId(),
+                Constants.ITEM_VIDEO_NOTE,
+                title, filePath, mimeType
+        );
         new InsertItemThread(this, cv).start();
         finish();
     }

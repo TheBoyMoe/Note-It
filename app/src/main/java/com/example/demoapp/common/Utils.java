@@ -98,17 +98,19 @@ public class Utils {
         }
     }
 
-    public static ContentValues setContentValuesTextNote(long id, String title, String description) {
+    public static ContentValues setContentValuesTextNote(long id, int type, String title, String description) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
+        cv.put(Constants.ITEM_TYPE, type);
         cv.put(Constants.ITEM_TITLE, title);
         cv.put(Constants.ITEM_DESCRIPTION, description);
         return cv;
     }
 
-    public static ContentValues setContentValuesVideoNote(long id, String title, String filePath, String mimeType) {
+    public static ContentValues setContentValuesMediaNote(long id, int type, String title, String filePath, String mimeType) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
+        cv.put(Constants.ITEM_TYPE, type);
         cv.put(Constants.ITEM_TITLE, title);
         cv.put(Constants.ITEM_FILE_PATH, filePath);
         cv.put(Constants.ITEM_MIME_TYPE, mimeType);

@@ -32,10 +32,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("CREATE TABLE " + Constants.TABLE + "("
                 + "_id INTEGER PRIMARY KEY, "
                 + Constants.ITEM_ID + " INTEGER, "
+                + Constants.ITEM_TYPE + " INTEGER, "
                 + Constants.ITEM_TITLE + " TEXT, "
                 + Constants.ITEM_DESCRIPTION + " TEXT, "
                 + Constants.ITEM_FILE_PATH + " TEXT, "
-                + Constants.ITEM_MIME_TYPE + " TEXT"
+                + Constants.ITEM_MIME_TYPE + " TEXT" +
+                ""
                 +  ");");
     }
 

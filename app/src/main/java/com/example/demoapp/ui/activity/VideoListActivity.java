@@ -18,7 +18,7 @@ public class VideoListActivity extends BaseActivity implements VideoListFragment
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, VideoListActivity.class);
-        activity.startActivityForResult(intent, Constants.ITEM_VIDEO);
+        activity.startActivityForResult(intent, Constants.ITEM_VIDEO_NOTE);
     }
 
     @Override

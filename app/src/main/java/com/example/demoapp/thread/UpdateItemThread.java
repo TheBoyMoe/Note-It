@@ -1,6 +1,5 @@
 package com.example.demoapp.thread;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Process;
@@ -11,13 +10,12 @@ import com.example.demoapp.model.DatabaseHelper;
 
 import timber.log.Timber;
 
-public class InsertItemThread extends Thread{
+public class UpdateItemThread extends Thread{
 
     private ContentValues mValues;
     private Context mContext;
 
-    public InsertItemThread(Context context, ContentValues values) {
-        super();
+    public UpdateItemThread(Context context, ContentValues values) {
         mValues = values;
         mContext = context;
     }
@@ -26,12 +24,11 @@ public class InsertItemThread extends Thread{
     public void run() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         try {
-
-            DatabaseHelper.getInstance(mContext).insertTaskItem(mContext, mValues);
+            DatabaseHelper.getInstance(mContext).updateTaskItem(mContext, mValues);
         } catch (Exception e) {
-            Timber.e("%s: error adding item to dbase, %s", Constants.LOG_TAG, e.getMessage());
+            Timber.e("%s: error deleting item from the database, %s", Constants.LOG_TAG, e.getMessage());
         }
-        // query the dbase so as to trigger an update of the ui
+        // trigger ui update
         Utils.queryAllItems(mContext);
     }
 }
