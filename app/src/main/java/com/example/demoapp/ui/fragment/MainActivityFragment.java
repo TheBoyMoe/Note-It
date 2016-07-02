@@ -1,6 +1,7 @@
 package com.example.demoapp.ui.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -53,13 +54,17 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         // instantiate view and adapter
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        //LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, 1);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new CustomItemDecoration(
-                getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space),
-                getResources().getDimensionPixelSize(R.dimen.dimen_horizontal_space)));
 
+        // use a 3-col grid on screens >= 540dp
+        StaggeredGridLayoutManager layoutManager = null;
+        Configuration config = getResources().getConfiguration();
+        if (config.screenWidthDp >= 540) {
+            layoutManager = new StaggeredGridLayoutManager(3, 1);
+        } else {
+            layoutManager = new StaggeredGridLayoutManager(2, 1);
+        }
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space), getResources().getDimensionPixelSize(R.dimen.dimen_horizontal_space)));
         mAdapter = new CustomCursorRecyclerViewAdapter(getActivity(), mCursor);
         if (isAdded())
             recyclerView.setAdapter(mAdapter);
@@ -109,7 +114,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             View view = null;
             switch (viewType) {
                 case Constants.ITEM_TEXT_NOTE:
-                    view = inflater.inflate(R.layout.text_note_item, parent, false);
+                    view = inflater.inflate(R.layout.item_text, parent, false);
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
