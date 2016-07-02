@@ -27,7 +27,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
     // private List<NoteItem> mList;
     private CustomCursorRecyclerViewAdapter mAdapter;
-    private Cursor mCursor;
+    private Cursor mCursor = null;
+    private TextView mEmptyView;
+
 
     public interface Contract {
         // database tasks
@@ -53,6 +55,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // instantiate view and adapter
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
         recyclerView.setHasFixedSize(true);
 
         // use a 3-col grid on screens >= 540dp
@@ -71,6 +74,8 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // TODO shoe empty view when adapter empty
 
+
+
         return view;
     }
 
@@ -78,6 +83,8 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     public void onResume() {
         super.onResume();
         EventBus.getDefault().registerSticky(this);
+        // if (mAdapter.getCursor() != null && mAdapter.getCursor().getCount() > 0) {
+        showHideEmpty();
     }
 
     @Override
@@ -98,6 +105,15 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // passed the retrieved cursor to the adapter
         mAdapter.changeCursor(event.getModel());
+        showHideEmpty();
+    }
+
+    private void showHideEmpty() {
+        if (mAdapter.getItemCount() > 0) {
+            mEmptyView.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
     }
 
 
