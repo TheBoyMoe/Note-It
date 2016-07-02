@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:id="@+id/grid_view_item"
-           android:scaleType="fitCenter"
-           android:layout_width="match_parent"
-           android:layout_height="@dimen/column_size">
-
-</ImageView>

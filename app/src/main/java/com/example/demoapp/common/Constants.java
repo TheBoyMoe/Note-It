@@ -10,6 +10,7 @@ public class Constants {
     public static final String ITEM_TITLE = "item_title";
     public static final String ITEM_DESCRIPTION = "item_description";
     public static final String ITEM_FILE_PATH = "item_file_path";
+    public static final String ITEM_THUMBNAIL_PATH = "item_thumbnail_path";
     public static final String ITEM_MIME_TYPE = "item_mime_type";
 
     public static final int ITEM_TEXT_NOTE = 101;

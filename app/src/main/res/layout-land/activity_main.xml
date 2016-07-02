@@ -39,7 +39,6 @@
         android:layout_gravity="bottom|end"
         app:fab_addButtonColorNormal="@color/colorButtonBackground"
         app:fab_addButtonColorPressed="@color/colorButtonBackgroundPressed"
-        app:fab_addButtonSize="mini"
         app:fab_addButtonPlusIconColor="@color/colorButtonIcon"
         app:fab_addButtonStrokeVisible="false"
         app:fab_expandDirection="left"

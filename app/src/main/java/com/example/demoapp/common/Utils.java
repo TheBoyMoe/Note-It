@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -20,12 +21,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.demoapp.R;
 import com.example.demoapp.event.ModelLoadedEvent;
 import com.example.demoapp.model.DatabaseHelper;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,10 +89,7 @@ public class Utils {
     }
 
 
-    public static Bitmap generateBitmap(String path) {
-        return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
-    }
-
+    // called from within a bkgd thread
     public static void queryAllItems(Context context) {
         try {
             Cursor results = DatabaseHelper.getInstance(context).loadItems(context);
@@ -107,12 +108,13 @@ public class Utils {
         return cv;
     }
 
-    public static ContentValues setContentValuesMediaNote(long id, int type, String title, String filePath, String mimeType) {
+    public static ContentValues setContentValuesMediaNote(long id, int type, String title, String filePath, String thumbnailPath, String mimeType) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
         cv.put(Constants.ITEM_TYPE, type);
         cv.put(Constants.ITEM_TITLE, title);
         cv.put(Constants.ITEM_FILE_PATH, filePath);
+        cv.put(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         cv.put(Constants.ITEM_MIME_TYPE, mimeType);
         return cv;
     }
@@ -131,6 +133,52 @@ public class Utils {
                 toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryText));
             }
         }
+    }
+
+
+    // Bitmap/image helper methods
+    public static Bitmap generateBitmap(String path) {
+        return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
+    }
+
+    public static Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public static String getRealPathFromURI(Context context, Uri uri) {
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null){
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            String path = cursor.getString(idx);
+            cursor.close();
+            return path;
+        }
+        return null;
+    }
+
+
+    public static void loadThumbnail(Context context, String thumbnailPath, ImageView view) {
+        Picasso.with(context)
+                .load(new File(thumbnailPath))
+                .resize(160, 160)
+                .centerCrop()
+                .placeholder(R.drawable.action_video_placeholder)
+                .error(R.drawable.action_video_placeholder)
+                .into(view);
+    }
+
+    public static void loadLargeThumbnail(Context context, String thumbnailPath, ImageView view) {
+        Picasso.with(context)
+                .load(new File(thumbnailPath))
+                .resize(360, 360)
+                .centerCrop()
+                .placeholder(R.drawable.action_video_placeholder)
+                .error(R.drawable.action_video_placeholder)
+                .into(view);
     }
 
 }

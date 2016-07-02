@@ -33,11 +33,12 @@ public class VideoNoteActivity extends AppCompatActivity
         activity.startActivity(intent);
     }
 
-    public static void launch(Activity activity, long id, String title, String filePath, String mimeType) {
+    public static void launch(Activity activity, long id, String title, String filePath, String thumbnailPath, String mimeType) {
         Intent intent = new Intent(activity, VideoNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
         intent.putExtra(Constants.ITEM_TITLE, title);
         intent.putExtra(Constants.ITEM_FILE_PATH, filePath);
+        intent.putExtra(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         intent.putExtra(Constants.ITEM_MIME_TYPE, mimeType);
         activity.startActivity(intent);
     }
@@ -55,8 +56,9 @@ public class VideoNoteActivity extends AppCompatActivity
             if (id > 0) {
                 String title = getIntent().getStringExtra(Constants.ITEM_TITLE);
                 String filePath = getIntent().getStringExtra(Constants.ITEM_FILE_PATH);
+                String thumbnailPath = getIntent().getStringExtra(Constants.ITEM_THUMBNAIL_PATH);
                 String mimeType = getIntent().getStringExtra(Constants.ITEM_MIME_TYPE);
-                mFragment = VideoNoteFragment.newInstance(id, title, filePath, mimeType);
+                mFragment = VideoNoteFragment.newInstance(id, title, filePath, thumbnailPath, mimeType);
             } else {
                 mFragment = VideoNoteFragment.newInstance();
             }
@@ -82,21 +84,21 @@ public class VideoNoteActivity extends AppCompatActivity
 
     // impl  contract methods
     @Override
-    public void saveVideoNote(String title, String filePath, String mimeType) {
+    public void saveVideoNote(String title, String filePath, String thumbnailPath, String mimeType) {
         // save to database
-        ContentValues cv = Utils.setContentValuesMediaNote(
+        ContentValues values = Utils.setContentValuesMediaNote(
                 Utils.generateCustomId(),
                 Constants.ITEM_VIDEO_NOTE,
-                title, filePath, mimeType
+                title, filePath, thumbnailPath, mimeType
         );
-        new InsertItemThread(this, cv).start();
+        new InsertItemThread(this, values).start();
         finish();
     }
 
     @Override
-    public void updateVideoNote(long id, String title, String filePath, String mimeType) {
+    public void updateVideoNote(long id, String title, String filePath, String thumbnailPath, String mimeType) {
         ContentValues values = Utils.setContentValuesMediaNote(
-            id, Constants.ITEM_VIDEO_NOTE, title, filePath, mimeType);
+            id, Constants.ITEM_VIDEO_NOTE, title, filePath, thumbnailPath, mimeType);
         new UpdateItemThread(this, values).start();
         finish();
     }

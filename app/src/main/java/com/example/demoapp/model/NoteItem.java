@@ -9,7 +9,16 @@ public class NoteItem {
     private String mTitle;
     private String mDescription;
     private String mFilePath;
+    private String mThumbnailPath;
     private String mMimeType;
+
+    public String getThumbnailPath() {
+        return mThumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        mThumbnailPath = thumbnailPath;
+    }
 
     public int getType() {
         return mType;

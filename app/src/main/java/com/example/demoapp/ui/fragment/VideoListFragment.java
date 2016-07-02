@@ -53,10 +53,10 @@ public class VideoListFragment extends ContractFragment<VideoListFragment.Contra
         super.onViewCreated(view, savedInstanceState);
 
         String[] from = {MediaStore.Video.Media._ID};
-        int[] to = {R.id.grid_view_item};
+        int[] to = {R.id.item_thumbnail};
         mAdapter = new SimpleCursorAdapter(
                 getActivity(),
-                R.layout.grid_view_item,
+                R.layout.item_thumbnail,
                 null,
                 from,
                 to,
@@ -97,8 +97,10 @@ public class VideoListFragment extends ContractFragment<VideoListFragment.Contra
 
             Picasso.with(getActivity())
                     .load(thumbnailUri.toString())
-                    .fit().centerCrop()
-                    .placeholder(R.drawable.action_video_note)
+                    .resize(160, 160)
+                    .centerCrop()
+                    .placeholder(R.drawable.action_video_placeholder)
+                    .error(R.drawable.action_video_placeholder)
                     .into((ImageView) view);
 
             return true;

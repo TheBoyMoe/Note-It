@@ -19,15 +19,12 @@ import com.example.demoapp.common.CursorRecyclerViewAdapter;
 import com.example.demoapp.common.Utils;
 import com.example.demoapp.custom.CustomItemDecoration;
 import com.example.demoapp.event.ModelLoadedEvent;
-import com.example.demoapp.model.NoteItem;
-
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
 public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>{
 
-    private List<NoteItem> mList;
+    // private List<NoteItem> mList;
     private CustomCursorRecyclerViewAdapter mAdapter;
     private Cursor mCursor;
 
@@ -37,7 +34,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // onClick methods
         void onItemClick(long id, String title, String description);
-        void onItemClick(long id, String title, String filePath, String mimeType);
+        void onItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType);
         void onItemLongClick(long itemId); // TODO
     }
 
@@ -116,7 +113,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
-                    view = inflater.inflate(R.layout.media_note_item, parent, false);
+                    view = inflater.inflate(R.layout.item_thumbnail, parent, false);
                     break;
             }
             return new CustomViewHolder(view, viewType);
@@ -161,6 +158,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         String mTitleText;
         String mDescriptionText;
         String mFilePath;
+        String mThumbnailPath;
         String mMimeType;
 
 
@@ -192,8 +190,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    mThumbnail.setImageBitmap(Utils.generateBitmap(mFilePath));
+                    Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
                     break;
             }
 
@@ -208,7 +207,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
-                    getContract().onItemClick(mId, mTitleText, mFilePath, mMimeType);
+                    getContract().onItemClick(mId, mTitleText, mFilePath, mThumbnailPath, mMimeType);
                     break;
             }
 
@@ -216,6 +215,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         @Override
         public boolean onLongClick(View v) {
+            // TODO
             getContract().onItemLongClick(v.getId());
             return true;
         }
