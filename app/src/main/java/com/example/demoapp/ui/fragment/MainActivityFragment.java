@@ -36,8 +36,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         void deleteItemTask(long itemId);
 
         // onClick methods
-        void onItemClick(long id, String title, String description);
-        void onItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType);
+        void onNoteItemClick(long id, String title, String description);
+        void onVideoItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType);
+        void onAudioItemClick(long id, String title, String filePath, String mimeType);
         void onItemLongClick(long itemId); // TODO
     }
 
@@ -74,8 +75,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // TODO shoe empty view when adapter empty
 
-
-
+        
         return view;
     }
 
@@ -83,7 +83,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     public void onResume() {
         super.onResume();
         EventBus.getDefault().registerSticky(this);
-        // if (mAdapter.getCursor() != null && mAdapter.getCursor().getCount() > 0) {
         showHideEmpty();
     }
 
@@ -93,6 +92,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         super.onPause();
     }
 
+    @SuppressWarnings("unused")
     public void onEventMainThread(ModelLoadedEvent event) {
 //        Cursor cursor = event.getModel();
 //        if (cursor.moveToFirst()) {
@@ -132,8 +132,10 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 case Constants.ITEM_TEXT_NOTE:
                     view = inflater.inflate(R.layout.item_text, parent, false);
                     break;
-                case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
+                    view = inflater.inflate(R.layout.item_audio, parent, false);
+                    break;
+                case Constants.ITEM_VIDEO_NOTE:
                     view = inflater.inflate(R.layout.item_thumbnail, parent, false);
                     break;
             }
@@ -192,8 +194,8 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 case Constants.ITEM_TEXT_NOTE:
                     mTitle = (TextView) itemView.findViewById(R.id.item_title);
                     break;
-                case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
+                case Constants.ITEM_VIDEO_NOTE:
                     mThumbnail = (ImageView) itemView.findViewById(R.id.item_thumbnail);
                     break;
             }
@@ -208,8 +210,12 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mTitle.setText(mTitleText);
                     break;
-                case Constants.ITEM_VIDEO_NOTE:
                 case Constants.ITEM_AUDIO_NOTE:
+                    mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    // TODO ?? add title
+                    break;
+                case Constants.ITEM_VIDEO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
@@ -217,18 +223,21 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     break;
             }
 
+
         }
 
         @Override
         public void onClick(View v) {
-
+            // clicking on text/video/audio note forwards call up to hosting activity
             switch (mViewType) {
                 case Constants.ITEM_TEXT_NOTE:
-                    getContract().onItemClick(mId, mTitleText, mDescriptionText);
+                    getContract().onNoteItemClick(mId, mTitleText, mDescriptionText);
+                    break;
+                case Constants.ITEM_AUDIO_NOTE:
+                    getContract().onAudioItemClick(mId, mTitleText, mFilePath, mMimeType);
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
-                case Constants.ITEM_AUDIO_NOTE:
-                    getContract().onItemClick(mId, mTitleText, mFilePath, mThumbnailPath, mMimeType);
+                    getContract().onVideoItemClick(mId, mTitleText, mFilePath, mThumbnailPath, mMimeType);
                     break;
             }
 
@@ -236,7 +245,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         @Override
         public boolean onLongClick(View v) {
-            // TODO
+            // TODO ?? delete
             getContract().onItemLongClick(v.getId());
             return true;
         }

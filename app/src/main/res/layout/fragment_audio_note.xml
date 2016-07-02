@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/video_note_title"
+            android:id="@+id/audio_note_title"
             android:hint="@string/title_hint"
             android:layout_marginBottom="@dimen/dimen_normal"
             android:background="@android:color/transparent"
@@ -33,10 +33,10 @@
                 <!--android:layout_height="wrap_content">-->
 
                 <ImageView
-                    android:id="@+id/video_note_thumbnail"
+                    android:id="@+id/audio_note_thumbnail"
                     android:layout_marginBottom="@dimen/dimen_normal"
                     android:contentDescription="@string/image_view_description"
-                    android:src="@drawable/action_video_placeholder"
+                    android:src="@drawable/action_audio_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="320dp"/>
 

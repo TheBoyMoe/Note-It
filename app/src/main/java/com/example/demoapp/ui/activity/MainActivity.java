@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Utils;
@@ -55,19 +54,19 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_note);
         if(textNoteBtn != null) {
             textNoteBtn.setOnClickListener(this);
-            textNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_text_note), R.color.half_black));
+            textNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_text_btn), R.color.half_black));
         }
 
         FloatingActionButton videoNoteBtn = (FloatingActionButton) findViewById(R.id.action_video_note);
         if (videoNoteBtn != null) {
             videoNoteBtn.setOnClickListener(this);
-            videoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_video_note), R.color.half_black));
+            videoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_video_btn), R.color.half_black));
         }
 
         FloatingActionButton audioNoteBtn = (FloatingActionButton) findViewById(R.id.action_audio_note);
         if (audioNoteBtn != null) {
             audioNoteBtn.setOnClickListener(this);
-            audioNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_audio_note), R.color.half_black));
+            audioNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_audio_btn), R.color.half_black));
         }
 
     }
@@ -82,15 +81,21 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void onItemClick(long id, String title, String description) {
+    public void onNoteItemClick(long id, String title, String description) {
         // launch activity displaying text note
         TextNoteActivity.launch(MainActivity.this, id, title, description);
     }
 
     @Override
-    public void onItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType) {
+    public void onVideoItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType) {
         // launch activity displaying video note
         VideoNoteActivity.launch(MainActivity.this, id, title, filePath, thumbnailPath, mimeType);
+    }
+
+    @Override
+    public void onAudioItemClick(long id, String title, String filePath, String mimeType) {
+        // launch activity to display the audio note
+        AudioNoteActivity.launch(MainActivity.this, id, title, filePath, mimeType);
     }
 
     @Override
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    // handle button clicks
+    // handle fab button clicks
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -112,7 +117,7 @@ public class MainActivity extends AppCompatActivity
                 VideoNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_audio_note:
-                Toast.makeText(MainActivity.this, "clicked on audio button", Toast.LENGTH_SHORT).show();
+                AudioNoteActivity.launch(MainActivity.this);
                 break;
         }
     }
