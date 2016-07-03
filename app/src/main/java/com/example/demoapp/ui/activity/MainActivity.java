@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -17,9 +16,6 @@ import com.example.demoapp.ui.fragment.MainActivityFragment;
 import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import timber.log.Timber;
 
@@ -146,11 +142,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-    }
 
     @Override
     protected void onPause() {
@@ -166,8 +157,13 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constants.AUDIO_REQUEST && resultCode == RESULT_OK) {
-            Uri audioUri = data.getData();
-            Timber.i("%s: audio file: %s", Constants.LOG_TAG, audioUri);
+            String filePath = data.getStringExtra(Constants.ITEM_FILE_PATH);
+            String mimeType = data.getStringExtra(Constants.ITEM_MIME_TYPE);
+            Timber.i("%s: filePath: %s, mimeType: %s", Constants.LOG_TAG, filePath, mimeType);
+
+            // TODO insert item into database
+
+
         } else if(resultCode == RESULT_CANCELED){
             Utils.showSnackbar(mLayout, "Operation cancelled by user");
         } else {

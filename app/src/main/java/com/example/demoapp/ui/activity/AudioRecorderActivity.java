@@ -28,11 +28,14 @@ public class AudioRecorderActivity extends AppCompatActivity implements
         MediaRecorder.OnInfoListener{
 
     private static final String BASENAME = "audio.3gp";
+    private static final String MIMETYPE = "audio/3gpp";
     private MediaRecorder mRecorder = null;
+    private File mAudioFile;
+
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, AudioRecorderActivity.class);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, Constants.AUDIO_REQUEST);
     }
 
     @Override
@@ -64,12 +67,12 @@ public class AudioRecorderActivity extends AppCompatActivity implements
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            File audioFile =
-                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), generateFileName());
+            mAudioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), generateFileName());
 
+            // Timber.i("%s: file path: %s", Constants.LOG_TAG, mAudioFile);
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mRecorder.setOutputFile(audioFile.getAbsolutePath());
+            mRecorder.setOutputFile(mAudioFile.getAbsolutePath());
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
             mRecorder.setAudioEncodingBitRate(160 * 1024);
             mRecorder.setAudioChannels(2);
@@ -88,6 +91,11 @@ public class AudioRecorderActivity extends AppCompatActivity implements
                 Utils.showToast(this, getString(R.string.error_generic));
             }
             mRecorder.reset();
+            // send back file path to MainActivity
+            Intent intent =  new Intent();
+            intent.putExtra(Constants.ITEM_FILE_PATH, mAudioFile.toString());
+            intent.putExtra(Constants.ITEM_MIME_TYPE, MIMETYPE);
+            setResult(RESULT_OK, intent);
             finish();
         }
     }
