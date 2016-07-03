@@ -18,6 +18,9 @@ import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
@@ -146,6 +149,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         // collapse the btn menu if req'd
         if (mBtnTrigger.isExpanded()) {
             mBtnTrigger.collapse();
@@ -165,4 +174,7 @@ public class MainActivity extends AppCompatActivity
             Utils.showSnackbar(mLayout, "Error recording audio");
         }
     }
+
+
+
 }
