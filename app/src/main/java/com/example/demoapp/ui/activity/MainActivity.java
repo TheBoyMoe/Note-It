@@ -1,6 +1,9 @@
 package com.example.demoapp.ui.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -9,11 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.demoapp.R;
+import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
 import com.example.demoapp.ui.fragment.MainActivityFragment;
 import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
@@ -123,16 +129,16 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_audio_note:
                 // TODO launch audio recording
                 // AudioNoteActivity.launch(MainActivity.this);
-//                if(Utils.hasMicrophone(MainActivity.this)) {
-//                    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-//                    if(intent.resolveActivity(getPackageManager()) != null) {
-//
-//                    } else {
-//                        Utils.showSnackbar(mLayout, "No app found suitable to record audio");
-//                    }
-//                } else {
+                if(Utils.hasMicrophone(MainActivity.this)) {
+                    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                    if(intent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(intent, Constants.AUDIO_REQUEST);
+                    } else {
+                        Utils.showSnackbar(mLayout, "No app found suitable to record audio");
+                    }
+                } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording audio");
-//                }
+                }
                 break;
         }
     }
@@ -146,4 +152,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.AUDIO_REQUEST && resultCode == RESULT_OK) {
+            Uri audioUri = data.getData();
+            Timber.i("%s: audio file: %s", Constants.LOG_TAG, audioUri);
+        } else if(resultCode == RESULT_CANCELED){
+            Utils.showSnackbar(mLayout, "Operation cancelled by user");
+        } else {
+            Utils.showSnackbar(mLayout, "Error recording audio");
+        }
+    }
 }
