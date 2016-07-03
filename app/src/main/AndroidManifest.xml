@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.example.demoapp"
           xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -53,6 +55,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.VideoNoteActivity"/>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.AudioListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/audio_list_activity_title"
+            android:parentActivityName=".ui.activity.AudioNoteActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.AudioNoteActivity"/>
         </activity>
 
 

@@ -24,9 +24,6 @@ public class VideoNoteActivity extends AppCompatActivity
         implements VideoNoteFragment.Contract{
 
     private VideoNoteFragment mFragment;
-    //private String mTitle;
-    //private String mFilePath;
-    //private String mMimeType;
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, VideoNoteActivity.class);

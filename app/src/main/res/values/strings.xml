@@ -8,4 +8,9 @@
     <string name="video_list_activity_title">Pick a video</string>
     <string name="video_thumbnail">Video thumbnail</string>
     <string name="audio_item_image">Audio image</string>
+    <string name="audio_list_activity_title">Pick an audio track</string>
+    <string name="audio_dialog_title">Confirm audio selection</string>
+    <string name="dialog_positive_text">Save</string>
+    <string name="dialog_negative_text">Cancel</string>
+    <string name="video_dialog_title">Confirm video selection</string>
 </resources>

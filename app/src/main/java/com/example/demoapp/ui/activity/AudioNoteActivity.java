@@ -2,8 +2,11 @@ package com.example.demoapp.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.demoapp.R;
@@ -85,8 +88,23 @@ public class AudioNoteActivity extends AppCompatActivity implements AudioNoteFra
 
     @Override
     public void selectAudio() {
-        // TODO
-        Utils.showToast(this, "Select audio file");
+        // check if there are any videos on the device
+        CursorLoader loader = new CursorLoader(
+                this,
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                null, null, null,
+                MediaStore.Audio.Media.TITLE);
+        Cursor cursor = loader.loadInBackground();
+
+        while(cursor.moveToNext()) {
+            // TODO list cursor contents
+        }
+
+        if (cursor.getCount() > 0)
+            // launch VideoListActivity using startActivityForResult
+            AudioListActivity.launch(this);
+        else
+            Utils.showToast(this, "No audio tracks found on device");
     }
 
     @Override
