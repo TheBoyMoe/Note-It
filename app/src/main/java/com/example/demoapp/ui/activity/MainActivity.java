@@ -1,6 +1,7 @@
 package com.example.demoapp.ui.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +20,13 @@ public class MainActivity extends AppCompatActivity
 
     private static final String MODEL_FRAGMENT = "model_fragment";
     private FloatingActionsMenu mBtnTrigger;
+    private CoordinatorLayout mLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -114,10 +117,22 @@ public class MainActivity extends AppCompatActivity
                 TextNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_video_note:
-                VideoNoteActivity.launch(MainActivity.this);
+                // TODO launch video recording - start activity for result
+                // VideoNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_audio_note:
-                AudioNoteActivity.launch(MainActivity.this);
+                // TODO launch audio recording
+                // AudioNoteActivity.launch(MainActivity.this);
+//                if(Utils.hasMicrophone(MainActivity.this)) {
+//                    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+//                    if(intent.resolveActivity(getPackageManager()) != null) {
+//
+//                    } else {
+//                        Utils.showSnackbar(mLayout, "No app found suitable to record audio");
+//                    }
+//                } else {
+                    Utils.showSnackbar(mLayout, "The device does not support recording audio");
+//                }
                 break;
         }
     }

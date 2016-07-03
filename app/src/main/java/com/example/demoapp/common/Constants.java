@@ -17,6 +17,7 @@ public class Constants {
     public static final int ITEM_VIDEO_NOTE = 102;
     public static final int ITEM_AUDIO_NOTE = 103;
 
-
+    public static final String AUDIO_REQUEST = "audio_request";
+    public static final String VIDEO_REQUEST = "video_request";
 
 }

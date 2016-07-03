@@ -3,6 +3,7 @@ package com.example.demoapp.common;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -180,5 +181,18 @@ public class Utils {
                 .error(R.drawable.action_video_placeholder)
                 .into(view);
     }
+
+
+    public static boolean hasMicrophone(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
+    }
+
+    public static boolean hasCamera(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
+
 
 }
