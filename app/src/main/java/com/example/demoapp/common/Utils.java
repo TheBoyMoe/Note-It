@@ -120,6 +120,15 @@ public class Utils {
         return cv;
     }
 
+    public static ContentValues setContentValuesAudioNote(long id, int type, String filePath, String mimeType) {
+        ContentValues cv = new ContentValues();
+        cv.put(Constants.ITEM_ID, id);
+        cv.put(Constants.ITEM_TYPE, type);
+        cv.put(Constants.ITEM_FILE_PATH, filePath);
+        cv.put(Constants.ITEM_MIME_TYPE, mimeType);
+        return cv;
+    }
+
     public static void setupToolbar(Activity activity, Toolbar toolbar) {
         if (toolbar != null) {
             ((AppCompatActivity)activity).setSupportActionBar(toolbar);
