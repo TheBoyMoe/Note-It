@@ -3,7 +3,6 @@ package com.example.demoapp.ui.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -124,18 +123,19 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.action_video_note:
                 // TODO launch video recording - start activity for result
-                // VideoNoteActivity.launch(MainActivity.this);
+                VideoNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_audio_note:
                 // TODO launch audio recording
                 // AudioNoteActivity.launch(MainActivity.this);
                 if(Utils.hasMicrophone(MainActivity.this)) {
-                    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                    if(intent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(intent, Constants.AUDIO_REQUEST);
-                    } else {
-                        Utils.showSnackbar(mLayout, "No app found suitable to record audio");
-                    }
+//                    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+//                    if(intent.resolveActivity(getPackageManager()) != null) {
+//                        startActivityForResult(intent, Constants.AUDIO_REQUEST);
+//                    } else {
+//                        Utils.showSnackbar(mLayout, "No app found suitable to record audio");
+//                    }
+                    AudioRecorderActivity.launch(MainActivity.this);
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording audio");
                 }
