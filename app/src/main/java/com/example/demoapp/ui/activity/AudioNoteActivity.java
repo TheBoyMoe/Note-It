@@ -2,19 +2,18 @@ package com.example.demoapp.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.content.CursorLoader;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
-import com.example.demoapp.common.Utils;
 import com.example.demoapp.ui.fragment.AudioNoteFragment;
 
-public class AudioNoteActivity extends AppCompatActivity implements AudioNoteFragment.Contract{
+public class AudioNoteActivity extends AppCompatActivity implements
+        AudioNoteFragment.Contract{
 
 
     public static void launch(Activity activity) {
@@ -31,12 +30,16 @@ public class AudioNoteActivity extends AppCompatActivity implements AudioNoteFra
         activity.startActivity(intent);
     }
 
+    private CoordinatorLayout mLayout;
+    private MediaPlayer mPlayer;
     private AudioNoteFragment mFragment = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_layout);
+
+        mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         long id = getIntent().getLongExtra(Constants.ITEM_ID, 0);
         mFragment = (AudioNoteFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -45,6 +48,7 @@ public class AudioNoteActivity extends AppCompatActivity implements AudioNoteFra
                 String title = getIntent().getStringExtra(Constants.ITEM_TITLE);
                 String filePath = getIntent().getStringExtra(Constants.ITEM_FILE_PATH);
                 String mimeType = getIntent().getStringExtra(Constants.ITEM_MIME_TYPE);
+                // TODO drop mime and file paths & fetch description
                 mFragment = AudioNoteFragment.newInstance(id, title, filePath, mimeType);
             } else {
                 mFragment = AudioNoteFragment.newInstance();
@@ -73,7 +77,7 @@ public class AudioNoteActivity extends AppCompatActivity implements AudioNoteFra
     // impl contract methods
     @Override
     public void saveAudioNote(String title, String filePath, String mimeType) {
-        // TODO
+        // REQD ??
     }
 
     @Override
@@ -81,34 +85,11 @@ public class AudioNoteActivity extends AppCompatActivity implements AudioNoteFra
         // TODO
     }
 
-    @Override
-    public void playAudio(String filePath, String mimeType) {
-        // TODO
-    }
-
-    @Override
-    public void selectAudio() {
-        // check if there are any videos on the device
-        CursorLoader loader = new CursorLoader(
-                this,
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                null, null, null,
-                MediaStore.Audio.Media.TITLE);
-        Cursor cursor = loader.loadInBackground();
-
-        while(cursor.moveToNext()) {
-            // TODO list cursor contents
-        }
-
-        if (cursor.getCount() > 0)
-            // launch VideoListActivity using startActivityForResult
-            AudioListActivity.launch(this);
-        else
-            Utils.showToast(this, "No audio tracks found on device");
-    }
 
     @Override
     public void quit() {
         finish();
     }
+
+
 }

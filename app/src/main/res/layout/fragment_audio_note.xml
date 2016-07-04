@@ -7,8 +7,7 @@
 
     <include layout="@layout/toolbar"/>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:padding="@dimen/dimen_normal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,24 +20,34 @@
             style="@style/TextStyle.TextNote.Title"
             android:imeOptions="actionDone"/>
 
+        <EditText
+            android:id="@+id/note_text_description"
+            android:hint="@string/description_hint"
+            android:layout_below="@id/audio_note_title"
+            android:background="@android:color/transparent"
+            style="@style/TextStyle.TextNote.Description"
+            android:imeOptions="actionDone"/>
+
+        <!-- audio player controls -->
         <LinearLayout
             android:id="@+id/wrapper"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/dimen_normal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <!--<RelativeLayout-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content">-->
 
-                <ImageView
-                    android:id="@+id/audio_note_thumbnail"
-                    android:layout_marginBottom="@dimen/dimen_normal"
-                    android:contentDescription="@string/image_view_description"
-                    android:src="@drawable/action_audio_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="320dp"/>
+                <!--<ImageView-->
+                    <!--android:id="@+id/audio_note_thumbnail"-->
+                    <!--android:layout_marginBottom="@dimen/dimen_normal"-->
+                    <!--android:contentDescription="@string/image_view_description"-->
+                    <!--android:src="@drawable/action_audio_placeholder"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="320dp"/>-->
 
                 <!--<ImageView-->
                     <!--android:src="@drawable/action_play"-->
@@ -50,17 +59,42 @@
             <!--</RelativeLayout>-->
 
 
-            <TextView
-                android:id="@+id/video_selection_text"
-                android:text="@string/video_fragment_text_view"
-                android:gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+            <!--<TextView-->
+                <!--android:id="@+id/video_selection_text"-->
+                <!--android:text="@string/video_fragment_text_view"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"/>-->
+
+            <ImageButton
+                android:id="@+id/action_play"
+                android:src="@drawable/action_play"
+                android:contentDescription="@string/audio_playback"
+                android:enabled="false"
+                android:layout_width="@dimen/audio_btn_size"
+                android:layout_height="@dimen/audio_btn_size"/>
+
+            <ImageButton
+                android:id="@+id/action_pause"
+                android:src="@drawable/action_pause"
+                android:contentDescription="@string/pause_playback"
+                android:layout_marginLeft="@dimen/dimen_normal"
+                android:layout_marginRight="@dimen/dimen_normal"
+                android:layout_width="@dimen/audio_btn_size"
+                android:layout_height="@dimen/audio_btn_size"/>
+
+            <ImageButton
+                android:id="@+id/action_stop"
+                android:src="@drawable/action_stop"
+                android:contentDescription="@string/stop_playback"
+                android:layout_width="@dimen/audio_btn_size"
+                android:layout_height="@dimen/audio_btn_size"/>
+
 
         </LinearLayout>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </LinearLayout>

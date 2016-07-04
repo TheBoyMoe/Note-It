@@ -1,6 +1,5 @@
 package com.example.demoapp.ui.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaRecorder;
@@ -17,8 +16,6 @@ import com.example.demoapp.common.Utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import timber.log.Timber;
 
@@ -27,8 +24,6 @@ public class AudioRecorderActivity extends AppCompatActivity implements
         MediaRecorder.OnErrorListener,
         MediaRecorder.OnInfoListener{
 
-    private static final String BASENAME = "audio.3gp";
-    private static final String MIMETYPE = "audio/3gpp";
     private MediaRecorder mRecorder = null;
     private File mAudioFile;
 
@@ -67,7 +62,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            mAudioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), generateFileName());
+            mAudioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Utils.generateAudioFileName());
 
             // Timber.i("%s: file path: %s", Constants.LOG_TAG, mAudioFile);
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -91,11 +86,13 @@ public class AudioRecorderActivity extends AppCompatActivity implements
                 Utils.showToast(this, getString(R.string.error_generic));
             }
             mRecorder.reset();
+
             // send back file path to MainActivity
             Intent intent =  new Intent();
             intent.putExtra(Constants.ITEM_FILE_PATH, mAudioFile.toString());
-            intent.putExtra(Constants.ITEM_MIME_TYPE, MIMETYPE);
+            intent.putExtra(Constants.ITEM_MIME_TYPE, Constants.AUDIO_MIMETYPE);
             setResult(RESULT_OK, intent);
+
             finish();
         }
     }
@@ -123,10 +120,5 @@ public class AudioRecorderActivity extends AppCompatActivity implements
     }
 
 
-    private String generateFileName() {
-        @SuppressLint("SimpleDateFormat")
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return timeStamp + "_" + BASENAME;
-    }
 
 }

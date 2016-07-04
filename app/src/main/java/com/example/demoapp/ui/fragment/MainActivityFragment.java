@@ -204,26 +204,24 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         public void bindViewHolder(Cursor cursor) {
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
             mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
-
+            // TODO fetch description for audio and video - display in detail note
+            // TODO add title to audio & video notes too!
             switch (mViewType) {
                 case Constants.ITEM_TEXT_NOTE:
-                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mTitle.setText(mTitleText);
+                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     break;
+                case Constants.ITEM_VIDEO_NOTE:
+                    // mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
+                    // mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+                    // break;
                 case Constants.ITEM_AUDIO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    // TODO ?? add title
-                    break;
-                case Constants.ITEM_VIDEO_NOTE:
-                    mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
-                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
                     break;
             }
-
-
         }
 
         @Override

@@ -20,4 +20,7 @@ public class Constants {
     public static final int AUDIO_REQUEST = 100;
     public static final int VIDEO_REQUEST = 200;
 
+    public static final String AUDIO_BASENAME = "audio.3gp";
+    public static final String AUDIO_MIMETYPE = "audio/3gpp";
+
 }

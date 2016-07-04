@@ -1,5 +1,7 @@
 package com.example.demoapp.ui.fragment;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -9,32 +11,39 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
 
+import timber.log.Timber;
+
 public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contract>
-        implements View.OnClickListener, View.OnLongClickListener, TextWatcher{
+        implements View.OnClickListener, View.OnLongClickListener, TextWatcher,
+        MediaPlayer.OnCompletionListener{
 
 
+    private View mView;
 
     public interface Contract {
         void saveAudioNote(String title, String filePath, String mimeType);
         void updateAudioNote(long id, String title, String filePath, String mimeType);
-        void playAudio(String filePath, String mimeType);
-        void selectAudio();
         void quit();
     }
 
-    private EditText mEditText;
+    private EditText mEditTitle;
+    private EditText mEditDescription;
+    private ImageButton mPlay;
+    private ImageButton mPause;
+    private ImageButton mStop;
 
     private long mId;
     private String mTitle;
     private String mFilePath;
     private String mMimeType;
+    private MediaPlayer mPlayer;
 
     public AudioNoteFragment(){}
 
@@ -57,10 +66,10 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_audio_note, container,false);
+        mView = inflater.inflate(R.layout.fragment_audio_note, container,false);
 
         // add toolbar
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         if (toolbar != null) {
             Utils.setupToolbar(getActivity(), toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -80,18 +89,22 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
             });
         }
 
-        mEditText = (EditText) view.findViewById(R.id.audio_note_title);
-        mEditText.addTextChangedListener(this);
-        LinearLayout wrapper = (LinearLayout) view.findViewById(R.id.wrapper);
-        wrapper.setOnClickListener(this);
-        wrapper.setOnLongClickListener(this);
+        mEditTitle = (EditText) mView.findViewById(R.id.audio_note_title);
+        mEditTitle.addTextChangedListener(this);
+
+        mPlay = (ImageButton) mView.findViewById(R.id.action_play);
+        mPause = (ImageButton) mView.findViewById(R.id.action_pause);
+        mStop = (ImageButton) mView.findViewById(R.id.action_stop);
+        mPlay.setOnClickListener(this);
+        mPause.setOnClickListener(this);
+        mStop.setOnClickListener(this);
 
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
             mTitle = getArguments().getString(Constants.ITEM_TITLE);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
-            mEditText.setText(mTitle);
+            mEditTitle.setText(mTitle);
         }
 
         if (savedInstanceState != null) {
@@ -99,20 +112,45 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
             mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
         }
 
-        return view;
+        mPlayerSetup();
+
+        return mView;
     }
 
     @Override
-    public void onClick(View v) {
-        getContract().playAudio(mFilePath, mMimeType);
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.action_play:
+                play();
+                break;
+            case R.id.action_pause:
+                pause();
+                break;
+            case R.id.action_stop:
+                stop();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mStop.isEnabled()) {
+            stop();
+        }
+        mPlayer.reset();
+        mPlayer.release();
+        mPlayer = null;
     }
 
     @Override
     public boolean onLongClick(View v) {
-        getContract().selectAudio();
+        // getContract().selectAudio();
         return true;
     }
 
+    // TODO get rid of text watcher, copy example of textNoteFragment
     @Override
     public void onTextChanged(CharSequence text, int start, int before, int count) {
         mTitle = text.toString();
@@ -132,7 +170,7 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         if (mTitle == null) mTitle = title;
         mFilePath = filePath;
         mMimeType = mimeType;
-        mEditText.setText(mTitle);
+        mEditTitle.setText(mTitle);
     }
 
     @Override
@@ -140,6 +178,52 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         super.onSaveInstanceState(outState);
         outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
         outState.putString(Constants.ITEM_MIME_TYPE, mMimeType);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        stop();
+    }
+
+    private void mPlayerSetup() {
+        try {
+            mPlayer = MediaPlayer.create(getActivity(), Uri.parse(mFilePath));
+            mPlayer.setOnCompletionListener(this);
+            mPlay.setEnabled(true);
+        } catch (Exception e) {
+            Timber.e("%s Error playing audio file: %s", Constants.LOG_TAG, e.getMessage());
+            Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
+        }
+        mPause.setEnabled(false);
+        mStop.setEnabled(false);
+    }
+
+    private void play() {
+        mPlayer.start();
+        mPlay.setEnabled(false);
+        mPause.setEnabled(true);
+        mStop.setEnabled(true);
+    }
+
+    private void pause() {
+        mPlayer.pause();
+        mPlay.setEnabled(true);
+        mPause.setEnabled(false);
+        mStop.setEnabled(true);
+    }
+
+    private void stop() {
+        mPlayer.stop();
+        mStop.setEnabled(false);
+        mPause.setEnabled(false);
+        try {
+            mPlayer.prepare();
+            mPlayer.seekTo(0);
+            mPlay.setEnabled(true);
+        } catch(Exception e) {
+            Timber.e("%s Error playing audio file: %s", Constants.LOG_TAG, e.getMessage());
+            Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.demoapp.common;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -203,5 +204,10 @@ public class Utils {
     }
 
 
+    public static String generateAudioFileName() {
+        @SuppressLint("SimpleDateFormat")
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return timeStamp + "_" + Constants.AUDIO_BASENAME;
+    }
 
 }

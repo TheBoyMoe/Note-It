@@ -18,4 +18,8 @@
     <string name="error_max_file_size">Maximum file size reached</string>
     <string name="error_unknown">Unknown error occurred</string>
     <string name="error_generic">Error recording audio</string>
+    <string name="audio_playback">Start audio playback</string>
+    <string name="pause_playback">Pause audio playback</string>
+    <string name="stop_playback">Stop audio playback</string>
+    <string name="error_playing_audio">Error playing audio file</string>
 </resources>
