@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +18,18 @@ import com.example.demoapp.common.Utils;
 
 import timber.log.Timber;
 
-public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contract>
-        implements View.OnClickListener, View.OnLongClickListener, TextWatcher,
+public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contract> implements
+        View.OnClickListener,
+        View.OnLongClickListener,
         MediaPlayer.OnCompletionListener{
 
-
-    private View mView;
-
     public interface Contract {
-        void saveAudioNote(String title, String filePath, String mimeType);
-        void updateAudioNote(long id, String title, String filePath, String mimeType);
+        // void saveAudioNote(String title, String filePath, String mimeType);
+        void updateAudioNote(long id, String title, String description);
         void quit();
     }
 
+    private View mView;
     private EditText mEditTitle;
     private EditText mEditDescription;
     private ImageButton mPlay;
@@ -41,8 +38,9 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
 
     private long mId;
     private String mTitle;
+    private String mDescription;
     private String mFilePath;
-    private String mMimeType;
+    //private String mMimeType;
     private MediaPlayer mPlayer;
 
     public AudioNoteFragment(){}
@@ -51,13 +49,14 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         return new AudioNoteFragment();
     }
 
-    public static AudioNoteFragment newInstance(long id, String title, String filePath, String mimeType) {
+    public static AudioNoteFragment newInstance(long id, String title, String description, String filePath) {
         AudioNoteFragment fragment = new AudioNoteFragment();
         Bundle args = new Bundle();
         args.putLong(Constants.ITEM_ID, id);
         args.putString(Constants.ITEM_TITLE, title);
+        args.putString(Constants.ITEM_DESCRIPTION, description);
         args.putString(Constants.ITEM_FILE_PATH, filePath);
-        args.putString(Constants.ITEM_MIME_TYPE, mimeType);
+        //args.putString(Constants.ITEM_MIME_TYPE, mimeType);
         fragment.setArguments(args);
 
         return fragment;
@@ -66,7 +65,7 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_audio_note, container,false);
+        mView = inflater.inflate(R.layout.fragment_audio_note, container, false);
 
         // add toolbar
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
@@ -76,25 +75,26 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
                 @Override
                 public void onClick(View v) {
                     // save/update/quit
-                    if (mTitle == null || mFilePath == null) {
+                    if (mTitle == null && mDescription == null) {
                         getContract().quit();
                     } else {
                         if (mId > 0) {
-                            getContract().updateAudioNote(mId, mTitle, mFilePath, mMimeType);
-                        } else {
-                            getContract().saveAudioNote(mTitle, mFilePath, mMimeType);
+                            getContract().updateAudioNote(mId, mTitle, mDescription);
                         }
+                        //else {
+                           // getContract().saveAudioNote(mTitle, mFilePath, mMimeType);
+                        //}
                     }
                 }
             });
         }
 
         mEditTitle = (EditText) mView.findViewById(R.id.audio_note_title);
-        mEditTitle.addTextChangedListener(this);
-
+        mEditDescription = (EditText) mView.findViewById(R.id.audio_note_description);
         mPlay = (ImageButton) mView.findViewById(R.id.action_play);
         mPause = (ImageButton) mView.findViewById(R.id.action_pause);
         mStop = (ImageButton) mView.findViewById(R.id.action_stop);
+
         mPlay.setOnClickListener(this);
         mPause.setOnClickListener(this);
         mStop.setOnClickListener(this);
@@ -102,15 +102,18 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
             mTitle = getArguments().getString(Constants.ITEM_TITLE);
+            mDescription = getArguments().getString(Constants.ITEM_DESCRIPTION);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
-            mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
-            mEditTitle.setText(mTitle);
+            //mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
+            // mEditTitle.setText(mTitle);
         }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
-            mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
+            //mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
         }
+        Timber.i("%s: id: %d, title: %s, description: %s, filePath: %s",
+                Constants.LOG_TAG, mId, mTitle, mDescription, mFilePath);
 
         mPlayerSetup();
 
@@ -146,38 +149,42 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
 
     @Override
     public boolean onLongClick(View v) {
+        // TODO
         // getContract().selectAudio();
         return true;
     }
 
-    // TODO get rid of text watcher, copy example of textNoteFragment
-    @Override
-    public void onTextChanged(CharSequence text, int start, int before, int count) {
-        mTitle = text.toString();
-    }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // no-op
-    }
+//    @Override
+//    public void onTextChanged(CharSequence text, int start, int before, int count) {
+//        mTitle = text.toString();
+//    }
+//
+//    @Override
+//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//        // no-op
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable s) {
+//        // no-op
+//    }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-        // no-op
-    }
-
-    public void updateFragmentUI(String title, String filePath, String mimeType) {
-        if (mTitle == null) mTitle = title;
-        mFilePath = filePath;
-        mMimeType = mimeType;
-        mEditTitle.setText(mTitle);
-    }
+//    public void updateFragmentUI(String title, String filePath, String description) {
+//        if (mTitle == null) mTitle = title;
+//        if (mDescription == null) mDescription = description;
+//        mFilePath = filePath;
+//        // mMimeType = mimeType;
+//
+//        mEditTitle.setText(mTitle);
+//        mEditDescription.setText(mDescription);
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
-        outState.putString(Constants.ITEM_MIME_TYPE, mMimeType);
+        // outState.putString(Constants.ITEM_MIME_TYPE, mMimeType);
     }
 
     @Override

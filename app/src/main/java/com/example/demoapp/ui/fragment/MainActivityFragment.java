@@ -38,7 +38,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         // onClick methods
         void onNoteItemClick(long id, String title, String description);
         void onVideoItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType);
-        void onAudioItemClick(long id, String title, String filePath, String mimeType);
+        void onAudioItemClick(long id, String title, String description, String filePath);
         void onItemLongClick(long itemId); // TODO
     }
 
@@ -204,22 +204,22 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         public void bindViewHolder(Cursor cursor) {
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
             mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
+            mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
             // TODO fetch description for audio and video - display in detail note
             // TODO add title to audio & video notes too!
             switch (mViewType) {
                 case Constants.ITEM_TEXT_NOTE:
                     mTitle.setText(mTitleText);
-                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
                     // mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
-                    // mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
                     // break;
                 case Constants.ITEM_AUDIO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    //mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     break;
             }
         }
@@ -232,7 +232,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     getContract().onNoteItemClick(mId, mTitleText, mDescriptionText);
                     break;
                 case Constants.ITEM_AUDIO_NOTE:
-                    getContract().onAudioItemClick(mId, mTitleText, mFilePath, mMimeType);
+                    getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
                     getContract().onVideoItemClick(mId, mTitleText, mFilePath, mThumbnailPath, mMimeType);

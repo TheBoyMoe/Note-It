@@ -19,6 +19,8 @@ import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
@@ -100,9 +102,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAudioItemClick(long id, String title, String filePath, String mimeType) {
+    public void onAudioItemClick(long id, String title, String description, String filePath) {
         // launch activity to display the audio note
-        AudioNoteActivity.launch(MainActivity.this, id, title, filePath, mimeType);
+        AudioNoteActivity.launch(MainActivity.this, id, title, description, filePath);
     }
 
     @Override
