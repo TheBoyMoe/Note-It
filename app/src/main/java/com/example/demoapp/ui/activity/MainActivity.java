@@ -19,8 +19,6 @@ import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import timber.log.Timber;
-
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
@@ -80,14 +78,12 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     // contract methods
     @Override
     public void deleteItemTask(long itemId) {
         // TODO
         // new DeleteItemThread(itemId).start();
     }
-
 
     @Override
     public void onNoteItemClick(long id, String title, String description) {
@@ -112,7 +108,6 @@ public class MainActivity extends AppCompatActivity
         // TODO ?? delete item or delete multiple(via cab)
         Utils.showToast(this, "Item clicked on: " + itemId);
     }
-
 
     // handle fab button clicks
     @Override
@@ -166,7 +161,7 @@ public class MainActivity extends AppCompatActivity
             ContentValues values = Utils.setContentValuesAudioNote(
                     Utils.generateCustomId(),
                     Constants.ITEM_AUDIO_NOTE,
-                    filePath, mimeType);
+                    "", "", filePath, mimeType); // use empty string for title and description
             new InsertItemThread(this, values).start();
 
         } else if(resultCode == RESULT_CANCELED){
@@ -175,7 +170,6 @@ public class MainActivity extends AppCompatActivity
             Utils.showSnackbar(mLayout, "Error recording audio");
         }
     }
-
 
 
 }

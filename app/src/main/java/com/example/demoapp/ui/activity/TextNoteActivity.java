@@ -42,7 +42,7 @@ public class TextNoteActivity extends AppCompatActivity
     @Override
     public void updateTextNote(long id, String title, String description) {
         // update note in database
-        ContentValues values = Utils.setContentValuesTextNote(id, Constants.ITEM_TEXT_NOTE, title, description);
+        ContentValues values = Utils.updateContentValues(id, title, description);
         new UpdateItemThread(this, values).start();
         finish();
     }

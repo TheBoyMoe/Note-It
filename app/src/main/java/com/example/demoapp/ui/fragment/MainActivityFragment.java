@@ -212,14 +212,13 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mTitle.setText(mTitleText);
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
-                    // mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
-                    // break;
+                    break;
                 case Constants.ITEM_AUDIO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    //mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     break;
             }
         }

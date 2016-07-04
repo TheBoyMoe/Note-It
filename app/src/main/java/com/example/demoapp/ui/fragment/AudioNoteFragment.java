@@ -20,11 +20,9 @@ import timber.log.Timber;
 
 public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contract> implements
         View.OnClickListener,
-        View.OnLongClickListener,
         MediaPlayer.OnCompletionListener{
 
     public interface Contract {
-        // void saveAudioNote(String title, String filePath, String mimeType);
         void updateAudioNote(long id, String title, String description);
         void quit();
     }
@@ -40,14 +38,9 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     private String mTitle;
     private String mDescription;
     private String mFilePath;
-    //private String mMimeType;
     private MediaPlayer mPlayer;
 
     public AudioNoteFragment(){}
-
-    public static AudioNoteFragment newInstance() {
-        return new AudioNoteFragment();
-    }
 
     public static AudioNoteFragment newInstance(long id, String title, String description, String filePath) {
         AudioNoteFragment fragment = new AudioNoteFragment();
@@ -56,7 +49,6 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         args.putString(Constants.ITEM_TITLE, title);
         args.putString(Constants.ITEM_DESCRIPTION, description);
         args.putString(Constants.ITEM_FILE_PATH, filePath);
-        //args.putString(Constants.ITEM_MIME_TYPE, mimeType);
         fragment.setArguments(args);
 
         return fragment;
@@ -74,16 +66,20 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // save/update/quit
-                    if (mTitle == null && mDescription == null) {
+                    // retrieve the title and description and propagate up to the hosting activity
+                    String title = mEditTitle.getText().toString();
+                    String description = mEditDescription.getText().toString();
+                    // update/quit
+                    if (mTitle.equals(title) && mDescription.equals(description)) {
                         getContract().quit();
                     } else {
-                        if (mId > 0) {
-                            getContract().updateAudioNote(mId, mTitle, mDescription);
+                        if (!mTitle.equals(title)) {
+                            mTitle = title;
                         }
-                        //else {
-                           // getContract().saveAudioNote(mTitle, mFilePath, mMimeType);
-                        //}
+                        if (!mDescription.equals(description)) {
+                            mDescription = description;
+                        }
+                        getContract().updateAudioNote(mId, mTitle, mDescription);
                     }
                 }
             });
@@ -91,35 +87,37 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
 
         mEditTitle = (EditText) mView.findViewById(R.id.audio_note_title);
         mEditDescription = (EditText) mView.findViewById(R.id.audio_note_description);
-        mPlay = (ImageButton) mView.findViewById(R.id.action_play);
-        mPause = (ImageButton) mView.findViewById(R.id.action_pause);
-        mStop = (ImageButton) mView.findViewById(R.id.action_stop);
-
-        mPlay.setOnClickListener(this);
-        mPause.setOnClickListener(this);
-        mStop.setOnClickListener(this);
+        playerControlsSetup();
 
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
             mTitle = getArguments().getString(Constants.ITEM_TITLE);
             mDescription = getArguments().getString(Constants.ITEM_DESCRIPTION);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
-            //mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
-            // mEditTitle.setText(mTitle);
+            if (!mTitle.isEmpty())
+                mEditTitle.setText(mTitle);
+            if (!mDescription.isEmpty())
+                mEditDescription.setText(mDescription);
+
         }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
-            //mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
         }
-        Timber.i("%s: id: %d, title: %s, description: %s, filePath: %s",
-                Constants.LOG_TAG, mId, mTitle, mDescription, mFilePath);
 
         mPlayerSetup();
 
         return mView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
+    }
+
+
+    /** MediaPlayer implementation  */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -133,7 +131,6 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
                 stop();
                 break;
         }
-
     }
 
     @Override
@@ -145,46 +142,6 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         mPlayer.reset();
         mPlayer.release();
         mPlayer = null;
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        // TODO
-        // getContract().selectAudio();
-        return true;
-    }
-
-
-//    @Override
-//    public void onTextChanged(CharSequence text, int start, int before, int count) {
-//        mTitle = text.toString();
-//    }
-//
-//    @Override
-//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//        // no-op
-//    }
-//
-//    @Override
-//    public void afterTextChanged(Editable s) {
-//        // no-op
-//    }
-
-//    public void updateFragmentUI(String title, String filePath, String description) {
-//        if (mTitle == null) mTitle = title;
-//        if (mDescription == null) mDescription = description;
-//        mFilePath = filePath;
-//        // mMimeType = mimeType;
-//
-//        mEditTitle.setText(mTitle);
-//        mEditDescription.setText(mDescription);
-//    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
-        // outState.putString(Constants.ITEM_MIME_TYPE, mMimeType);
     }
 
     @Override
@@ -231,6 +188,16 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
             Timber.e("%s Error playing audio file: %s", Constants.LOG_TAG, e.getMessage());
             Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
         }
+    }
+
+    private void playerControlsSetup() {
+        mPlay = (ImageButton) mView.findViewById(R.id.action_play);
+        mPause = (ImageButton) mView.findViewById(R.id.action_pause);
+        mStop = (ImageButton) mView.findViewById(R.id.action_stop);
+
+        mPlay.setOnClickListener(this);
+        mPause.setOnClickListener(this);
+        mStop.setOnClickListener(this);
     }
 
 

@@ -2,9 +2,6 @@ package com.example.demoapp.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +51,7 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
         // add the toolbar, enabling the up arrow to save notes
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            Utils.setupToolbar(getActivity(), toolbar); // TODO replace
+            Utils.setupToolbar(getActivity(), toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,20 +94,20 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
     }
 
 
-    private void setupToolbar(Toolbar toolbar) {
-        if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-            if (actionBar != null) {
-                // hide title by default
-                actionBar.setDisplayShowTitleEnabled(false);
-                // set navigation icon and color
-                toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
-                        .getDrawable(getActivity(), R.drawable.action_back), R.color.colorButtonIcon));
-                // set title text color
-                toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryText));
-            }
-        }
-    }
+//    private void setupToolbar(Toolbar toolbar) {
+//        if (toolbar != null) {
+//            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+//            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+//            if (actionBar != null) {
+//                // hide title by default
+//                actionBar.setDisplayShowTitleEnabled(false);
+//                // set navigation icon and color
+//                toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
+//                        .getDrawable(getActivity(), R.drawable.action_back), R.color.colorButtonIcon));
+//                // set title text color
+//                toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryText));
+//            }
+//        }
+//    }
 
 }
