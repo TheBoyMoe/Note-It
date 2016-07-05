@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +29,10 @@ import com.example.demoapp.custom.CustomItemDecoration;
 import com.example.demoapp.custom.CustomMultiChoiceCursorRecyclerViewAdapter;
 import com.example.demoapp.event.ModelLoadedEvent;
 
+import java.util.ArrayList;
+
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>
         implements MultiChoiceModeListener{
@@ -57,11 +61,35 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
             // TODO determine all items that were selected and delete from the database
+            SparseBooleanArray selectedItems = mAdapter.getSelectedPositions();
 
-            return true;
+            Timber.i("%s selected items: %s, total no items: %d", Constants.LOG_TAG, selectedItems, mAdapter.getItemCount());
+
+            ArrayList<Long> selectedIds = new ArrayList<>();
+            Cursor cursor = mAdapter.getCursor();
+            long id = 0;
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                if (selectedItems.get(i)) {
+                    if (cursor != null && cursor.moveToPosition(i)) {
+                        id = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
+                    }
+                    selectedIds.add(id);
+                }
+            }
+
+            Timber.i("%s selected ids: %s", Constants.LOG_TAG, selectedIds);
+
+
+            // convert array list to arrays
+
+
+            // execute delete thread
+
+
+            mode.finish();
         }
 
-        return false;
+        return true;
     }
 
 
@@ -204,6 +232,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             }
             return -1;
         }
+
 
     }
 
