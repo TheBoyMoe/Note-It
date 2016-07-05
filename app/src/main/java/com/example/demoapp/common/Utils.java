@@ -13,6 +13,7 @@ import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -118,11 +119,12 @@ public class Utils {
         return cv;
     }
 
-    public static ContentValues setContentValuesMediaNote(long id, int type, String title, String filePath, String thumbnailPath, String mimeType) {
+    public static ContentValues setContentValuesVideoNote(long id, int type, String title, String description, String filePath, String thumbnailPath, String mimeType) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
         cv.put(Constants.ITEM_TYPE, type);
         cv.put(Constants.ITEM_TITLE, title);
+        cv.put(Constants.ITEM_DESCRIPTION, description);
         cv.put(Constants.ITEM_FILE_PATH, filePath);
         cv.put(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         cv.put(Constants.ITEM_MIME_TYPE, mimeType);
@@ -217,7 +219,25 @@ public class Utils {
     public static String generateAudioFileName() {
         @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return timeStamp + "_" + Constants.AUDIO_BASENAME;
+        return "AUDIO_" + timeStamp + "_" + Constants.AUDIO_BASENAME;
+    }
+
+    public static Uri generateVideoFileUri() {
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "NoteTakingApp");
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Timber.i("%s: failed to create directory", Constants.LOG_TAG);
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File videoFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
+        return Uri.fromFile(videoFile);
     }
 
 }

@@ -98,7 +98,7 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
             mEditText.setText(mTitle);
             // mImageView.setImageBitmap(Utils.generateBitmap(mFilePath));
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mImageView);
+            //Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mImageView);
         }
 
         if (savedInstanceState != null) {
@@ -146,7 +146,6 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         mMimeType = mimeType;
         mEditText.setText(mTitle);
 
-        // TODO pass the filePath directly to Picasso and have it create the thumbnail on the fly
         // check setViewValue() in VideoListFragment
         Bitmap bitmap = Utils.generateBitmap(mFilePath);
         Uri uri = Utils.getImageUri(getActivity().getApplicationContext(), bitmap);

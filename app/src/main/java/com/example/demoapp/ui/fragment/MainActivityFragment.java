@@ -17,9 +17,11 @@ import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.CursorRecyclerViewAdapter;
-import com.example.demoapp.common.Utils;
 import com.example.demoapp.custom.CustomItemDecoration;
 import com.example.demoapp.event.ModelLoadedEvent;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import de.greenrobot.event.EventBus;
 
@@ -94,16 +96,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
     @SuppressWarnings("unused")
     public void onEventMainThread(ModelLoadedEvent event) {
-//        Cursor cursor = event.getModel();
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Timber.i("%s: id: %s, title: %s" ,
-//                        Constants.LOG_TAG, cursor.getString(cursor.getColumnIndex(Constants.ITEM_ID)),
-//                        cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE)));
-//            } while (cursor.moveToNext());
-//        }
-
-        // passed the retrieved cursor to the adapter
+        // pass the retrieved cursor to the adapter
         mAdapter.changeCursor(event.getModel());
         showHideEmpty();
     }
@@ -215,7 +208,17 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+                    //Timber.i("%s: filePath: %s, thumbnail: %s, mimeType: %s",
+                    //        Constants.LOG_TAG, mFilePath, mThumbnailPath, mMimeType);
+                    //Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+                    Picasso.with(getActivity()) // FIXME
+                            .load(new File(mThumbnailPath))
+                            .resize(160, 160)
+                            .centerCrop()
+                            .placeholder(R.drawable.action_video_placeholder)
+                            .error(R.drawable.action_video_placeholder)
+                            .into(mThumbnail);
+
                     break;
                 case Constants.ITEM_AUDIO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));

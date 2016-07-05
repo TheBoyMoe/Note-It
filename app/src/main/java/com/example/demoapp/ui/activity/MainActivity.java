@@ -2,7 +2,10 @@ package com.example.demoapp.ui.activity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -118,19 +121,26 @@ public class MainActivity extends AppCompatActivity
                 TextNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_video_note:
-                // TODO launch video recording - start activity for result
-                VideoNoteActivity.launch(MainActivity.this);
+                // launch video recording - start activity for result
+                if (Utils.hasCamera(MainActivity.this)) {
+                    Uri fileUri = Utils.generateVideoFileUri();
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(intent, Constants.VIDEO_REQUEST);
+                    } else {
+                        Utils.showSnackbar(mLayout, "No app found suitable to record video");
+                    }
+                } else {
+                    Utils.showSnackbar(mLayout, "The device does not support recording video");
+                }
+
+                // VideoNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_audio_note:
                 // launch audio recording
                 if(Utils.hasMicrophone(MainActivity.this)) {
-                    // record audio using Android Sound Recorder app
-//                    Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-//                    if(intent.resolveActivity(getPackageManager()) != null) {
-//                        startActivityForResult(intent, Constants.AUDIO_REQUEST);
-//                    } else {
-//                        Utils.showSnackbar(mLayout, "No app found suitable to record audio");
-//                    }
                     AudioRecorderActivity.launch(MainActivity.this);
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording audio");
@@ -163,11 +173,32 @@ public class MainActivity extends AppCompatActivity
                     Constants.ITEM_AUDIO_NOTE,
                     "", "", filePath, mimeType); // use empty string for title and description
             new InsertItemThread(this, values).start();
+        }
+        else if (requestCode == Constants.VIDEO_REQUEST && resultCode == RESULT_OK) {
 
-        } else if(resultCode == RESULT_CANCELED){
+            // generate thumbnailPath
+            String thumbnailPath = null;
+            Uri videoUri = data.getData();
+            String filePath = videoUri.toString().substring(7);
+            Bitmap bitmap = Utils.generateBitmap(filePath);
+            Uri bitmapUri = Utils.getImageUri(this, bitmap);
+            if (bitmapUri != null) {
+                thumbnailPath = Utils.getRealPathFromURI(this, bitmapUri);
+            }
+
+            // insert video item into database
+            ContentValues values = Utils.setContentValuesVideoNote(
+                    Utils.generateCustomId(),
+                    Constants.ITEM_VIDEO_NOTE,
+                    "", "", filePath, thumbnailPath,
+                    Constants.VIDEO_MIMETYPE);
+            new InsertItemThread(this, values).start();
+
+        }
+        else if(resultCode == RESULT_CANCELED){
             Utils.showSnackbar(mLayout, "Operation cancelled by user");
         } else {
-            Utils.showSnackbar(mLayout, "Error recording audio");
+            Utils.showSnackbar(mLayout, "Error executing operation");
         }
     }
 

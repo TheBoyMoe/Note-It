@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,8 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
-import com.example.demoapp.thread.InsertItemThread;
-import com.example.demoapp.thread.UpdateItemThread;
 import com.example.demoapp.ui.fragment.VideoNoteFragment;
 
 import java.io.File;
@@ -82,21 +79,22 @@ public class VideoNoteActivity extends AppCompatActivity
     // impl  contract methods
     @Override
     public void saveVideoNote(String title, String filePath, String thumbnailPath, String mimeType) {
-        // save to database
-        ContentValues values = Utils.setContentValuesMediaNote(
-                Utils.generateCustomId(),
-                Constants.ITEM_VIDEO_NOTE,
-                title, filePath, thumbnailPath, mimeType
-        );
-        new InsertItemThread(this, values).start();
+        // save to database //FIXME
+//        ContentValues values = Utils.setContentValuesVideoNote(
+//                Utils.generateCustomId(),
+//                Constants.ITEM_VIDEO_NOTE,
+//                title, filePath, thumbnailPath, mimeType
+//        );
+//        new InsertItemThread(this, values).start();
         finish();
     }
 
     @Override
     public void updateVideoNote(long id, String title, String filePath, String thumbnailPath, String mimeType) {
-        ContentValues values = Utils.setContentValuesMediaNote(
-            id, Constants.ITEM_VIDEO_NOTE, title, filePath, thumbnailPath, mimeType);
-        new UpdateItemThread(this, values).start();
+        // FIXME
+//        ContentValues values = Utils.setContentValuesVideoNote(
+//            id, Constants.ITEM_VIDEO_NOTE, title, filePath, thumbnailPath, mimeType);
+//        new UpdateItemThread(this, values).start();
         finish();
     }
 
