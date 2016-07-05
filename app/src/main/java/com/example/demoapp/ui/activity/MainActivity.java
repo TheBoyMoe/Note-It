@@ -95,9 +95,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onVideoItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType) {
+    public void onVideoItemClick(long id, String title, String description, String filePath, String thumbnailPath, String mimeType) {
         // launch activity displaying video note
-        VideoNoteActivity.launch(MainActivity.this, id, title, filePath, thumbnailPath, mimeType);
+        VideoNoteActivity.launch(MainActivity.this, id, title, description, filePath, thumbnailPath, mimeType);
     }
 
     @Override

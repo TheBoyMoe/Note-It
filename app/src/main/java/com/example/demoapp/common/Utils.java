@@ -197,7 +197,7 @@ public class Utils {
     public static void loadLargeThumbnail(Context context, String thumbnailPath, ImageView view) {
         Picasso.with(context)
                 .load(new File(thumbnailPath))
-                .resize(360, 360)
+                .resize(250, 250)
                 .centerCrop()
                 .placeholder(R.drawable.action_video_placeholder)
                 .error(R.drawable.action_video_placeholder)

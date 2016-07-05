@@ -98,7 +98,6 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
                 mEditTitle.setText(mTitle);
             if (!mDescription.isEmpty())
                 mEditDescription.setText(mDescription);
-
         }
 
         if (savedInstanceState != null) {

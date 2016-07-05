@@ -17,11 +17,9 @@ import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.CursorRecyclerViewAdapter;
+import com.example.demoapp.common.Utils;
 import com.example.demoapp.custom.CustomItemDecoration;
 import com.example.demoapp.event.ModelLoadedEvent;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
 
 import de.greenrobot.event.EventBus;
 
@@ -39,8 +37,8 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         // onClick methods
         void onNoteItemClick(long id, String title, String description);
-        void onVideoItemClick(long id, String title, String filePath, String thumbnailPath, String mimeType);
         void onAudioItemClick(long id, String title, String description, String filePath);
+        void onVideoItemClick(long id, String title, String description, String filePath, String thumbnailPath, String mimeType);
         void onItemLongClick(long itemId); // TODO
     }
 
@@ -210,14 +208,14 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     //Timber.i("%s: filePath: %s, thumbnail: %s, mimeType: %s",
                     //        Constants.LOG_TAG, mFilePath, mThumbnailPath, mMimeType);
-                    //Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
-                    Picasso.with(getActivity()) // FIXME
-                            .load(new File(mThumbnailPath))
-                            .resize(160, 160)
-                            .centerCrop()
-                            .placeholder(R.drawable.action_video_placeholder)
-                            .error(R.drawable.action_video_placeholder)
-                            .into(mThumbnail);
+                    Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+//                    Picasso.with(getActivity()) // FIXME
+//                            .load(new File(mThumbnailPath))
+//                            .resize(160, 160)
+//                            .centerCrop()
+//                            .placeholder(R.drawable.action_video_placeholder)
+//                            .error(R.drawable.action_video_placeholder)
+//                            .into(mThumbnail);
 
                     break;
                 case Constants.ITEM_AUDIO_NOTE:
@@ -237,7 +235,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                     break;
                 case Constants.ITEM_VIDEO_NOTE:
-                    getContract().onVideoItemClick(mId, mTitleText, mFilePath, mThumbnailPath, mMimeType);
+                    getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
                     break;
             }
 

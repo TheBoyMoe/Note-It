@@ -1,18 +1,13 @@
 package com.example.demoapp.ui.fragment;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
@@ -20,23 +15,26 @@ import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
 
 public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contract>
-        implements View.OnClickListener, View.OnLongClickListener, TextWatcher{
+        implements View.OnClickListener{
 
     public interface Contract {
-        void saveVideoNote(String title, String filePath, String thumbnailPath, String mimeType);
-        void updateVideoNote(long id, String title, String filePath, String thumbnailPath, String mimeType);
+        //void saveVideoNote(String title, String filePath, String thumbnailPath, String mimeType);
+        void updateVideoNote(long id, String title, String description);
         void playVideo(String filePath, String mimeType);
-        void selectVideo();
+        //void selectVideo();
         void quit();
     }
 
-    private EditText mEditText;
-    private ImageView mImageView;
+    private EditText mEditTitle;
+    private EditText mEditDescription;
+    private ImageView mThumbnail;
+
     private long mId;
     private String mTitle;
+    private String mDescription;
     private String mFilePath;
-    private String mMimeType;
     private String mThumbnailPath;
+    private String mMimeType;
 
     public VideoNoteFragment() {}
 
@@ -44,11 +42,14 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         return new VideoNoteFragment();
     }
 
-    public static VideoNoteFragment newInstance(long id, String title, String filePath, String thumbnailPath, String mimeType) {
+    public static VideoNoteFragment newInstance(long id,
+                String title, String description, String filePath, String thumbnailPath, String mimeType) {
+
         VideoNoteFragment fragment = new VideoNoteFragment();
         Bundle args = new Bundle();
         args.putLong(Constants.ITEM_ID, id);
         args.putString(Constants.ITEM_TITLE, title);
+        args.putString(Constants.ITEM_DESCRIPTION, description);
         args.putString(Constants.ITEM_FILE_PATH, filePath);
         args.putString(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         args.putString(Constants.ITEM_MIME_TYPE, mimeType);
@@ -69,44 +70,48 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // save/update/quit
-                    if (mTitle == null || mFilePath == null) {
+                    // retrieve the title & description, propagate upto the hosting activity when they change
+                    String title = mEditTitle.getText().toString();
+                    String description = mEditDescription.getText().toString();
+                    // update/quit
+                    if (mTitle.equals(title) && mDescription.equals(description)) {
                         getContract().quit();
                     } else {
-                        if (mId > 0) {
-                            getContract().updateVideoNote(mId, mTitle, mFilePath, mThumbnailPath, mMimeType);
-                        } else {
-                            getContract().saveVideoNote(mTitle, mFilePath, mThumbnailPath, mMimeType);
+                        if (!mTitle.equals(title)) {
+                            mTitle = title;
                         }
+                        if (!mDescription.equals(description)) {
+                            mDescription = description;
+                        }
+                        getContract().updateVideoNote(mId, mTitle, mDescription);
                     }
                 }
             });
         }
 
-        mEditText = (EditText) view.findViewById(R.id.video_note_title);
-        mEditText.addTextChangedListener(this);
-        mImageView = (ImageView) view.findViewById(R.id.video_note_thumbnail);
-        LinearLayout wrapper = (LinearLayout) view.findViewById(R.id.wrapper);
-        wrapper.setOnClickListener(this);
-        wrapper.setOnLongClickListener(this);
+        mEditTitle = (EditText) view.findViewById(R.id.video_note_title);
+        mEditDescription = (EditText) view.findViewById(R.id.video_note_description);
+        mThumbnail = (ImageView) view.findViewById(R.id.video_note_thumbnail);
+        mThumbnail.setOnClickListener(this);
 
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
             mTitle = getArguments().getString(Constants.ITEM_TITLE);
+            mDescription = getArguments().getString(Constants.ITEM_DESCRIPTION);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
             mThumbnailPath = getArguments().getString(Constants.ITEM_THUMBNAIL_PATH);
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
-            mEditText.setText(mTitle);
-            // mImageView.setImageBitmap(Utils.generateBitmap(mFilePath));
-            //Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mImageView);
+
+            mEditTitle.setText(mTitle);
+            mEditDescription.setText(mDescription);
+            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mThumbnail);
         }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
             mThumbnailPath = savedInstanceState.getString(Constants.ITEM_THUMBNAIL_PATH);
-            // mImageView.setImageBitmap(Utils.generateBitmap(mFilePath));
             mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mImageView);
+            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mThumbnail);
         }
 
         return view;
@@ -118,42 +123,42 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         getContract().playVideo(mFilePath, mMimeType);
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        getContract().selectVideo();
-        return true;
-    }
+//    @Override
+//    public boolean onLongClick(View v) {
+//        getContract().selectVideo();
+//        return true;
+//    }
 
-    @Override
-    public void onTextChanged(CharSequence text, int start, int before, int count) {
-        mTitle = text.toString();
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // no-op
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        // no-op
-    }
+//    @Override
+//    public void onTextChanged(CharSequence text, int start, int before, int count) {
+//        mTitle = text.toString();
+//    }
+//
+//    @Override
+//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//        // no-op
+//    }
+//
+//    @Override
+//    public void afterTextChanged(Editable s) {
+//        // no-op
+//    }
 
     // receives note info from activity
-    public void updateFragmentUI(String title, String filePath, String mimeType) {
-        if(mTitle == null) mTitle = title;
-        mFilePath = filePath;
-        mMimeType = mimeType;
-        mEditText.setText(mTitle);
-
-        // check setViewValue() in VideoListFragment
-        Bitmap bitmap = Utils.generateBitmap(mFilePath);
-        Uri uri = Utils.getImageUri(getActivity().getApplicationContext(), bitmap);
-        if (uri != null) {
-            mThumbnailPath = Utils.getRealPathFromURI(getActivity().getApplicationContext(), uri);
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mImageView);
-        }
-    }
+//    public void updateFragmentUI(String title, String filePath, String mimeType) {
+//        if(mTitle == null) mTitle = title;
+//        mFilePath = filePath;
+//        mMimeType = mimeType;
+//        mEditTitle.setText(mTitle);
+//
+//        // check setViewValue() in VideoListFragment
+//        Bitmap bitmap = Utils.generateBitmap(mFilePath);
+//        Uri uri = Utils.getImageUri(getActivity().getApplicationContext(), bitmap);
+//        if (uri != null) {
+//            mThumbnailPath = Utils.getRealPathFromURI(getActivity().getApplicationContext(), uri);
+//            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+//        }
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
