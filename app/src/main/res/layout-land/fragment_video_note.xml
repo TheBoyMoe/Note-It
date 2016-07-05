@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:padding="@dimen/dimen_normal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/video_note_title"
+                android:hint="@string/title_hint"
+                android:layout_marginBottom="@dimen/dimen_normal"
+                android:background="@android:color/transparent"
+                style="@style/TextStyle.TextNote.Title"
+                android:imeOptions="actionDone"/>
+
+            <EditText
+                android:id="@+id/video_note_description"
+                android:hint="@string/description_hint"
+                android:layout_marginBottom="@dimen/dimen_normal"
+                android:background="@android:color/transparent"
+                style="@style/TextStyle.TextNote.Description"
+                android:imeOptions="actionDone"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/video_note_thumbnail"
+                android:contentDescription="@string/image_view_description"
+                android:src="@drawable/action_video_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"/>
+
+            <ImageView
+                android:src="@drawable/action_play_video"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/video_thumbnail"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
