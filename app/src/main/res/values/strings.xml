@@ -22,4 +22,5 @@
     <string name="pause_playback">Pause audio playback</string>
     <string name="stop_playback">Stop audio playback</string>
     <string name="error_playing_audio">Error playing audio file</string>
+    <string name="menu_delete_item_label">Delete item</string>
 </resources>

@@ -5,9 +5,15 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,18 +22,47 @@ import android.widget.TextView;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
-import com.example.demoapp.common.CursorRecyclerViewAdapter;
+import com.example.demoapp.common.MultiChoiceModeListener;
 import com.example.demoapp.common.Utils;
 import com.example.demoapp.custom.CustomItemDecoration;
+import com.example.demoapp.custom.CustomMultiChoiceCursorRecyclerViewAdapter;
 import com.example.demoapp.event.ModelLoadedEvent;
 
 import de.greenrobot.event.EventBus;
 
-public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>{
+public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>
+        implements MultiChoiceModeListener{
 
-    private CustomCursorRecyclerViewAdapter mAdapter;
+    private CustomRecyclerViewAdapter mAdapter;
     private Cursor mCursor = null;
     private TextView mEmptyView;
+
+    @Override
+    public void onItemSelectionChanged(ActionMode mode, int position, boolean selected) {
+        mode.setTitle(mAdapter.getSelectedCount() + " selected");
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, MenuInflater inflater, Menu menu) {
+        inflater.inflate(R.menu.menu_delete, menu);
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode() {
+        // no-op
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        if (item.getItemId() == R.id.action_delete) {
+            // TODO determine all items that were selected and delete from the database
+
+            return true;
+        }
+
+        return false;
+    }
 
 
     public interface Contract {
@@ -68,12 +103,24 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space), getResources().getDimensionPixelSize(R.dimen.dimen_horizontal_space)));
-        mAdapter = new CustomCursorRecyclerViewAdapter(getActivity(), mCursor);
+        mAdapter = new CustomRecyclerViewAdapter(getActivity(), mCursor);
+        mAdapter.setMultiChoiceModeListener((AppCompatActivity)getActivity(), this);
         if (isAdded())
             recyclerView.setAdapter(mAdapter);
 
+        if (savedInstanceState != null) {
+            mAdapter.restoreInstanceState(savedInstanceState);
+        }
+
         return view;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mAdapter.saveInstanceState(outState);
+    }
+
 
     @Override
     public void onResume() {
@@ -105,9 +152,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
 
     // Custom adapter and view holder
-    public class CustomCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter<CustomViewHolder> {
+    public class CustomRecyclerViewAdapter extends CustomMultiChoiceCursorRecyclerViewAdapter<CustomViewHolder> {
 
-        public CustomCursorRecyclerViewAdapter(Context context, Cursor cursor) {
+        public CustomRecyclerViewAdapter(Context context, Cursor cursor) {
             super(context, cursor);
         }
 
@@ -134,6 +181,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             // retrieve item from cursor
             if(cursor != null) {
                 holder.bindViewHolder(cursor);
+                int position = cursor.getPosition();
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(getActivity(),
+                    isSelected(position) ? R.color.colorDraggingBackgroundState : R.color.colorPrimaryBackground));
             }
         }
 
@@ -211,25 +261,32 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         @Override
         public void onClick(View v) {
-            // clicking on text/video/audio note forwards call up to hosting activity
-            switch (mViewType) {
-                case Constants.ITEM_TEXT_NOTE:
-                    getContract().onNoteItemClick(mId, mTitleText, mDescriptionText);
-                    break;
-                case Constants.ITEM_AUDIO_NOTE:
-                    getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
-                    break;
-                case Constants.ITEM_VIDEO_NOTE:
-                    getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
-                    break;
-            }
 
+            if (mAdapter.isActionModeActive()) {
+                mAdapter.toggleSelected(getAdapterPosition());
+            }
+            else {
+                // clicking on text/video/audio note forwards call up to hosting activity
+                switch (mViewType) {
+                    case Constants.ITEM_TEXT_NOTE:
+                        getContract().onNoteItemClick(mId, mTitleText, mDescriptionText);
+                        break;
+                    case Constants.ITEM_AUDIO_NOTE:
+                        getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
+                        break;
+                    case Constants.ITEM_VIDEO_NOTE:
+                        getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
+                        break;
+                }
+            }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            // TODO ?? delete
-            getContract().onItemLongClick(v.getId());
+            mAdapter.toggleSelected(getAdapterPosition());
+
+            // TODO ?? move to onActionItemClicked()
+            // getContract().onItemLongClick(v.getId());
             return true;
         }
 

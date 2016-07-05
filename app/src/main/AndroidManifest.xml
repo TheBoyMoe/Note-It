@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.ContextActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -51,26 +51,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.MainActivity"/>
-        </activity>
-
-        <activity
-            android:name=".ui.activity.VideoListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/video_list_activity_title"
-            android:parentActivityName=".ui.activity.VideoNoteActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.VideoNoteActivity"/>
-        </activity>
-
-        <activity
-            android:name=".ui.activity.AudioListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/audio_list_activity_title"
-            android:parentActivityName=".ui.activity.AudioNoteActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.AudioNoteActivity"/>
         </activity>
 
         <activity
