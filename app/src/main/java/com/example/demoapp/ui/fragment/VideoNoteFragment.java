@@ -18,10 +18,8 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         implements View.OnClickListener{
 
     public interface Contract {
-        //void saveVideoNote(String title, String filePath, String thumbnailPath, String mimeType);
         void updateVideoNote(long id, String title, String description);
         void playVideo(String filePath, String mimeType);
-        //void selectVideo();
         void quit();
     }
 
@@ -123,42 +121,6 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         getContract().playVideo(mFilePath, mMimeType);
     }
 
-//    @Override
-//    public boolean onLongClick(View v) {
-//        getContract().selectVideo();
-//        return true;
-//    }
-
-//    @Override
-//    public void onTextChanged(CharSequence text, int start, int before, int count) {
-//        mTitle = text.toString();
-//    }
-//
-//    @Override
-//    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//        // no-op
-//    }
-//
-//    @Override
-//    public void afterTextChanged(Editable s) {
-//        // no-op
-//    }
-
-    // receives note info from activity
-//    public void updateFragmentUI(String title, String filePath, String mimeType) {
-//        if(mTitle == null) mTitle = title;
-//        mFilePath = filePath;
-//        mMimeType = mimeType;
-//        mEditTitle.setText(mTitle);
-//
-//        // check setViewValue() in VideoListFragment
-//        Bitmap bitmap = Utils.generateBitmap(mFilePath);
-//        Uri uri = Utils.getImageUri(getActivity().getApplicationContext(), bitmap);
-//        if (uri != null) {
-//            mThumbnailPath = Utils.getRealPathFromURI(getActivity().getApplicationContext(), uri);
-//            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mThumbnail);
-//        }
-//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

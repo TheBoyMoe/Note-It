@@ -94,20 +94,4 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
     }
 
 
-//    private void setupToolbar(Toolbar toolbar) {
-//        if (toolbar != null) {
-//            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-//            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-//            if (actionBar != null) {
-//                // hide title by default
-//                actionBar.setDisplayShowTitleEnabled(false);
-//                // set navigation icon and color
-//                toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
-//                        .getDrawable(getActivity(), R.drawable.action_back), R.color.colorButtonIcon));
-//                // set title text color
-//                toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryText));
-//            }
-//        }
-//    }
-
 }

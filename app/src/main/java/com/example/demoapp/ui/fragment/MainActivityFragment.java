@@ -25,7 +25,6 @@ import de.greenrobot.event.EventBus;
 
 public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>{
 
-    // private List<NoteItem> mList;
     private CustomCursorRecyclerViewAdapter mAdapter;
     private Cursor mCursor = null;
     private TextView mEmptyView;
@@ -73,9 +72,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         if (isAdded())
             recyclerView.setAdapter(mAdapter);
 
-        // TODO shoe empty view when adapter empty
-
-        
         return view;
     }
 
@@ -196,8 +192,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
             mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
             mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
-            // TODO fetch description for audio and video - display in detail note
-            // TODO add title to audio & video notes too!
+
             switch (mViewType) {
                 case Constants.ITEM_TEXT_NOTE:
                     mTitle.setText(mTitleText);
@@ -206,17 +201,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    //Timber.i("%s: filePath: %s, thumbnail: %s, mimeType: %s",
-                    //        Constants.LOG_TAG, mFilePath, mThumbnailPath, mMimeType);
                     Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
-//                    Picasso.with(getActivity()) // FIXME
-//                            .load(new File(mThumbnailPath))
-//                            .resize(160, 160)
-//                            .centerCrop()
-//                            .placeholder(R.drawable.action_video_placeholder)
-//                            .error(R.drawable.action_video_placeholder)
-//                            .into(mThumbnail);
-
                     break;
                 case Constants.ITEM_AUDIO_NOTE:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
