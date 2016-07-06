@@ -154,6 +154,9 @@ public class Utils {
                         .getDrawable(activity, R.drawable.action_back), R.color.colorButtonIcon));
                 // set title text color
                 toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryText));
+                // add overflow icon via the menu, use this method to tint them
+                toolbar.setOverflowIcon(Utils.tintDrawable(ContextCompat
+                        .getDrawable(activity, R.drawable.action_delete_black), R.color.colorButtonIcon));
             }
         }
     }

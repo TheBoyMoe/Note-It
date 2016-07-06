@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -23,6 +26,7 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
         void saveTextNote(String title, String description);
         void updateTextNote(long id, String title, String description);
         void quit();
+        void delete(long id);
     }
 
     public TextNoteFragment(){}
@@ -42,6 +46,11 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -72,6 +81,7 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
             });
         }
 
+
         mTitle = (EditText) view.findViewById(R.id.note_text_title);
         mDescription = (EditText) view.findViewById(R.id.note_text_description);
 
@@ -84,6 +94,19 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_delete_black, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_delete) {
+            getContract().delete(mId);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void saveAndQuit(String title, String description) {
         getContract().saveTextNote(title, description);
