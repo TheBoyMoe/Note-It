@@ -27,7 +27,7 @@ public class InsertItemThread extends Thread{
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         try {
 
-            DatabaseHelper.getInstance(mContext).insertTaskItem(mContext, mValues);
+            DatabaseHelper.getInstance(mContext).insertItem(mContext, mValues);
         } catch (Exception e) {
             Timber.e("%s: error adding item to dbase, %s", Constants.LOG_TAG, e.getMessage());
         }

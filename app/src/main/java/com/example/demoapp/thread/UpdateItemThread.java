@@ -24,7 +24,7 @@ public class UpdateItemThread extends Thread{
     public void run() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         try {
-            DatabaseHelper.getInstance(mContext).updateTaskItem(mContext, mValues);
+            DatabaseHelper.getInstance(mContext).updateItem(mContext, mValues);
         } catch (Exception e) {
             Timber.e("%s: error deleting item from the database, %s", Constants.LOG_TAG, e.getMessage());
         }

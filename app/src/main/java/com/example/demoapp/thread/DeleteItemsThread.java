@@ -9,13 +9,13 @@ import com.example.demoapp.model.DatabaseHelper;
 
 import timber.log.Timber;
 
-public class DeleteItemThread extends Thread{
+public class DeleteItemsThread extends Thread{
 
-    private long mId;
+    private String[] mIds;
     private Context mContext;
 
-    public DeleteItemThread(Context context, long itemId) {
-        mId = itemId;
+    public DeleteItemsThread(Context context, String[] itemIds) {
+        mIds = itemIds;
         mContext = context;
     }
 
@@ -23,7 +23,7 @@ public class DeleteItemThread extends Thread{
     public void run() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         try {
-            DatabaseHelper.getInstance(mContext).deleteTaskItem(mContext, mId);
+            DatabaseHelper.getInstance(mContext).deleteItems(mContext, mIds);
         } catch (Exception e) {
             Timber.e("%s: error deleting item from database, %s", Constants.LOG_TAG, e.getMessage());
         }

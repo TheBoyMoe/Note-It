@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import com.example.demoapp.common.Constants;
 
@@ -54,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     // insert Item
-    public void insertTaskItem(Context context, ContentValues values) {
+    public void insertItem(Context context, ContentValues values) {
         // Timber.i("%s: inserting item into the dbase", Constants.LOG_TAG);
         SQLiteDatabase db = getDb(context);
         db.insert(Constants.TABLE, Constants.ITEM_ID, values);
@@ -75,17 +76,24 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     // delete item
-    public void deleteTaskItem(Context context, long itemId) {
+    public void deleteItem(Context context, String arg) {
         // Timber.i("%s: deleting item from the dbase", Constants.LOG_TAG);
         SQLiteDatabase db = getDb(context);
         String selection = Constants.ITEM_ID + " = ?";
-        String[] args = {String.valueOf(itemId)};
+        String[] args = {arg};
         db.delete(Constants.TABLE, selection, args);
+    }
+
+    // delete items
+    public void deleteItems(Context context, String[] itemIds) {
+        SQLiteDatabase db = getDb(context);
+        String args = TextUtils.join(", ", itemIds);
+        db.execSQL(String.format("DELETE FROM " + Constants.TABLE + " WHERE " + Constants.ITEM_ID +  " IN (%s);", args));
     }
 
 
     // update item
-    public void updateTaskItem(Context context, ContentValues values){
+    public void updateItem(Context context, ContentValues values){
         // Timber.i("%s: updating item in the dbase", Constants.LOG_TAG);
         SQLiteDatabase db = getDb(context);
         db.update(Constants.TABLE, values, Constants.ITEM_ID + " = " + values.getAsString(Constants.ITEM_ID), null);
