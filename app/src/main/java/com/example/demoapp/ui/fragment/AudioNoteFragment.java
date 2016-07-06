@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -25,6 +28,7 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     public interface Contract {
         void updateAudioNote(long id, String title, String description);
         void quit();
+        void delete(long id);
     }
 
     private View mView;
@@ -52,6 +56,12 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -113,6 +123,20 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_delete_black, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_delete) {
+            getContract().delete(mId);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
