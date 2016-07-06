@@ -29,7 +29,6 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
     private EditText mEditTitle;
     private EditText mEditDescription;
-    private ImageView mThumbnail;
 
     private long mId;
     private String mTitle;
@@ -99,8 +98,8 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
         mEditTitle = (EditText) view.findViewById(R.id.video_note_title);
         mEditDescription = (EditText) view.findViewById(R.id.video_note_description);
-        mThumbnail = (ImageView) view.findViewById(R.id.video_note_thumbnail);
-        mThumbnail.setOnClickListener(this);
+        ImageView thumbnail = (ImageView) view.findViewById(R.id.video_note_thumbnail);
+        thumbnail.setOnClickListener(this);
 
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
@@ -112,14 +111,14 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
             mEditTitle.setText(mTitle);
             mEditDescription.setText(mDescription);
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
         }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
             mThumbnailPath = savedInstanceState.getString(Constants.ITEM_THUMBNAIL_PATH);
             mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
         }
 
         return view;

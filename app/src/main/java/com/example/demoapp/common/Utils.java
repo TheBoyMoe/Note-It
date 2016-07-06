@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -27,9 +28,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.demoapp.R;
 import com.example.demoapp.event.ModelLoadedEvent;
 import com.example.demoapp.model.DatabaseHelper;
+import com.example.demoapp.thread.DeleteItemsThread;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -242,5 +246,25 @@ public class Utils {
         File videoFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
         return Uri.fromFile(videoFile);
     }
+
+
+    public static void deleteItemFromDatabase(final Activity context, final long id) {
+        new MaterialDialog.Builder(context)
+                .title(context.getString(R.string.note_deletion_dialog_title))
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (id > 0) {
+                            String[] args = {String.valueOf(id)};
+                            new DeleteItemsThread(context, args).start();
+                        }
+                        context.finish();
+                    }
+                })
+                .positiveText(context.getString(R.string.dialog_positive_text))
+                .negativeText(context.getString(R.string.dialog_negative_text))
+                .show();
+    }
+
 
 }

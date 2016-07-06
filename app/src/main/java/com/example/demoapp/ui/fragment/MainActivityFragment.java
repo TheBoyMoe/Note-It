@@ -105,14 +105,10 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
 
     public interface Contract {
-        // database tasks
-        void deleteItemTask(long itemId);
-
         // onClick methods
         void onNoteItemClick(long id, String title, String description);
         void onAudioItemClick(long id, String title, String description, String filePath);
         void onVideoItemClick(long id, String title, String description, String filePath, String thumbnailPath, String mimeType);
-        void onItemLongClick(long itemId); // TODO
     }
 
     public MainActivityFragment() {}
@@ -324,9 +320,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         @Override
         public boolean onLongClick(View v) {
             mAdapter.toggleSelected(getAdapterPosition());
-
-            // TODO ?? move to onActionItemClicked()
-            // getContract().onItemLongClick(v.getId());
             return true;
         }
 

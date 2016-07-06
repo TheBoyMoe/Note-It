@@ -83,12 +83,6 @@ public class MainActivity extends AppCompatActivity
 
     // contract methods
     @Override
-    public void deleteItemTask(long itemId) {
-        // TODO
-        // new DeleteItemThread(itemId).start();
-    }
-
-    @Override
     public void onNoteItemClick(long id, String title, String description) {
         // launch activity displaying text note
         TextNoteActivity.launch(MainActivity.this, id, title, description);
@@ -104,12 +98,6 @@ public class MainActivity extends AppCompatActivity
     public void onAudioItemClick(long id, String title, String description, String filePath) {
         // launch activity to display the audio note
         AudioNoteActivity.launch(MainActivity.this, id, title, description, filePath);
-    }
-
-    @Override
-    public void onItemLongClick(long itemId) {
-        // TODO ?? delete item or delete multiple(via cab)
-        Utils.showToast(this, "Item clicked on: " + itemId);
     }
 
     // handle fab button clicks

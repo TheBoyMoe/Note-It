@@ -5,16 +5,12 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
-import com.example.demoapp.thread.DeleteItemsThread;
 import com.example.demoapp.thread.UpdateItemThread;
 import com.example.demoapp.ui.fragment.VideoNoteFragment;
 
@@ -97,22 +93,7 @@ public class VideoNoteActivity extends AppCompatActivity
 
     @Override
     public void delete(final long id) {
-        new MaterialDialog.Builder(this)
-                .title(getString(R.string.note_deletion_dialog_title))
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (id > 0) {
-                            String[] args = {String.valueOf(id)};
-                            new DeleteItemsThread(VideoNoteActivity.this, args).start();
-                        }
-                        finish();
-                    }
-                })
-                .positiveText(getString(R.string.dialog_positive_text))
-                .negativeText(getString(R.string.dialog_negative_text))
-                .show();
+        Utils.deleteItemFromDatabase(this, id);
     }
-
 
 }
