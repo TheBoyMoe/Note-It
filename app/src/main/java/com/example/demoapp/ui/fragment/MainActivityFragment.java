@@ -31,6 +31,7 @@ import com.example.demoapp.common.Utils;
 import com.example.demoapp.custom.CustomItemDecoration;
 import com.example.demoapp.custom.CustomMultiChoiceCursorRecyclerViewAdapter;
 import com.example.demoapp.event.ModelLoadedEvent;
+import com.example.demoapp.thread.DeleteFilesFromStorageThread;
 import com.example.demoapp.thread.DeleteItemsThread;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     private Cursor mCursor = null;
     private TextView mEmptyView;
 
+    // impl MultiChoiceSelection
     @Override
     public void onItemSelectionChanged(ActionMode mode, int position, boolean selected) {
         mode.setTitle(mAdapter.getSelectedCount() + " selected");
@@ -78,19 +80,23 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                             Cursor cursor = mAdapter.getCursor();
                             ArrayList<String> selectedIds = new ArrayList<>();
                             String id = null;
-                            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                                if (selectedItems.get(i)) {
-                                    if (cursor != null && cursor.moveToPosition(i)) {
-                                        id = String.valueOf(cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID)));
+                            if (cursor != null) {
+                                for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                                    if (selectedItems.get(i)) {
+                                        if (cursor.moveToPosition(i)) {
+                                            id = String.valueOf(cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID)));
+                                            selectedIds.add(id);
+                                        }
                                     }
-                                    selectedIds.add(id);
                                 }
+                                Timber.i("%s selected ids: %s", Constants.LOG_TAG, selectedIds);
+                                // convert array list to string array
+                                String[] idArray = selectedIds.toArray(new String[selectedIds.size()]);
+                                // delete file from external storage
+                                new DeleteFilesFromStorageThread(getActivity(), idArray).start();
+                                // delete items from database
+                                new DeleteItemsThread(getActivity(), idArray).start();
                             }
-                            Timber.i("%s selected ids: %s", Constants.LOG_TAG, selectedIds);
-                            // convert array list to string array
-                            String[] idArray = selectedIds.toArray(new String[selectedIds.size()]);
-                            // execute delete thread
-                            new DeleteItemsThread(getActivity(), idArray).start();
                         }
                     })
                     .positiveText(getString(R.string.dialog_positive_text))
@@ -102,7 +108,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         return true;
     }
-
+    // END
 
     public interface Contract {
         // onClick methods

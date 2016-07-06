@@ -75,6 +75,24 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return  (db.rawQuery("SELECT * FROM " + Constants.TABLE + " ORDER BY " + Constants.ITEM_ID + " DESC", null));
     }
 
+    // load items
+    public Cursor loadItems(Context context, String[] args) {
+        // DOES NOT WORK
+        SQLiteDatabase db = getDb(context);
+        String[] projection = {Constants.ITEM_FILE_PATH, Constants.ITEM_THUMBNAIL_PATH}; // columns to return
+        String selection = Constants.ITEM_ID + " = ?";                                   // where
+
+        return db.query(Constants.TABLE,
+                projection,
+                selection,
+                args,
+                null, null, null);
+
+        // DOES NOT WORK
+        //String stringQuery = "SELECT * FROM " +Constants.TABLE + " WHERE " + Constants.ITEM_ID + " = ?";
+        //return db.rawQuery(stringQuery, args);
+    }
+
     // delete item
     public void deleteItem(Context context, String arg) {
         // Timber.i("%s: deleting item from the dbase", Constants.LOG_TAG);

@@ -33,6 +33,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.demoapp.R;
 import com.example.demoapp.event.ModelLoadedEvent;
 import com.example.demoapp.model.DatabaseHelper;
+import com.example.demoapp.thread.DeleteFilesFromStorageThread;
 import com.example.demoapp.thread.DeleteItemsThread;
 import com.squareup.picasso.Picasso;
 
@@ -242,6 +243,7 @@ public class Utils {
         }
 
         // Create a media file name
+        @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File videoFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
         return Uri.fromFile(videoFile);
@@ -256,6 +258,9 @@ public class Utils {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if (id > 0) {
                             String[] args = {String.valueOf(id)};
+                            // delete any associated files from external storage
+                            new DeleteFilesFromStorageThread(context, args).start();
+                            // delete item from database
                             new DeleteItemsThread(context, args).start();
                         }
                         context.finish();
@@ -264,6 +269,18 @@ public class Utils {
                 .positiveText(context.getString(R.string.dialog_positive_text))
                 .negativeText(context.getString(R.string.dialog_negative_text))
                 .show();
+    }
+
+    public static boolean deleteItemsFromStorage(Long[] ids) {
+        // fetch item(s) from database
+
+
+        // loop though items
+
+
+        // determine if audio/video - delete appropriately
+
+        return false;
     }
 
 
