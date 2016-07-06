@@ -10,7 +10,8 @@
     <string name="audio_item_image">Audio image</string>
     <string name="audio_list_activity_title">Pick an audio track</string>
     <string name="audio_dialog_title">Confirm audio selection</string>
-    <string name="dialog_positive_text">Save</string>
+    <string name="note_deletion_dialog_title">Confirm note deletion?</string>
+    <string name="dialog_positive_text">Agree</string>
     <string name="dialog_negative_text">Cancel</string>
     <string name="video_dialog_title">Confirm video selection</string>
     <string name="toggle_button_label">Speak now, press to stop</string>

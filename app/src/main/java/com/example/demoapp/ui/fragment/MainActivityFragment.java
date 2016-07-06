@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
@@ -61,29 +64,38 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
-            // TODO use Material Dialog to confirm deletion
-
             // determine all items that were selected and delete from the database
-            SparseBooleanArray selectedItems = mAdapter.getSelectedPositions();
-
+            final SparseBooleanArray selectedItems = mAdapter.getSelectedPositions();
             Timber.i("%s selected items: %s, total no items: %d", Constants.LOG_TAG, selectedItems, mAdapter.getItemCount());
 
-            Cursor cursor = mAdapter.getCursor();
-            ArrayList<String> selectedIds = new ArrayList<>();
-            String id = null;
-            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                if (selectedItems.get(i)) {
-                    if (cursor != null && cursor.moveToPosition(i)) {
-                        id = String.valueOf(cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID)));
-                    }
-                    selectedIds.add(id);
-                }
-            }
-            Timber.i("%s selected ids: %s", Constants.LOG_TAG, selectedIds);
-            // convert array list to string array
-            String[] idArray = selectedIds.toArray(new String[selectedIds.size()]);
-            // execute delete thread
-            new DeleteItemsThread(getActivity(), idArray).start();
+            // confirm deletion
+            new MaterialDialog.Builder(getActivity())
+                    .title(getString(R.string.note_deletion_dialog_title))
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                            Cursor cursor = mAdapter.getCursor();
+                            ArrayList<String> selectedIds = new ArrayList<>();
+                            String id = null;
+                            for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                                if (selectedItems.get(i)) {
+                                    if (cursor != null && cursor.moveToPosition(i)) {
+                                        id = String.valueOf(cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID)));
+                                    }
+                                    selectedIds.add(id);
+                                }
+                            }
+                            Timber.i("%s selected ids: %s", Constants.LOG_TAG, selectedIds);
+                            // convert array list to string array
+                            String[] idArray = selectedIds.toArray(new String[selectedIds.size()]);
+                            // execute delete thread
+                            new DeleteItemsThread(getActivity(), idArray).start();
+                        }
+                    })
+                    .positiveText(getString(R.string.dialog_positive_text))
+                    .negativeText(getString(R.string.dialog_negative_text))
+                    .show();
 
             mode.finish();
         }
