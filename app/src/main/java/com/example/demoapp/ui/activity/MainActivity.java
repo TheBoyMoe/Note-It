@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity
             audioNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_audio_btn), R.color.half_black));
         }
 
+        FloatingActionButton photoNoteBtn = (FloatingActionButton) findViewById(R.id.action_photo_note);
+        if (photoNoteBtn != null) {
+            photoNoteBtn.setOnClickListener(this);
+            photoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_photo_btn), R.color.half_black));
+        }
+
     }
 
     // contract methods
@@ -116,15 +122,13 @@ public class MainActivity extends AppCompatActivity
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                     if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(intent, Constants.VIDEO_REQUEST);
+                        startActivityForResult(intent, Constants.VIDEO_REQUEST_CODE);
                     } else {
                         Utils.showSnackbar(mLayout, "No app found suitable to record video");
                     }
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording video");
                 }
-
-                // VideoNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_audio_note:
                 // launch audio recording
@@ -132,6 +136,14 @@ public class MainActivity extends AppCompatActivity
                     AudioRecorderActivity.launch(MainActivity.this);
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording audio");
+                }
+                break;
+            case R.id.action_photo_note:
+                if (Utils.hasCamera(MainActivity.this)) {
+                    // TODO launch 3rd party app
+                    Utils.showSnackbar(mLayout, "clicked on photo");
+                } else {
+                    Utils.showSnackbar(mLayout, "The device does not support recording video");
                 }
                 break;
         }
@@ -150,38 +162,39 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == Constants.AUDIO_REQUEST_CODE) {
+                String filePath = data.getStringExtra(Constants.ITEM_FILE_PATH);
+                String mimeType = data.getStringExtra(Constants.ITEM_MIME_TYPE);
 
-        if (requestCode == Constants.AUDIO_REQUEST && resultCode == RESULT_OK) {
-            String filePath = data.getStringExtra(Constants.ITEM_FILE_PATH);
-            String mimeType = data.getStringExtra(Constants.ITEM_MIME_TYPE);
+                // insert item into database
+                ContentValues values = Utils.setContentValuesAudioNote(
+                        Utils.generateCustomId(),
+                        Constants.ITEM_AUDIO_NOTE,
+                        "", "", filePath, mimeType); // use empty string for title and description
+                new InsertItemThread(this, values).start();
+            } else if (requestCode == Constants.VIDEO_REQUEST_CODE) {
 
-            // insert item into database
-            ContentValues values = Utils.setContentValuesAudioNote(
-                    Utils.generateCustomId(),
-                    Constants.ITEM_AUDIO_NOTE,
-                    "", "", filePath, mimeType); // use empty string for title and description
-            new InsertItemThread(this, values).start();
-        }
-        else if (requestCode == Constants.VIDEO_REQUEST && resultCode == RESULT_OK) {
+                // generate thumbnailPath
+                String thumbnailPath = null;
+                Uri videoUri = data.getData();
+                String filePath = videoUri.toString().substring(7);
+                Bitmap bitmap = Utils.generateBitmap(filePath);
+                Uri bitmapUri = Utils.getImageUri(this, bitmap);
+                if (bitmapUri != null) {
+                    thumbnailPath = Utils.getRealPathFromURI(this, bitmapUri);
+                }
 
-            // generate thumbnailPath
-            String thumbnailPath = null;
-            Uri videoUri = data.getData();
-            String filePath = videoUri.toString().substring(7);
-            Bitmap bitmap = Utils.generateBitmap(filePath);
-            Uri bitmapUri = Utils.getImageUri(this, bitmap);
-            if (bitmapUri != null) {
-                thumbnailPath = Utils.getRealPathFromURI(this, bitmapUri);
+                // insert video item into database
+                ContentValues values = Utils.setContentValuesVideoNote(
+                        Utils.generateCustomId(),
+                        Constants.ITEM_VIDEO_NOTE,
+                        "", "", filePath, thumbnailPath,
+                        Constants.VIDEO_MIMETYPE);
+                new InsertItemThread(this, values).start();
+            } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
+                // TODO handle photo data returned by app
             }
-
-            // insert video item into database
-            ContentValues values = Utils.setContentValuesVideoNote(
-                    Utils.generateCustomId(),
-                    Constants.ITEM_VIDEO_NOTE,
-                    "", "", filePath, thumbnailPath,
-                    Constants.VIDEO_MIMETYPE);
-            new InsertItemThread(this, values).start();
-
         }
         else if(resultCode == RESULT_CANCELED){
             Utils.showSnackbar(mLayout, "Operation cancelled by user");

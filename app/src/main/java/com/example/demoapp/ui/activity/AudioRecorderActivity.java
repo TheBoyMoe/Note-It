@@ -30,7 +30,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, AudioRecorderActivity.class);
-        activity.startActivityForResult(intent, Constants.AUDIO_REQUEST);
+        activity.startActivityForResult(intent, Constants.AUDIO_REQUEST_CODE);
     }
 
     @Override

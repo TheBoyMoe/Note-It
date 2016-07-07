@@ -17,11 +17,13 @@ public class Constants {
     public static final int ITEM_VIDEO_NOTE = 2;
     public static final int ITEM_AUDIO_NOTE = 3;
 
-    public static final int AUDIO_REQUEST = 100;
-    public static final int VIDEO_REQUEST = 200;
+    public static final int AUDIO_REQUEST_CODE = 100;
+    public static final int VIDEO_REQUEST_CODE = 200;
+    public static final int PHOTO_REQUEST_CODE = 300;
 
     public static final String AUDIO_BASENAME = "audio.3gp";
     public static final String AUDIO_MIMETYPE = "audio/3gpp";
     public static final String VIDEO_MIMETYPE = "video/mp4";
+    public static final String IMAGE_MIMETYPE = "image/jpg";
 
 }
