@@ -13,9 +13,10 @@ public class Constants {
     public static final String ITEM_THUMBNAIL_PATH = "item_thumbnail_path";
     public static final String ITEM_MIME_TYPE = "item_mime_type";
 
-    public static final int ITEM_TEXT_NOTE = 1;
-    public static final int ITEM_VIDEO_NOTE = 2;
-    public static final int ITEM_AUDIO_NOTE = 3;
+    public static final int ITEM_TYPE_TEXT = 1;
+    public static final int ITEM_TYPE_VIDEO = 2;
+    public static final int ITEM_TYPE_AUDIO = 3;
+    public static final int ITEM_TYPE_PHOTO = 4;
 
     public static final int AUDIO_REQUEST_CODE = 100;
     public static final int VIDEO_REQUEST_CODE = 200;

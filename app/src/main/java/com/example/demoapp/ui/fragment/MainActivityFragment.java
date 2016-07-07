@@ -204,13 +204,13 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View view = null;
             switch (viewType) {
-                case Constants.ITEM_TEXT_NOTE:
+                case Constants.ITEM_TYPE_TEXT:
                     view = inflater.inflate(R.layout.item_text, parent, false);
                     break;
-                case Constants.ITEM_AUDIO_NOTE:
+                case Constants.ITEM_TYPE_AUDIO:
                     view = inflater.inflate(R.layout.item_audio, parent, false);
                     break;
-                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_TYPE_VIDEO:
                     view = inflater.inflate(R.layout.item_thumbnail, parent, false);
                     break;
             }
@@ -236,12 +236,12 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             cursor.moveToPosition(position);
             int type = cursor.getInt(cursor.getColumnIndex(Constants.ITEM_TYPE));
             switch (type) {
-                case Constants.ITEM_TEXT_NOTE:
-                    return Constants.ITEM_TEXT_NOTE;
-                case Constants.ITEM_VIDEO_NOTE:
-                    return Constants.ITEM_VIDEO_NOTE;
-                case Constants.ITEM_AUDIO_NOTE:
-                    return Constants.ITEM_AUDIO_NOTE;
+                case Constants.ITEM_TYPE_TEXT:
+                    return Constants.ITEM_TYPE_TEXT;
+                case Constants.ITEM_TYPE_VIDEO:
+                    return Constants.ITEM_TYPE_VIDEO;
+                case Constants.ITEM_TYPE_AUDIO:
+                    return Constants.ITEM_TYPE_AUDIO;
             }
             return -1;
         }
@@ -270,11 +270,11 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             itemView.setOnLongClickListener(this);
             mViewType = viewType;
             switch (viewType) {
-                case Constants.ITEM_TEXT_NOTE:
+                case Constants.ITEM_TYPE_TEXT:
                     mTitle = (TextView) itemView.findViewById(R.id.item_title);
                     break;
-                case Constants.ITEM_AUDIO_NOTE:
-                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_TYPE_AUDIO:
+                case Constants.ITEM_TYPE_VIDEO:
                     mThumbnail = (ImageView) itemView.findViewById(R.id.item_thumbnail);
                     break;
             }
@@ -286,16 +286,16 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
 
             switch (mViewType) {
-                case Constants.ITEM_TEXT_NOTE:
+                case Constants.ITEM_TYPE_TEXT:
                     mTitle.setText(mTitleText);
                     break;
-                case Constants.ITEM_VIDEO_NOTE:
+                case Constants.ITEM_TYPE_VIDEO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
                     break;
-                case Constants.ITEM_AUDIO_NOTE:
+                case Constants.ITEM_TYPE_AUDIO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     break;
             }
@@ -310,13 +310,13 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             else {
                 // clicking on text/video/audio note forwards call up to hosting activity
                 switch (mViewType) {
-                    case Constants.ITEM_TEXT_NOTE:
+                    case Constants.ITEM_TYPE_TEXT:
                         getContract().onNoteItemClick(mId, mTitleText, mDescriptionText);
                         break;
-                    case Constants.ITEM_AUDIO_NOTE:
+                    case Constants.ITEM_TYPE_AUDIO:
                         getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                         break;
-                    case Constants.ITEM_VIDEO_NOTE:
+                    case Constants.ITEM_TYPE_VIDEO:
                         getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
                         break;
                 }

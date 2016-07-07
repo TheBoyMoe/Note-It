@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity
                 TextNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_video_note:
-                // launch video recording - start activity for result
+                // launch 3rd party video recording app
                 if (Utils.hasCamera(MainActivity.this)) {
-                    Uri fileUri = Utils.generateVideoFileUri();
+                    Uri fileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_VIDEO);
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -140,8 +140,15 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.action_photo_note:
                 if (Utils.hasCamera(MainActivity.this)) {
-                    // TODO launch 3rd party app
-                    Utils.showSnackbar(mLayout, "clicked on photo");
+                    // launch 3rd party photo app
+                    Uri fileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                    if (intent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
+                    } else {
+                        Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
+                    }
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording video");
                 }
@@ -170,7 +177,7 @@ public class MainActivity extends AppCompatActivity
                 // insert item into database
                 ContentValues values = Utils.setContentValuesAudioNote(
                         Utils.generateCustomId(),
-                        Constants.ITEM_AUDIO_NOTE,
+                        Constants.ITEM_TYPE_AUDIO,
                         "", "", filePath, mimeType); // use empty string for title and description
                 new InsertItemThread(this, values).start();
             } else if (requestCode == Constants.VIDEO_REQUEST_CODE) {
@@ -188,12 +195,13 @@ public class MainActivity extends AppCompatActivity
                 // insert video item into database
                 ContentValues values = Utils.setContentValuesVideoNote(
                         Utils.generateCustomId(),
-                        Constants.ITEM_VIDEO_NOTE,
+                        Constants.ITEM_TYPE_VIDEO,
                         "", "", filePath, thumbnailPath,
                         Constants.VIDEO_MIMETYPE);
                 new InsertItemThread(this, values).start();
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
                 // TODO handle photo data returned by app
+                Utils.showSnackbar(mLayout, "received reply from photo app!");
             }
         }
         else if(resultCode == RESULT_CANCELED){

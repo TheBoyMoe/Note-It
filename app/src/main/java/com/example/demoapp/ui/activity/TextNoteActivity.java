@@ -34,7 +34,7 @@ public class TextNoteActivity extends AppCompatActivity
     @Override
     public void saveTextNote(String title, String description) {
         // save note to database
-        ContentValues values = Utils.setContentValuesTextNote(Utils.generateCustomId(), Constants.ITEM_TEXT_NOTE, title, description);
+        ContentValues values = Utils.setContentValuesTextNote(Utils.generateCustomId(), Constants.ITEM_TYPE_TEXT, title, description);
         new InsertItemThread(this, values).start();
         finish();
     }

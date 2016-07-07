@@ -230,7 +230,7 @@ public class Utils {
         return "AUDIO_" + timeStamp + "_" + Constants.AUDIO_BASENAME;
     }
 
-    public static Uri generateVideoFileUri() {
+    public static Uri generateMediaFileUri(int itemType) {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "NoteTakingApp");
 
@@ -245,8 +245,15 @@ public class Utils {
         // Create a media file name
         @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File videoFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
-        return Uri.fromFile(videoFile);
+        File mediaFile;
+        if (itemType == Constants.ITEM_TYPE_PHOTO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+        } else if (itemType == Constants.ITEM_TYPE_VIDEO){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+        return Uri.fromFile(mediaFile);
     }
 
 
