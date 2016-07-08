@@ -23,8 +23,8 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
     public interface Contract {
         void updateVideoNote(long id, String title, String description);
         void playVideo(String filePath, String mimeType);
-        void quit();
         void delete(long id);
+        void quit();
     }
 
     private EditText mEditTitle;
@@ -111,15 +111,16 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
             mEditTitle.setText(mTitle);
             mEditDescription.setText(mDescription);
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
+            // Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
         }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
             mThumbnailPath = savedInstanceState.getString(Constants.ITEM_THUMBNAIL_PATH);
             mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
-            Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
         }
+
+        Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
 
         return view;
     }

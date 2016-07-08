@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPhotoItemClick(long id, String title, String description, String filePath) {
         // launch activity to display photo
-
+        PhotoNoteActivity.launch(this, id, title, description, filePath);
     }
 
     @Override
