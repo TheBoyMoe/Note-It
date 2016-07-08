@@ -25,6 +25,6 @@ public class Constants {
     public static final String AUDIO_BASENAME = "audio.3gp";
     public static final String AUDIO_MIMETYPE = "audio/3gpp";
     public static final String VIDEO_MIMETYPE = "video/mp4";
-    public static final String IMAGE_MIMETYPE = "image/jpg";
+    public static final String PHOTO_MIMETYPE = "image/jpg";
 
 }

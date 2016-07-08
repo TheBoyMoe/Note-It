@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
@@ -39,6 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -124,7 +126,7 @@ public class Utils {
         return cv;
     }
 
-    public static ContentValues setContentValuesVideoNote(long id, int type, String title, String description, String filePath, String thumbnailPath, String mimeType) {
+    public static ContentValues setContentValuesMediaNote(long id, int type, String title, String description, String filePath, String thumbnailPath, String mimeType) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
         cv.put(Constants.ITEM_TYPE, type);
@@ -249,7 +251,7 @@ public class Utils {
         if (itemType == Constants.ITEM_TYPE_PHOTO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
         } else if (itemType == Constants.ITEM_TYPE_VIDEO){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_" + timeStamp + ".mp4");
         } else {
             return null;
         }
@@ -278,16 +280,42 @@ public class Utils {
                 .show();
     }
 
-    public static boolean deleteItemsFromStorage(Long[] ids) {
-        // fetch item(s) from database
+    public static String scaleAndSavePhoto(String filePath, int targetWidth, int targetHeight) {
+
+        // generate thumbnail path
+        String temp = filePath.substring(0, filePath.length() - 4); // strip off file ext
+        String thumbnailPath = temp + "_thumb.jpg";
 
 
-        // loop though items
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
 
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetWidth, photoH/targetHeight);
 
-        // determine if audio/video - delete appropriately
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
 
-        return false;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, bmOptions);
+
+        // write the bitmap to disk
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File(thumbnailPath));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+            fos.flush();
+            fos.close();
+            bitmap.recycle();
+        } catch (Exception e) {
+            Timber.e("%s Failed to save thumbnail to disk: %s", Constants.LOG_TAG, e.getMessage());
+        }
+        return thumbnailPath;
     }
 
 

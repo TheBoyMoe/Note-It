@@ -115,6 +115,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         void onNoteItemClick(long id, String title, String description);
         void onAudioItemClick(long id, String title, String description, String filePath);
         void onVideoItemClick(long id, String title, String description, String filePath, String thumbnailPath, String mimeType);
+        void onPhotoItemClick(long id, String title, String description, String filePath);
     }
 
     public MainActivityFragment() {}
@@ -161,7 +162,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         super.onSaveInstanceState(outState);
         mAdapter.saveInstanceState(outState);
     }
-
 
     @Override
     public void onResume() {
@@ -211,7 +211,10 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     view = inflater.inflate(R.layout.item_audio, parent, false);
                     break;
                 case Constants.ITEM_TYPE_VIDEO:
-                    view = inflater.inflate(R.layout.item_thumbnail, parent, false);
+                    view = inflater.inflate(R.layout.item_video, parent, false);
+                    break;
+                case Constants.ITEM_TYPE_PHOTO:
+                    view = inflater.inflate(R.layout.item_photo, parent, false);
                     break;
             }
             return new CustomViewHolder(view, viewType);
@@ -242,6 +245,8 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     return Constants.ITEM_TYPE_VIDEO;
                 case Constants.ITEM_TYPE_AUDIO:
                     return Constants.ITEM_TYPE_AUDIO;
+                case Constants.ITEM_TYPE_PHOTO:
+                    return Constants.ITEM_TYPE_PHOTO;
             }
             return -1;
         }
@@ -273,6 +278,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 case Constants.ITEM_TYPE_TEXT:
                     mTitle = (TextView) itemView.findViewById(R.id.item_title);
                     break;
+                case Constants.ITEM_TYPE_PHOTO:
                 case Constants.ITEM_TYPE_AUDIO:
                 case Constants.ITEM_TYPE_VIDEO:
                     mThumbnail = (ImageView) itemView.findViewById(R.id.item_thumbnail);
@@ -289,6 +295,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 case Constants.ITEM_TYPE_TEXT:
                     mTitle.setText(mTitleText);
                     break;
+                case Constants.ITEM_TYPE_PHOTO:
                 case Constants.ITEM_TYPE_VIDEO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
@@ -318,6 +325,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                         break;
                     case Constants.ITEM_TYPE_VIDEO:
                         getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
+                        break;
+                    case Constants.ITEM_TYPE_PHOTO:
+                        getContract().onPhotoItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                         break;
                 }
             }

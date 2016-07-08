@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity
     private static final String MODEL_FRAGMENT = "model_fragment";
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
+    private Uri mPhotoFileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,25 +62,25 @@ public class MainActivity extends AppCompatActivity
         // button setup
         mBtnTrigger = (FloatingActionsMenu) findViewById(R.id.button_trigger);
 
-        FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_note);
+        FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_btn);
         if(textNoteBtn != null) {
             textNoteBtn.setOnClickListener(this);
             textNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_text_btn), R.color.half_black));
         }
 
-        FloatingActionButton videoNoteBtn = (FloatingActionButton) findViewById(R.id.action_video_note);
+        FloatingActionButton videoNoteBtn = (FloatingActionButton) findViewById(R.id.action_video_btn);
         if (videoNoteBtn != null) {
             videoNoteBtn.setOnClickListener(this);
             videoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_video_btn), R.color.half_black));
         }
 
-        FloatingActionButton audioNoteBtn = (FloatingActionButton) findViewById(R.id.action_audio_note);
+        FloatingActionButton audioNoteBtn = (FloatingActionButton) findViewById(R.id.action_audio_btn);
         if (audioNoteBtn != null) {
             audioNoteBtn.setOnClickListener(this);
             audioNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_audio_btn), R.color.half_black));
         }
 
-        FloatingActionButton photoNoteBtn = (FloatingActionButton) findViewById(R.id.action_photo_note);
+        FloatingActionButton photoNoteBtn = (FloatingActionButton) findViewById(R.id.action_photo_btn);
         if (photoNoteBtn != null) {
             photoNoteBtn.setOnClickListener(this);
             photoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_photo_btn), R.color.half_black));
@@ -101,6 +102,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onPhotoItemClick(long id, String title, String description, String filePath) {
+        // launch activity to display photo
+
+    }
+
+    @Override
     public void onAudioItemClick(long id, String title, String description, String filePath) {
         // launch activity to display the audio note
         AudioNoteActivity.launch(MainActivity.this, id, title, description, filePath);
@@ -110,11 +117,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.action_text_note:
+            case R.id.action_text_btn:
                 // launch text note activity
                 TextNoteActivity.launch(MainActivity.this);
                 break;
-            case R.id.action_video_note:
+            case R.id.action_video_btn:
                 // launch 3rd party video recording app
                 if (Utils.hasCamera(MainActivity.this)) {
                     Uri fileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_VIDEO);
@@ -130,7 +137,7 @@ public class MainActivity extends AppCompatActivity
                     Utils.showSnackbar(mLayout, "The device does not support recording video");
                 }
                 break;
-            case R.id.action_audio_note:
+            case R.id.action_audio_btn:
                 // launch audio recording
                 if(Utils.hasMicrophone(MainActivity.this)) {
                     AudioRecorderActivity.launch(MainActivity.this);
@@ -138,12 +145,12 @@ public class MainActivity extends AppCompatActivity
                     Utils.showSnackbar(mLayout, "The device does not support recording audio");
                 }
                 break;
-            case R.id.action_photo_note:
+            case R.id.action_photo_btn:
                 if (Utils.hasCamera(MainActivity.this)) {
                     // launch 3rd party photo app
-                    Uri fileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
+                    mPhotoFileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoFileUri);
                     if (intent.resolveActivity(getPackageManager()) != null) {
                         startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
                     } else {
@@ -193,15 +200,25 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 // insert video item into database
-                ContentValues values = Utils.setContentValuesVideoNote(
+                ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_VIDEO,
                         "", "", filePath, thumbnailPath,
                         Constants.VIDEO_MIMETYPE);
                 new InsertItemThread(this, values).start();
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
-                // TODO handle photo data returned by app
-                Utils.showSnackbar(mLayout, "received reply from photo app!");
+
+                // generate thumbnail
+                String filePath = mPhotoFileUri.toString().substring(7);
+                String thumbnailPath = Utils.scaleAndSavePhoto(filePath, 200, 200);
+
+                // insert photo item into database
+                ContentValues values = Utils.setContentValuesMediaNote(
+                        Utils.generateCustomId(),
+                        Constants.ITEM_TYPE_PHOTO,
+                        "", "", filePath, thumbnailPath,
+                        Constants.PHOTO_MIMETYPE);
+                new InsertItemThread(this, values).start();
             }
         }
         else if(resultCode == RESULT_CANCELED){
