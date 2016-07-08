@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,6 +45,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
@@ -258,8 +261,7 @@ public class Utils {
         return Uri.fromFile(mediaFile);
     }
 
-
-    public static void deleteItemFromDatabase(final Activity context, final long id) {
+    public static void deleteItemFromDevice(final Activity context, final long id) {
         new MaterialDialog.Builder(context)
                 .title(context.getString(R.string.note_deletion_dialog_title))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -316,6 +318,12 @@ public class Utils {
             Timber.e("%s Failed to save thumbnail to disk: %s", Constants.LOG_TAG, e.getMessage());
         }
         return thumbnailPath;
+    }
+
+    public static boolean isAppInstalled(Context context, Intent intent) {
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> apps = pm.queryIntentActivities(intent, 0);
+        return apps.size() > 0;
     }
 
 

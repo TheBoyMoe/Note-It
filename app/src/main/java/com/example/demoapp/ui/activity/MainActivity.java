@@ -25,10 +25,12 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
+    private static final String FILE_PATH = "file_path_uri";
     private static final String MODEL_FRAGMENT = "model_fragment";
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
-    private Uri mPhotoFileUri;
+    //private Uri mPhotoFileUri;
+    private String mFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .add(modelFragment, MODEL_FRAGMENT)
                     .commit();
+        }
+
+        if (savedInstanceState != null) {
+            mFilePath = savedInstanceState.getString(FILE_PATH);
         }
 
         // button setup
@@ -102,9 +108,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onPhotoItemClick(long id, String title, String description, String filePath) {
+    public void onPhotoItemClick(long id, String title, String description, String filePath, String mimeType) {
         // launch activity to display photo
-        PhotoNoteActivity.launch(this, id, title, description, filePath);
+        PhotoNoteActivity.launch(this, id, title, description, filePath, mimeType);
     }
 
     @Override
@@ -148,13 +154,16 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_photo_btn:
                 if (Utils.hasCamera(MainActivity.this)) {
                     // launch 3rd party photo app
-                    mPhotoFileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoFileUri);
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
-                    } else {
-                        Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
+                    Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
+                    if (filePathUri != null) {
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, filePathUri);
+                        mFilePath = filePathUri.toString().substring(7);
+                        if (Utils.isAppInstalled(this, intent)) {
+                            startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
+                        } else {
+                            Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
+                        }
                     }
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording video");
@@ -209,14 +218,13 @@ public class MainActivity extends AppCompatActivity
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
 
                 // generate thumbnail
-                String filePath = mPhotoFileUri.toString().substring(7);
-                String thumbnailPath = Utils.scaleAndSavePhoto(filePath, 200, 200);
+                String thumbnailPath = Utils.scaleAndSavePhoto(mFilePath, 200, 200);
 
                 // insert photo item into database
                 ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_PHOTO,
-                        "", "", filePath, thumbnailPath,
+                        "", "", mFilePath, thumbnailPath,
                         Constants.PHOTO_MIMETYPE);
                 new InsertItemThread(this, values).start();
             }
@@ -228,5 +236,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(FILE_PATH, mFilePath);
+    }
 }

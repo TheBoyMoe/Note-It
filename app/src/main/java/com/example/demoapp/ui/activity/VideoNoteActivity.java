@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.demoapp.R;
@@ -21,6 +22,7 @@ import timber.log.Timber;
 public class VideoNoteActivity extends AppCompatActivity
         implements VideoNoteFragment.Contract{
 
+    private CoordinatorLayout mLayout;
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, VideoNoteActivity.class);
@@ -45,7 +47,7 @@ public class VideoNoteActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_layout);
-
+        mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
         VideoNoteFragment fragment = (VideoNoteFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment == null) {
@@ -80,9 +82,13 @@ public class VideoNoteActivity extends AppCompatActivity
             Uri video = Uri.fromFile(new File(filePath));
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(video, mimeType);
-            startActivity(intent);
+            if (Utils.isAppInstalled(this, intent)) {
+                startActivity(intent);
+            } else {
+                Utils.showSnackbar(mLayout, "No suitable app found to play video");
+            }
         } else {
-            Utils.showToast(this, "Error, video file not found");
+            Utils.showSnackbar(mLayout, "Error, video file not found");
         }
     }
 
@@ -93,7 +99,7 @@ public class VideoNoteActivity extends AppCompatActivity
 
     @Override
     public void delete(final long id) {
-        Utils.deleteItemFromDatabase(this, id);
+        Utils.deleteItemFromDevice(this, id);
     }
 
 }

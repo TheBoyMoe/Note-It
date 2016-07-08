@@ -54,7 +54,7 @@ public class TextNoteActivity extends AppCompatActivity
 
     @Override
     public void delete(final long id) {
-        Utils.deleteItemFromDatabase(this, id);
+        Utils.deleteItemFromDevice(this, id);
     }
 
 

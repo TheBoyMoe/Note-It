@@ -25,7 +25,7 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
 
     public interface Contract {
         void updatePhotoNote(long id, String title, String description);
-        void displayPhoto(String filePath);
+        void displayPhoto(String filePath, String mimeType);
         void delete(long id);
         void quit();
     }
@@ -37,17 +37,19 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
     private String mTitleText;
     private String mDescriptionText;
     private String mFilePath;
+    private String mMimeType;
 
 
     public PhotoNoteFragment() {}
 
-    public static PhotoNoteFragment newInstance(long id, String title, String description, String filePath) {
+    public static PhotoNoteFragment newInstance(long id, String title, String description, String filePath, String mimeType) {
         PhotoNoteFragment fragment = new PhotoNoteFragment();
         Bundle args = new Bundle();
         args.putLong(Constants.ITEM_ID, id);
         args.putString(Constants.ITEM_TITLE, title);
         args.putString(Constants.ITEM_DESCRIPTION, description);
         args.putString(Constants.ITEM_FILE_PATH, filePath);
+        args.putString(Constants.ITEM_MIME_TYPE, mimeType);
         fragment.setArguments(args);
 
         return fragment;
@@ -69,8 +71,16 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO do stuff impl delete and quit methods
-
+                    // retrieve title & description, save to the database if req'd
+                    String title = mTitle.getText().toString();
+                    String description = mDescription.getText().toString();
+                    if (mTitleText.equals(title) && mDescriptionText.equals(description)) {
+                        // if neither has changed, quit
+                        getContract().quit();
+                    } else {
+                        // either/both have changed, update the database record
+                        getContract().updatePhotoNote(mId, title, description);
+                    }
                 }
             });
         }
@@ -86,13 +96,15 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
             mTitleText = getArguments().getString(Constants.ITEM_TITLE);
             mDescriptionText = getArguments().getString(Constants.ITEM_DESCRIPTION);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
+            mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
             mTitle.setText(mTitleText);
-            mDescription.setText(mTitleText);
+            mDescription.setText(mDescriptionText);
         }
 
         // retrieve saved state
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
+            mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
         }
 
         // load image
@@ -103,7 +115,6 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
                 .error(R.drawable.action_video_placeholder)
                 .centerCrop()
                 .into(image);
-
 
         return view;
     }
@@ -124,9 +135,8 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
 
     @Override
     public void onClick(View v) {
-        getContract().displayPhoto(mFilePath);  // ?? remove
+        getContract().displayPhoto(mFilePath, mMimeType);  // ?? remove
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

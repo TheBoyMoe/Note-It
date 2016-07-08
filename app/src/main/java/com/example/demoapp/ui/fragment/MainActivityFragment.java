@@ -115,7 +115,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         void onNoteItemClick(long id, String title, String description);
         void onAudioItemClick(long id, String title, String description, String filePath);
         void onVideoItemClick(long id, String title, String description, String filePath, String thumbnailPath, String mimeType);
-        void onPhotoItemClick(long id, String title, String description, String filePath);
+        void onPhotoItemClick(long id, String title, String description, String filePath, String mimeType);
     }
 
     public MainActivityFragment() {}
@@ -304,6 +304,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     break;
                 case Constants.ITEM_TYPE_AUDIO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     break;
             }
         }
@@ -327,7 +328,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                         getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
                         break;
                     case Constants.ITEM_TYPE_PHOTO:
-                        getContract().onPhotoItemClick(mId, mTitleText, mDescriptionText, mFilePath);
+                        getContract().onPhotoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mMimeType);
                         break;
                 }
             }
