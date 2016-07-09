@@ -10,7 +10,7 @@
     <string name="audio_item_image">Audio image</string>
     <string name="audio_list_activity_title">Pick an audio track</string>
     <string name="audio_dialog_title">Confirm audio selection</string>
-    <string name="note_deletion_dialog_title">Confirm note deletion?</string>
+    <string name="note_deletion_dialog_title">Confirm deletion?</string>
     <string name="dialog_positive_text">Agree</string>
     <string name="dialog_negative_text">Cancel</string>
     <string name="video_dialog_title">Confirm video selection</string>
@@ -24,4 +24,5 @@
     <string name="stop_playback">Stop audio playback</string>
     <string name="error_playing_audio">Error playing audio file</string>
     <string name="menu_delete_item_label">Delete item</string>
+    <string name="photo_note_content_description">Photo</string>
 </resources>

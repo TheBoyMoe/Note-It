@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
     private static final String MODEL_FRAGMENT = "model_fragment";
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
-    //private Uri mPhotoFileUri;
     private String mFilePath;
 
     @Override
