@@ -320,6 +320,66 @@ public class Utils {
         return thumbnailPath;
     }
 
+    public static String generatePreviewImage(String filePath, int viewWidth, int viewHeight) {
+
+        // generate scaled image path
+        String temp = filePath.substring(0, filePath.length() - 4); // strip off file ext
+        String previewPath = temp + "_preview.jpg";
+
+        // get the bitmap's dimensions
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+        int imageWidth = options.outWidth;
+        int imageHeight = options.outHeight;
+
+        // set default scale factor
+        int scaleFactor = 1;
+
+        // determine scale factor
+        if (imageHeight > viewHeight || imageWidth > viewWidth) {
+            final int halfHeight = imageHeight / 2;
+            final int halfWidth = imageWidth / 2;
+
+            while ((halfHeight / scaleFactor) > viewHeight && (halfWidth / scaleFactor) > viewWidth) {
+                scaleFactor *= 2;
+            }
+
+            // where you have images with unique aspect ratios, eg pano's
+            long totalPixels = imageWidth * imageHeight / scaleFactor;
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            final long totalReqPixelsCap = viewWidth * viewHeight * 2;
+            while (totalPixels > totalReqPixelsCap) {
+                scaleFactor *= 2;
+                totalPixels /= 2;
+            }
+
+        }
+
+        // decode the image file into a bitmap sized to fill the view
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = scaleFactor;
+        options.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+
+        // write the bitmap to disk
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(new File(previewPath));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+            fos.flush();
+            fos.close();
+            bitmap.recycle();
+        } catch (Exception e) {
+            Timber.e("%s Failed to save thumbnail to disk: %s", Constants.LOG_TAG, e.getMessage());
+        }
+        return previewPath;
+    }
+
+
+
     public static boolean isAppInstalled(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> apps = pm.queryIntentActivities(intent, 0);

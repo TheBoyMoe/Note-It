@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
     private static final String MODEL_FRAGMENT = "model_fragment";
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
-    private String mFilePath;
+    private String mFullSizePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (savedInstanceState != null) {
-            mFilePath = savedInstanceState.getString(FILE_PATH);
+            mFullSizePath = savedInstanceState.getString(FILE_PATH);
         }
 
         // button setup
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                     Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
                     if (filePathUri != null) {
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, filePathUri);
-                        mFilePath = filePathUri.toString().substring(7);
+                        mFullSizePath = filePathUri.toString().substring(7);
                         if (Utils.isAppInstalled(this, intent)) {
                             startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
                         } else {
@@ -214,16 +214,19 @@ public class MainActivity extends AppCompatActivity
                         "", "", filePath, thumbnailPath,
                         Constants.VIDEO_MIMETYPE);
                 new InsertItemThread(this, values).start();
+
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
 
                 // generate thumbnail
-                String thumbnailPath = Utils.scaleAndSavePhoto(mFilePath, 200, 200);
+                String thumbnailPath = Utils.scaleAndSavePhoto(mFullSizePath, 200, 200);
+                // generate preview
+                String previewPath = Utils.generatePreviewImage(mFullSizePath, 1024, 1024);
 
                 // insert photo item into database
                 ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_PHOTO,
-                        "", "", mFilePath, thumbnailPath,
+                        "", "", previewPath, thumbnailPath, // save references to preview/thumbnail to database
                         Constants.PHOTO_MIMETYPE);
                 new InsertItemThread(this, values).start();
             }
@@ -238,6 +241,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(FILE_PATH, mFilePath);
+        outState.putString(FILE_PATH, mFullSizePath);
     }
 }
