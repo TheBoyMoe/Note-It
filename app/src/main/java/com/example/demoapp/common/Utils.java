@@ -326,5 +326,20 @@ public class Utils {
         return apps.size() > 0;
     }
 
+    public static void displayPhoto(Context context, View view, String filePath, String mimeType) {
+        if (filePath != null && mimeType != null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file://" + filePath), mimeType);
+            if (isAppInstalled(context, intent)) {
+                context.startActivity(intent);
+            } else {
+                showSnackbar(view, "No suitable app found to display image");
+            }
+        } else {
+            showSnackbar(view, "Error, file not found");
+        }
+    }
 
-}
+
+
+    }

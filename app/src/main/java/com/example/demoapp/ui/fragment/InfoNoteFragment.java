@@ -25,6 +25,7 @@ public class InfoNoteFragment extends ContractFragment<InfoNoteFragment.Contract
 
     private EditText mTitle;
     private EditText mDescription;
+
     private long mId;
     private String mTitleText;
     private String mDescriptionText;
@@ -59,8 +60,6 @@ public class InfoNoteFragment extends ContractFragment<InfoNoteFragment.Contract
             // set navigation icon and color
             toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
                     .getDrawable(getActivity(), R.drawable.action_back), R.color.colorButtonIcon));
-            // set title text color
-            //toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryText));
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -91,8 +90,6 @@ public class InfoNoteFragment extends ContractFragment<InfoNoteFragment.Contract
 
         return view;
     }
-
-
 
 
 }
