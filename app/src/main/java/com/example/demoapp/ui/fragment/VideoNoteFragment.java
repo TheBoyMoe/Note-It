@@ -2,6 +2,9 @@ package com.example.demoapp.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,48 +12,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contract>
         implements View.OnClickListener{
 
     public interface Contract {
-        void updateVideoNote(long id, String title, String description);
         void playVideo(String filePath, String mimeType);
+        void displayPhotoInfo(long id);
         void delete(long id);
-        void quit();
     }
 
-    private EditText mEditTitle;
-    private EditText mEditDescription;
-
     private long mId;
-    private String mTitle;
-    private String mDescription;
     private String mFilePath;
     private String mThumbnailPath;
     private String mMimeType;
 
     public VideoNoteFragment() {}
 
-    public static VideoNoteFragment newInstance() {
-        return new VideoNoteFragment();
-    }
-
-    public static VideoNoteFragment newInstance(long id,
-                String title, String description, String filePath, String thumbnailPath, String mimeType) {
+    public static VideoNoteFragment newInstance(long id, String filePath, String thumbnailPath, String mimeType) {
 
         VideoNoteFragment fragment = new VideoNoteFragment();
         Bundle args = new Bundle();
         args.putLong(Constants.ITEM_ID, id);
-        args.putString(Constants.ITEM_TITLE, title);
-        args.putString(Constants.ITEM_DESCRIPTION, description);
         args.putString(Constants.ITEM_FILE_PATH, filePath);
         args.putString(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         args.putString(Constants.ITEM_MIME_TYPE, mimeType);
@@ -73,45 +63,28 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         // add toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            Utils.setupToolbar(getActivity(), toolbar);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // retrieve the title & description, propagate upto the hosting activity when they change
-                    String title = mEditTitle.getText().toString();
-                    String description = mEditDescription.getText().toString();
-                    // update/quit
-                    if (mTitle.equals(title) && mDescription.equals(description)) {
-                        getContract().quit();
-                    } else {
-                        if (!mTitle.equals(title)) {
-                            mTitle = title;
-                        }
-                        if (!mDescription.equals(description)) {
-                            mDescription = description;
-                        }
-                        getContract().updateVideoNote(mId, mTitle, mDescription);
-                    }
-                }
-            });
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                // hide title by default
+                actionBar.setDisplayShowTitleEnabled(false);
+                toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.black));
+                toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.action_back_white));
+            }
         }
 
-        mEditTitle = (EditText) view.findViewById(R.id.video_note_title);
-        mEditDescription = (EditText) view.findViewById(R.id.video_note_description);
         ImageView thumbnail = (ImageView) view.findViewById(R.id.video_note_thumbnail);
+        FloatingActionButton infobtn = (FloatingActionButton) view.findViewById(R.id.action_info_btn);
+        infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_info_btn));
+
         thumbnail.setOnClickListener(this);
+        infobtn.setOnClickListener(this);
 
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
-            mTitle = getArguments().getString(Constants.ITEM_TITLE);
-            mDescription = getArguments().getString(Constants.ITEM_DESCRIPTION);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
             mThumbnailPath = getArguments().getString(Constants.ITEM_THUMBNAIL_PATH);
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
-
-            mEditTitle.setText(mTitle);
-            mEditDescription.setText(mDescription);
-            // Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
         }
 
         if (savedInstanceState != null) {
@@ -128,23 +101,34 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_delete_black, menu);
+        inflater.inflate(R.menu.menu_delete, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_delete) {
-            getContract().delete(mId);
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                getContract().delete(mId);
+                return true;
+            case android.R.id.home:
+                super.getActivity().onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
     @Override
-    public void onClick(View v) {
-        getContract().playVideo(mFilePath, mMimeType);
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.action_info_btn:
+                getContract().displayPhotoInfo(mId);
+                break;
+            case R.id.video_note_thumbnail:
+                getContract().playVideo(mFilePath, mMimeType);
+                break;
+        }
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

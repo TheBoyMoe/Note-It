@@ -114,7 +114,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         // onClick methods
         void onNoteItemClick(long id, String title, String description);
         void onAudioItemClick(long id, String title, String description, String filePath);
-        void onVideoItemClick(long id, String title, String description, String filePath, String thumbnailPath, String mimeType);
+        void onVideoItemClick(long id, String filePath, String thumbnailPath, String mimeType);
         void onPhotoItemClick(long id, String filePath);
     }
 
@@ -325,7 +325,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                         getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                         break;
                     case Constants.ITEM_TYPE_VIDEO:
-                        getContract().onVideoItemClick(mId, mTitleText, mDescriptionText, mFilePath, mThumbnailPath, mMimeType);
+                        getContract().onVideoItemClick(mId, mFilePath, mThumbnailPath, mMimeType);
                         break;
                     case Constants.ITEM_TYPE_PHOTO:
                         getContract().onPhotoItemClick(mId, mFilePath);

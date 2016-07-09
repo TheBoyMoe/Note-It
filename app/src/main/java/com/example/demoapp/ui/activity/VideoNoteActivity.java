@@ -1,7 +1,6 @@
 package com.example.demoapp.ui.activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,12 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.Utils;
-import com.example.demoapp.thread.UpdateItemThread;
+import com.example.demoapp.thread.LoadInfoItemTask;
 import com.example.demoapp.ui.fragment.VideoNoteFragment;
 
 import java.io.File;
-
-import timber.log.Timber;
 
 public class VideoNoteActivity extends AppCompatActivity
         implements VideoNoteFragment.Contract{
@@ -29,13 +26,10 @@ public class VideoNoteActivity extends AppCompatActivity
         activity.startActivity(intent);
     }
 
-    public static void launch(Activity activity, long id, String title,
-                 String description, String filePath, String thumbnailPath, String mimeType) {
+    public static void launch(Activity activity, long id, String filePath, String thumbnailPath, String mimeType) {
 
         Intent intent = new Intent(activity, VideoNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
-        intent.putExtra(Constants.ITEM_TITLE, title);
-        intent.putExtra(Constants.ITEM_DESCRIPTION, description);
         intent.putExtra(Constants.ITEM_FILE_PATH, filePath);
         intent.putExtra(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         intent.putExtra(Constants.ITEM_MIME_TYPE, mimeType);
@@ -52,12 +46,10 @@ public class VideoNoteActivity extends AppCompatActivity
         VideoNoteFragment fragment = (VideoNoteFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment == null) {
             long id = getIntent().getLongExtra(Constants.ITEM_ID, 0);
-            String title = getIntent().getStringExtra(Constants.ITEM_TITLE);
-            String description = getIntent().getStringExtra(Constants.ITEM_DESCRIPTION);
             String filePath = getIntent().getStringExtra(Constants.ITEM_FILE_PATH);
             String thumbnailPath = getIntent().getStringExtra(Constants.ITEM_THUMBNAIL_PATH);
             String mimeType = getIntent().getStringExtra(Constants.ITEM_MIME_TYPE);
-            fragment = VideoNoteFragment.newInstance(id, title, description, filePath, thumbnailPath, mimeType);
+            fragment = VideoNoteFragment.newInstance(id, filePath, thumbnailPath, mimeType);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment)
@@ -65,16 +57,7 @@ public class VideoNoteActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void updateVideoNote(long id, String title, String description) {
-        // only changes to the title or description are saved
-        Timber.i("%s: update audio note", Constants.LOG_TAG);
-        ContentValues values = Utils.updateContentValues(id, title,  description);
-        new UpdateItemThread(this, values).start();
-        finish();
-    }
-
-
+    // impl contract methods
     @Override
     public void playVideo(String filePath, String mimeType) {
         // play video onClick
@@ -93,13 +76,14 @@ public class VideoNoteActivity extends AppCompatActivity
     }
 
     @Override
-    public void quit() {
-        finish();
+    public void displayPhotoInfo(long id) {
+        new LoadInfoItemTask(VideoNoteActivity.this).execute(id);
     }
 
     @Override
     public void delete(final long id) {
         Utils.deleteItemFromDevice(this, id);
     }
+
 
 }
