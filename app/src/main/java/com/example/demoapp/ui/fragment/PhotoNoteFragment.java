@@ -31,15 +31,15 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
     }
 
     private long mId;
-    private String mFilePath;
+    private String mPreviewPath;
 
     public PhotoNoteFragment() {}
 
-    public static PhotoNoteFragment newInstance(long id, String filePath) {
+    public static PhotoNoteFragment newInstance(long id, String previewPath) {
         PhotoNoteFragment fragment = new PhotoNoteFragment();
         Bundle args = new Bundle();
         args.putLong(Constants.ITEM_ID, id);
-        args.putString(Constants.ITEM_FILE_PATH, filePath);
+        args.putString(Constants.ITEM_PREVIEW_PATH, previewPath);
         fragment.setArguments(args);
 
         return fragment;
@@ -75,17 +75,17 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
 
         if (getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
-            mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
+            mPreviewPath = getArguments().getString(Constants.ITEM_PREVIEW_PATH);
         }
 
         // retrieve saved state
         if (savedInstanceState != null) {
-            mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
+            mPreviewPath = savedInstanceState.getString(Constants.ITEM_PREVIEW_PATH);
         }
 
         // load image
         Picasso.with(getActivity())
-                .load(new File(mFilePath))
+                .load(new File(mPreviewPath))
                 .fit()
                 .centerCrop()
                 .placeholder(R.drawable.action_video_placeholder)
@@ -123,7 +123,7 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
+        outState.putString(Constants.ITEM_PREVIEW_PATH, mPreviewPath);
     }
 
 

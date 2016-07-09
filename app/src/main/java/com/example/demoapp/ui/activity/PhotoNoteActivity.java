@@ -16,10 +16,10 @@ public class PhotoNoteActivity extends AppCompatActivity
         implements PhotoNoteFragment.Contract{
 
 
-    public static void launch(Activity activity, long id, String filePath) {
+    public static void launch(Activity activity, long id, String previewPath) {
         Intent intent = new Intent(activity, PhotoNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
-        intent.putExtra(Constants.ITEM_FILE_PATH, filePath);
+        intent.putExtra(Constants.ITEM_PREVIEW_PATH, previewPath);
         activity.startActivity(intent);
     }
 
@@ -31,14 +31,13 @@ public class PhotoNoteActivity extends AppCompatActivity
         PhotoNoteFragment fragment = (PhotoNoteFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment == null) {
             long id = getIntent().getLongExtra(Constants.ITEM_ID, 0);
-            String filePath = getIntent().getStringExtra(Constants.ITEM_FILE_PATH);
-            fragment = PhotoNoteFragment.newInstance(id, filePath);
+            String previewPath = getIntent().getStringExtra(Constants.ITEM_PREVIEW_PATH);
+            fragment = PhotoNoteFragment.newInstance(id, previewPath);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
         }
-
     }
 
     @Override

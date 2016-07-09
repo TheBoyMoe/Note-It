@@ -129,13 +129,15 @@ public class Utils {
         return cv;
     }
 
-    public static ContentValues setContentValuesMediaNote(long id, int type, String title, String description, String filePath, String thumbnailPath, String mimeType) {
+    public static ContentValues setContentValuesMediaNote(long id, int type, String title,
+           String description, String filePath, String previewPath, String thumbnailPath, String mimeType) {
         ContentValues cv = new ContentValues();
         cv.put(Constants.ITEM_ID, id);
         cv.put(Constants.ITEM_TYPE, type);
         cv.put(Constants.ITEM_TITLE, title);
         cv.put(Constants.ITEM_DESCRIPTION, description);
         cv.put(Constants.ITEM_FILE_PATH, filePath);
+        cv.put(Constants.ITEM_PREVIEW_PATH, previewPath);
         cv.put(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
         cv.put(Constants.ITEM_MIME_TYPE, mimeType);
         return cv;
@@ -172,9 +174,9 @@ public class Utils {
     }
 
 
-    // Bitmap/image helper methods
-    public static Bitmap generateBitmap(String path) {
-        return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
+    public static Bitmap generateBitmap(String path, int imageSize) {
+//        return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
+        return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), imageSize);
     }
 
     public static Uri getImageUri(Context context, Bitmap inImage) {
@@ -197,7 +199,18 @@ public class Utils {
     }
 
 
-    public static void loadThumbnail(Context context, String thumbnailPath, ImageView view) {
+    public static String generateImagePathFromVideo(Context context, String filePath, int imageSize) {
+
+        Bitmap bitmap = generateBitmap(filePath,  imageSize);
+        Uri bitmapUri = getImageUri(context, bitmap);
+        if (bitmapUri != null) {
+             return getRealPathFromURI(context, bitmapUri);
+        }
+        return null;
+    }
+
+
+    public static void loadThumbnailWithPicasso(Context context, String thumbnailPath, ImageView view) {
         Picasso.with(context)
                 .load(new File(thumbnailPath))
                 .resize(160, 160)
@@ -207,25 +220,14 @@ public class Utils {
                 .into(view);
     }
 
-    public static void loadLargeThumbnail(Context context, String thumbnailPath, ImageView view) {
+    public static void loadPreviewWithPicasso(Context context, String thumbnailPath, ImageView view) {
         Picasso.with(context)
                 .load(new File(thumbnailPath))
-                .resize(250, 250)
+                .fit() // scale image to fit image view element
                 .centerCrop()
                 .placeholder(R.drawable.action_video_placeholder)
                 .error(R.drawable.action_video_placeholder)
                 .into(view);
-    }
-
-
-    public static boolean hasMicrophone(Context context) {
-        PackageManager pm = context.getPackageManager();
-        return pm.hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
-    }
-
-    public static boolean hasCamera(Context context) {
-        PackageManager pm = context.getPackageManager();
-        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
 
@@ -282,7 +284,7 @@ public class Utils {
                 .show();
     }
 
-    public static String scaleAndSavePhoto(String filePath, int targetWidth, int targetHeight) {
+    public static String generatePreviewImage(String filePath, int targetWidth, int targetHeight) {
 
         // generate thumbnail path
         String temp = filePath.substring(0, filePath.length() - 4); // strip off file ext
@@ -320,7 +322,7 @@ public class Utils {
         return thumbnailPath;
     }
 
-    public static String generatePreviewImage(String filePath, int viewWidth, int viewHeight) {
+    public static String generateScaledPreviewImage(String filePath, int viewWidth, int viewHeight) {
 
         // generate scaled image path
         String temp = filePath.substring(0, filePath.length() - 4); // strip off file ext
@@ -385,6 +387,17 @@ public class Utils {
         List<ResolveInfo> apps = pm.queryIntentActivities(intent, 0);
         return apps.size() > 0;
     }
+
+    public static boolean hasMicrophone(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
+    }
+
+    public static boolean hasCamera(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
 
     public static void displayPhoto(Context context, View view, String filePath, String mimeType) {
         if (filePath != null && mimeType != null) {

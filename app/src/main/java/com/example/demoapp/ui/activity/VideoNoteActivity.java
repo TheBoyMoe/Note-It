@@ -26,12 +26,12 @@ public class VideoNoteActivity extends AppCompatActivity
         activity.startActivity(intent);
     }
 
-    public static void launch(Activity activity, long id, String filePath, String thumbnailPath, String mimeType) {
+    public static void launch(Activity activity, long id, String filePath, String previewPath, String mimeType) {
 
         Intent intent = new Intent(activity, VideoNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
         intent.putExtra(Constants.ITEM_FILE_PATH, filePath);
-        intent.putExtra(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
+        intent.putExtra(Constants.ITEM_PREVIEW_PATH, previewPath);
         intent.putExtra(Constants.ITEM_MIME_TYPE, mimeType);
         activity.startActivity(intent);
     }
@@ -47,9 +47,9 @@ public class VideoNoteActivity extends AppCompatActivity
         if (fragment == null) {
             long id = getIntent().getLongExtra(Constants.ITEM_ID, 0);
             String filePath = getIntent().getStringExtra(Constants.ITEM_FILE_PATH);
-            String thumbnailPath = getIntent().getStringExtra(Constants.ITEM_THUMBNAIL_PATH);
+            String previewPath = getIntent().getStringExtra(Constants.ITEM_PREVIEW_PATH);
             String mimeType = getIntent().getStringExtra(Constants.ITEM_MIME_TYPE);
-            fragment = VideoNoteFragment.newInstance(id, filePath, thumbnailPath, mimeType);
+            fragment = VideoNoteFragment.newInstance(id, filePath, previewPath, mimeType);
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment)

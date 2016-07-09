@@ -37,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + Constants.ITEM_TITLE + " TEXT, "
                 + Constants.ITEM_DESCRIPTION + " TEXT, "
                 + Constants.ITEM_FILE_PATH + " TEXT, "
+                + Constants.ITEM_PREVIEW_PATH + " TEXT, "
                 + Constants.ITEM_THUMBNAIL_PATH + " TEXT, "
                 + Constants.ITEM_MIME_TYPE + " TEXT"
                 +  ");");

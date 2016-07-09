@@ -2,7 +2,6 @@ package com.example.demoapp.ui.activity;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -101,15 +100,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onVideoItemClick(long id, String filePath, String thumbnailPath, String mimeType) {
+    public void onVideoItemClick(long id, String filePath, String previewPath, String mimeType) {
         // launch activity displaying video note
-        VideoNoteActivity.launch(MainActivity.this, id, filePath, thumbnailPath, mimeType);
+        VideoNoteActivity.launch(MainActivity.this, id, filePath, previewPath, mimeType);
     }
 
     @Override
-    public void onPhotoItemClick(long id, String filePath) {
+    public void onPhotoItemClick(long id, String previewPath) {
         // launch activity to display photo
-        PhotoNoteActivity.launch(this, id, filePath);
+        PhotoNoteActivity.launch(this, id, previewPath);
     }
 
     @Override
@@ -197,36 +196,43 @@ public class MainActivity extends AppCompatActivity
                 new InsertItemThread(this, values).start();
             } else if (requestCode == Constants.VIDEO_REQUEST_CODE) {
 
-                // generate thumbnailPath
-                String thumbnailPath = null;
                 Uri videoUri = data.getData();
                 String filePath = videoUri.toString().substring(7);
-                Bitmap bitmap = Utils.generateBitmap(filePath);
-                Uri bitmapUri = Utils.getImageUri(this, bitmap);
-                if (bitmapUri != null) {
-                    thumbnailPath = Utils.getRealPathFromURI(this, bitmapUri);
-                }
+
+                // generate thumbnailPath
+                String thumbnailPath = Utils.generateImagePathFromVideo(MainActivity.this,
+                        filePath, MediaStore.Video.Thumbnails.MINI_KIND);
+//                Bitmap thumbBitmap = Utils.generateBitmap(filePath,  MediaStore.Video.Thumbnails.MINI_KIND);
+//                Uri thumbBitmapUri = Utils.getImageUri(this, thumbBitmap);
+//                if (thumbBitmapUri != null) {
+//                    thumbnailPath = Utils.getRealPathFromURI(this, thumbBitmapUri);
+//                }
+
+                // generate full screen preview image
+                String previewPath = Utils.generateImagePathFromVideo(MainActivity.this,
+                        filePath, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
+
 
                 // insert video item into database
                 ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_VIDEO,
-                        "", "", filePath, thumbnailPath,
+                        "", "", filePath, previewPath, thumbnailPath,
                         Constants.VIDEO_MIMETYPE);
                 new InsertItemThread(this, values).start();
 
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
 
                 // generate thumbnail
-                String thumbnailPath = Utils.scaleAndSavePhoto(mFullSizePath, 200, 200);
-                // generate preview
-                String previewPath = Utils.generatePreviewImage(mFullSizePath, 1024, 1024);
+                String thumbnailPath = Utils.generatePreviewImage(mFullSizePath, 200, 200);
+                // generate preview maintaining aspect ratio
+                String previewPath = Utils.generateScaledPreviewImage(mFullSizePath, 1024, 1024);
 
                 // insert photo item into database
                 ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_PHOTO,
-                        "", "", previewPath, thumbnailPath, // save references to preview/thumbnail to database
+                        "", "", mFullSizePath, previewPath, thumbnailPath, // save references to preview/thumbnail to database
                         Constants.PHOTO_MIMETYPE);
                 new InsertItemThread(this, values).start();
             }

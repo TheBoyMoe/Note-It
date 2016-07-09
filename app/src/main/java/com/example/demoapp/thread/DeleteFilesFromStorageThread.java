@@ -33,14 +33,20 @@ public class DeleteFilesFromStorageThread extends Thread{
                 while (cursor.moveToNext()) {
                     long id = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
                     String filePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+                    String previewPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_PREVIEW_PATH));
                     String thumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
-                    Timber.i("%s: id: %d, filePath: %s, thumbnailPath: %s", Constants.LOG_TAG, id, filePath, thumbnailPath);
                     for (String mItem : mItems) {
                         if (mItem.equals(String.valueOf(id))) {
                             if (filePath != null && !filePath.isEmpty()) {
+                                Timber.i("%s: filePath: %s", Constants.LOG_TAG, filePath);
                                 deleteFile(filePath);
                             }
+                            if (previewPath != null && !previewPath.isEmpty()) {
+                                Timber.i("%s: previewPath: %s", Constants.LOG_TAG, previewPath);
+                                deleteFile(previewPath);
+                            }
                             if (thumbnailPath != null && !thumbnailPath.isEmpty()) {
+                                Timber.i("%s: thumbnailPath: %s", Constants.LOG_TAG, thumbnailPath);
                                 deleteFile(thumbnailPath);
                             }
                         }
@@ -57,8 +63,8 @@ public class DeleteFilesFromStorageThread extends Thread{
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void deleteFile(String thumbnailPath) {
-        File temp = new File(thumbnailPath);
+    private void deleteFile(String filePath) {
+        File temp = new File(filePath);
         temp.delete();
     }
 

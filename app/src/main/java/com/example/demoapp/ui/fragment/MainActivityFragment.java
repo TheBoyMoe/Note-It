@@ -89,7 +89,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                                         }
                                     }
                                 }
-                                Timber.i("%s selected ids: %s", Constants.LOG_TAG, selectedIds);
                                 // convert array list to string array
                                 String[] idArray = selectedIds.toArray(new String[selectedIds.size()]);
                                 // delete file from external storage
@@ -265,6 +264,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         String mTitleText;
         String mDescriptionText;
         String mFilePath;
+        String mPreviewPath;
         String mThumbnailPath;
         String mMimeType;
 
@@ -288,23 +288,28 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         public void bindViewHolder(Cursor cursor) {
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
-            mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
-            mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
 
             switch (mViewType) {
-                case Constants.ITEM_TYPE_TEXT:
-                    mTitle.setText(mTitleText);
-                    break;
-                case Constants.ITEM_TYPE_PHOTO:
                 case Constants.ITEM_TYPE_VIDEO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
+                    //mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    Utils.loadThumbnail(getActivity(), mThumbnailPath, mThumbnail);
+                    //Utils.loadThumbnailWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
+                case Constants.ITEM_TYPE_PHOTO:
+                    mPreviewPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_PREVIEW_PATH));
+                    mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
+                    Utils.loadThumbnailWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
                     break;
                 case Constants.ITEM_TYPE_AUDIO:
+                    mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
+                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    //mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    break;
+                case Constants.ITEM_TYPE_TEXT:
+                    mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
+                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
+                    mTitle.setText(mTitleText);
                     break;
             }
         }
@@ -325,10 +330,10 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                         getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                         break;
                     case Constants.ITEM_TYPE_VIDEO:
-                        getContract().onVideoItemClick(mId, mFilePath, mThumbnailPath, mMimeType);
+                        getContract().onVideoItemClick(mId, mFilePath, mPreviewPath, mMimeType);
                         break;
                     case Constants.ITEM_TYPE_PHOTO:
-                        getContract().onPhotoItemClick(mId, mFilePath);
+                        getContract().onPhotoItemClick(mId, mPreviewPath);
                         break;
                 }
             }

@@ -31,18 +31,18 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
 
     private long mId;
     private String mFilePath;
-    private String mThumbnailPath;
+    private String mPreviewPath;
     private String mMimeType;
 
     public VideoNoteFragment() {}
 
-    public static VideoNoteFragment newInstance(long id, String filePath, String thumbnailPath, String mimeType) {
+    public static VideoNoteFragment newInstance(long id, String filePath, String previewPath, String mimeType) {
 
         VideoNoteFragment fragment = new VideoNoteFragment();
         Bundle args = new Bundle();
         args.putLong(Constants.ITEM_ID, id);
         args.putString(Constants.ITEM_FILE_PATH, filePath);
-        args.putString(Constants.ITEM_THUMBNAIL_PATH, thumbnailPath);
+        args.putString(Constants.ITEM_PREVIEW_PATH, previewPath);
         args.putString(Constants.ITEM_MIME_TYPE, mimeType);
         fragment.setArguments(args);
 
@@ -73,27 +73,27 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
             }
         }
 
-        ImageView thumbnail = (ImageView) view.findViewById(R.id.video_note_thumbnail);
+        ImageView preview = (ImageView) view.findViewById(R.id.video_note_preview);
         FloatingActionButton infobtn = (FloatingActionButton) view.findViewById(R.id.action_info_btn);
         infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_info_btn));
 
-        thumbnail.setOnClickListener(this);
-        infobtn.setOnClickListener(this);
+        preview.setOnClickListener(this); // play video
+        infobtn.setOnClickListener(this); // display video details
 
         if(getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
-            mThumbnailPath = getArguments().getString(Constants.ITEM_THUMBNAIL_PATH);
+            mPreviewPath = getArguments().getString(Constants.ITEM_PREVIEW_PATH);
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
         }
 
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
-            mThumbnailPath = savedInstanceState.getString(Constants.ITEM_THUMBNAIL_PATH);
+            mPreviewPath = savedInstanceState.getString(Constants.ITEM_PREVIEW_PATH);
             mMimeType = savedInstanceState.getString(Constants.ITEM_MIME_TYPE);
         }
 
-        Utils.loadLargeThumbnail(getActivity(), mThumbnailPath, thumbnail);
+        Utils.loadPreviewWithPicasso(getActivity(), mPreviewPath, preview);
 
         return view;
     }
@@ -124,7 +124,7 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
             case R.id.action_info_btn:
                 getContract().displayPhotoInfo(mId);
                 break;
-            case R.id.video_note_thumbnail:
+            case R.id.video_note_preview:
                 getContract().playVideo(mFilePath, mMimeType);
                 break;
         }
@@ -134,7 +134,7 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
-        outState.putString(Constants.ITEM_THUMBNAIL_PATH, mThumbnailPath);
+        outState.putString(Constants.ITEM_PREVIEW_PATH, mPreviewPath);
         outState.putString(Constants.ITEM_MIME_TYPE, mMimeType);
     }
 
