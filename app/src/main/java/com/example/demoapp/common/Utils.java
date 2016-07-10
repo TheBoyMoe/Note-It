@@ -182,7 +182,7 @@ public class Utils {
 
     public static Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes); //FIXME
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
@@ -201,8 +201,9 @@ public class Utils {
 
 
     public static String generateImagePathFromVideo(Context context, String filePath, int imageSize) {
-
+        Timber.i("%s: check filePath: %s", Constants.LOG_TAG, filePath);
         Bitmap bitmap = generateBitmap(filePath,  imageSize);
+        Timber.i("%s: bitmap: %s", Constants.LOG_TAG, bitmap);
         Uri bitmapUri = getImageUri(context, bitmap);
         if (bitmapUri != null) {
              return getRealPathFromURI(context, bitmapUri);
@@ -397,7 +398,6 @@ public class Utils {
         return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
-
     public static void displayPhoto(Context context, View view, String filePath, String mimeType) {
         if (filePath != null && mimeType != null) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -419,7 +419,6 @@ public class Utils {
 
     public static void setTitleText(TextView tv, String title) {
         if (!title.isEmpty()) {
-            Timber.i("%s: title: %s", Constants.LOG_TAG, title);
             tv.setText(title);
             tv.setVisibility(View.VISIBLE);
         } else {

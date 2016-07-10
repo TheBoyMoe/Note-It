@@ -21,6 +21,8 @@ import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
@@ -196,8 +198,13 @@ public class MainActivity extends AppCompatActivity
                 new InsertItemThread(this, values).start();
             } else if (requestCode == Constants.VIDEO_REQUEST_CODE) {
 
+                // generate filePath
                 Uri videoUri = data.getData();
-                String filePath = videoUri.toString().substring(7);
+                String str = "/storage";
+                int position = videoUri.toString().indexOf(str);
+                String filePath = videoUri.toString().substring(position);
+                Timber.i("%s: videoUri: %s, filePath: %s", Constants.LOG_TAG, videoUri, filePath);
+
 
                 // generate thumbnailPath
                 String thumbnailPath = Utils.generateImagePathFromVideo(MainActivity.this,

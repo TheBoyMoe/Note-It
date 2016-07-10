@@ -3,6 +3,7 @@ package com.example.demoapp.ui.fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -127,6 +128,12 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        // hide the toolbar shadow on devices API 21+
+        View toolbarShadow = view.findViewById(R.id.toolbar_shadow);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbarShadow.setVisibility(View.GONE);
+        }
+
         // instantiate view and adapter
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
@@ -236,17 +243,19 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             // default type returned 0, define the specific value to return,
             // which can be tested for in onCreateViewHolder()
             Cursor cursor = getCursor();
-            cursor.moveToPosition(position);
-            int type = cursor.getInt(cursor.getColumnIndex(Constants.ITEM_TYPE));
-            switch (type) {
-                case Constants.ITEM_TYPE_TEXT:
-                    return Constants.ITEM_TYPE_TEXT;
-                case Constants.ITEM_TYPE_VIDEO:
-                    return Constants.ITEM_TYPE_VIDEO;
-                case Constants.ITEM_TYPE_AUDIO:
-                    return Constants.ITEM_TYPE_AUDIO;
-                case Constants.ITEM_TYPE_PHOTO:
-                    return Constants.ITEM_TYPE_PHOTO;
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToPosition(position);
+                int type = cursor.getInt(cursor.getColumnIndex(Constants.ITEM_TYPE));
+                switch (type) {
+                    case Constants.ITEM_TYPE_TEXT:
+                        return Constants.ITEM_TYPE_TEXT;
+                    case Constants.ITEM_TYPE_VIDEO:
+                        return Constants.ITEM_TYPE_VIDEO;
+                    case Constants.ITEM_TYPE_AUDIO:
+                        return Constants.ITEM_TYPE_AUDIO;
+                    case Constants.ITEM_TYPE_PHOTO:
+                        return Constants.ITEM_TYPE_PHOTO;
+                }
             }
             return -1;
         }
