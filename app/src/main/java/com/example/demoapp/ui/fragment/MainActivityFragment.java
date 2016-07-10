@@ -41,11 +41,9 @@ import de.greenrobot.event.EventBus;
 public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>
         implements MultiChoiceModeListener {
 
-
     private CustomRecyclerViewAdapter mAdapter;
     private Cursor mCursor = null;
     private TextView mEmptyView;
-    //private CustomGridItemDecoration mItemDecoration;
 
     // impl MultiChoiceSelection
     @Override
@@ -139,14 +137,13 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         Configuration config = getResources().getConfiguration();
         if (config.screenWidthDp >= 540) {
             layoutManager = new StaggeredGridLayoutManager(3, 1);
-            //mItemDecoration = new CustomGridItemDecoration(3, Utils.dpToPx(getActivity(), 10), true);
         } else {
             layoutManager = new StaggeredGridLayoutManager(2, 1);
-            //mItemDecoration = new CustomGridItemDecoration(2, Utils.dpToPx(getActivity(), 10), true);
         }
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space), getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space)));
-        //recyclerView.addItemDecoration(mItemDecoration);
+        recyclerView.addItemDecoration(new CustomItemDecoration(
+                getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space),
+                getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space)));
         mAdapter = new CustomRecyclerViewAdapter(getActivity(), mCursor);
         mAdapter.setMultiChoiceModeListener((AppCompatActivity)getActivity(), this);
         if (isAdded())
@@ -195,7 +192,8 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
 
     // Custom adapter and view holder
-    public class CustomRecyclerViewAdapter extends CustomMultiChoiceCursorRecyclerViewAdapter<CustomViewHolder> {
+    public class CustomRecyclerViewAdapter extends
+            CustomMultiChoiceCursorRecyclerViewAdapter<CustomViewHolder> {
 
         public CustomRecyclerViewAdapter(Context context, Cursor cursor) {
             super(context, cursor);
@@ -229,8 +227,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 holder.bindViewHolder(cursor);
                 int position = cursor.getPosition();
                 holder.itemView.setBackgroundColor(ContextCompat.getColor(
-                    //getActivity(), isSelected(position) ? R.color.colorDraggingBackgroundState : R.color.colorPrimaryBackground)); // FIXME selected colour
-                    getActivity(), isSelected(position) ? R.color.colorSecondaryBackground : R.color.colorSecondaryBackground));
+                    getActivity(), isSelected(position) ? R.color.colorPrimary : R.color.colorSecondaryBackground));
             }
         }
 
@@ -253,7 +250,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             }
             return -1;
         }
-
 
     }
 
