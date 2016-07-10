@@ -143,7 +143,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             layoutManager = new StaggeredGridLayoutManager(2, 1);
         }
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space), getResources().getDimensionPixelSize(R.dimen.dimen_horizontal_space)));
+        recyclerView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space), getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space)));
         mAdapter = new CustomRecyclerViewAdapter(getActivity(), mCursor);
         mAdapter.setMultiChoiceModeListener((AppCompatActivity)getActivity(), this);
         if (isAdded())

@@ -3,23 +3,23 @@
                 android:background="@color/colorSecondaryBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".ui.fragment.MainActivityFragment"
-                tools:showIn="@layout/activity_main">
+                tools:context=".ui.fragment.MainActivityFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
+        android:padding="@dimen/dimen_small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
 
     <TextView
         android:id="@+id/empty_view"
-        android:gravity="center"
+        tools:text="No items to show"
         android:text="@string/empty_list_item"
         android:textSize="24sp"
         android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
