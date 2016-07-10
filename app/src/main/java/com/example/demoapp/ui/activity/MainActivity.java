@@ -202,16 +202,10 @@ public class MainActivity extends AppCompatActivity
                 // generate thumbnailPath
                 String thumbnailPath = Utils.generateImagePathFromVideo(MainActivity.this,
                         filePath, MediaStore.Video.Thumbnails.MINI_KIND);
-//                Bitmap thumbBitmap = Utils.generateBitmap(filePath,  MediaStore.Video.Thumbnails.MINI_KIND);
-//                Uri thumbBitmapUri = Utils.getImageUri(this, thumbBitmap);
-//                if (thumbBitmapUri != null) {
-//                    thumbnailPath = Utils.getRealPathFromURI(this, thumbBitmapUri);
-//                }
 
                 // generate full screen preview image
                 String previewPath = Utils.generateImagePathFromVideo(MainActivity.this,
                         filePath, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
-
 
                 // insert video item into database
                 ContentValues values = Utils.setContentValuesMediaNote(

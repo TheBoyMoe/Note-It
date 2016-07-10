@@ -3,8 +3,6 @@ package com.example.demoapp.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +15,7 @@ import android.widget.ImageView;
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
+import com.example.demoapp.common.Utils;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
@@ -57,21 +56,14 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
         final View view = inflater.inflate(R.layout.fragment_photo_note, container, false);
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-            if (actionBar != null) {
-                // hide title by default
-                actionBar.setDisplayShowTitleEnabled(false);
-                toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.black));
-                toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.action_back_white));
-            }
-
+            Utils.setupToolbar(getActivity(), toolbar);
         }
 
         ImageView image = (ImageView) view.findViewById(R.id.photo_note_image);
         FloatingActionButton infobtn = (FloatingActionButton) view.findViewById(R.id.action_info_btn);
         infobtn.setOnClickListener(this);
-        infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_info_btn));
+        //infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_info_btn));
+        infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_edit));
 
         if (getArguments() != null) {
             mId = getArguments().getLong(Constants.ITEM_ID);
@@ -98,7 +90,7 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_delete, menu);
+        inflater.inflate(R.menu.menu_delete_black, menu);
     }
 
     @Override

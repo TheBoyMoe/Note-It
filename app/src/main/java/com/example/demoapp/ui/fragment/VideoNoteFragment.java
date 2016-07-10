@@ -3,8 +3,6 @@ package com.example.demoapp.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,19 +61,12 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
         // add toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         if (toolbar != null) {
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-            if (actionBar != null) {
-                // hide title by default
-                actionBar.setDisplayShowTitleEnabled(false);
-                toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.black));
-                toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.action_back_white));
-            }
+            Utils.setupToolbar(getActivity(), toolbar);
         }
 
         ImageView preview = (ImageView) view.findViewById(R.id.video_note_preview);
         FloatingActionButton infobtn = (FloatingActionButton) view.findViewById(R.id.action_info_btn);
-        infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_info_btn));
+        infobtn.setIconDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_edit));
 
         preview.setOnClickListener(this); // play video
         infobtn.setOnClickListener(this); // display video details
@@ -101,7 +92,7 @@ public class VideoNoteFragment extends ContractFragment<VideoNoteFragment.Contra
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_delete, menu);
+        inflater.inflate(R.menu.menu_delete_black, menu);
     }
 
     @Override

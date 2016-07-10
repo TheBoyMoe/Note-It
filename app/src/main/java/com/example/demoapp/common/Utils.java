@@ -155,21 +155,19 @@ public class Utils {
     }
 
     public static void setupToolbar(Activity activity, Toolbar toolbar) {
-        if (toolbar != null) {
-            ((AppCompatActivity)activity).setSupportActionBar(toolbar);
-            ActionBar actionBar = ((AppCompatActivity)activity).getSupportActionBar();
-            if (actionBar != null) {
-                // hide title by default
-                actionBar.setDisplayShowTitleEnabled(false);
-                // set navigation icon and color
-                toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
-                        .getDrawable(activity, R.drawable.action_back), R.color.colorButtonIcon));
-                // set title text color
-                toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryText));
-                // add overflow icon via the menu, use this method to tint them
-                toolbar.setOverflowIcon(Utils.tintDrawable(ContextCompat
-                        .getDrawable(activity, R.drawable.action_delete_black), R.color.colorButtonIcon));
-            }
+        ((AppCompatActivity)activity).setSupportActionBar(toolbar);
+        ActionBar actionBar = ((AppCompatActivity)activity).getSupportActionBar();
+        if (actionBar != null) {
+            // hide title by default
+            actionBar.setDisplayShowTitleEnabled(false);
+            // set navigation icon and color
+            toolbar.setNavigationIcon(Utils.tintDrawable(ContextCompat
+                    .getDrawable(activity, R.drawable.action_back), R.color.colorButtonIcon));
+            // set title text color
+            toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryText));
+            // add overflow icon via the menu, use this method to tint them
+            toolbar.setOverflowIcon(Utils.tintDrawable(ContextCompat
+                    .getDrawable(activity, R.drawable.action_delete_black), R.color.colorButtonIcon));
         }
     }
 
