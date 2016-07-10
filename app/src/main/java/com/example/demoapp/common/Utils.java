@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +27,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -211,7 +213,7 @@ public class Utils {
     public static void loadThumbnailWithPicasso(Context context, String thumbnailPath, ImageView view) {
         Picasso.with(context)
                 .load(new File(thumbnailPath))
-                .resize(160, 160)
+                .fit()
                 .centerCrop()
                 .placeholder(R.drawable.action_video_placeholder)
                 .error(R.drawable.action_video_placeholder)
@@ -378,8 +380,6 @@ public class Utils {
         return previewPath;
     }
 
-
-
     public static boolean isAppInstalled(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> apps = pm.queryIntentActivities(intent, 0);
@@ -411,6 +411,9 @@ public class Utils {
         }
     }
 
-
+    public static int dpToPx(Activity activity,int dp) {
+        Resources r = activity.getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
 
     }

@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
 
                 // generate thumbnail
-                String thumbnailPath = Utils.generatePreviewImage(mFullSizePath, 200, 200);
+                String thumbnailPath = Utils.generatePreviewImage(mFullSizePath, 300, 300);
                 // generate preview maintaining aspect ratio
                 String previewPath = Utils.generateScaledPreviewImage(mFullSizePath, 1024, 1024);
 

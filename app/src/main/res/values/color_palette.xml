@@ -11,7 +11,7 @@
     <color name="icon">#A1A1A1</color>
     <color name="divider">#B6B6B6</color>
     <color name="primary_background">#FFFFFF</color>
-    <color name="secondary_background">#EFEFEF</color>
+    <color name="secondary_background">#F1F5F8</color>
     <color name="activated">#FFEFEF</color>
     <color name="neutral">@android:color/transparent</color>
     <color name="active_state">#ffff9999</color>

@@ -37,14 +37,15 @@ import com.example.demoapp.thread.DeleteItemsThread;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 public class MainActivityFragment extends ContractFragment<MainActivityFragment.Contract>
-        implements MultiChoiceModeListener{
+        implements MultiChoiceModeListener {
+
 
     private CustomRecyclerViewAdapter mAdapter;
     private Cursor mCursor = null;
     private TextView mEmptyView;
+    //private CustomGridItemDecoration mItemDecoration;
 
     // impl MultiChoiceSelection
     @Override
@@ -68,7 +69,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         if (item.getItemId() == R.id.action_delete) {
             // determine all items that were selected and delete from the database
             final SparseBooleanArray selectedItems = mAdapter.getSelectedPositions();
-            Timber.i("%s selected items: %s, total no items: %d", Constants.LOG_TAG, selectedItems, mAdapter.getItemCount());
 
             // confirm deletion
             new MaterialDialog.Builder(getActivity())
@@ -139,11 +139,14 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         Configuration config = getResources().getConfiguration();
         if (config.screenWidthDp >= 540) {
             layoutManager = new StaggeredGridLayoutManager(3, 1);
+            //mItemDecoration = new CustomGridItemDecoration(3, Utils.dpToPx(getActivity(), 10), true);
         } else {
             layoutManager = new StaggeredGridLayoutManager(2, 1);
+            //mItemDecoration = new CustomGridItemDecoration(2, Utils.dpToPx(getActivity(), 10), true);
         }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space), getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space)));
+        //recyclerView.addItemDecoration(mItemDecoration);
         mAdapter = new CustomRecyclerViewAdapter(getActivity(), mCursor);
         mAdapter.setMultiChoiceModeListener((AppCompatActivity)getActivity(), this);
         if (isAdded())
@@ -225,8 +228,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             if(cursor != null) {
                 holder.bindViewHolder(cursor);
                 int position = cursor.getPosition();
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(getActivity(),
-                    isSelected(position) ? R.color.colorDraggingBackgroundState : R.color.colorPrimaryBackground));
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(
+                    //getActivity(), isSelected(position) ? R.color.colorDraggingBackgroundState : R.color.colorPrimaryBackground)); // FIXME selected colour
+                    getActivity(), isSelected(position) ? R.color.colorSecondaryBackground : R.color.colorSecondaryBackground));
             }
         }
 
