@@ -257,6 +257,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             implements View.OnClickListener, View.OnLongClickListener {
 
         TextView mTitle;
+        TextView mDescription;
         ImageView mThumbnail;
 
         long mId;
@@ -277,10 +278,12 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             switch (viewType) {
                 case Constants.ITEM_TYPE_TEXT:
                     mTitle = (TextView) itemView.findViewById(R.id.item_title);
+                    mDescription = (TextView) itemView.findViewById(R.id.item_description);
                     break;
                 case Constants.ITEM_TYPE_PHOTO:
                 case Constants.ITEM_TYPE_AUDIO:
                 case Constants.ITEM_TYPE_VIDEO:
+                    mTitle = (TextView) itemView.findViewById(R.id.item_title);
                     mThumbnail = (ImageView) itemView.findViewById(R.id.item_thumbnail);
                     break;
             }
@@ -292,29 +295,30 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             switch (mViewType) {
                 case Constants.ITEM_TYPE_VIDEO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    //mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
-                    //Utils.loadThumbnailWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
                 case Constants.ITEM_TYPE_PHOTO:
+                    mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
                     mPreviewPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_PREVIEW_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
+                    Utils.setTitleText(mTitle, mTitleText);
                     Utils.loadThumbnailWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
                     break;
                 case Constants.ITEM_TYPE_AUDIO:
                     mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
                     mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    //mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
+                    Utils.setTitleText(mTitle, mTitleText);
                     break;
                 case Constants.ITEM_TYPE_TEXT:
                     mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
                     mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mTitle.setText(mTitleText);
+                    mDescription.setText(cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION)));
                     break;
             }
         }
 
-        @Override
+                @Override
         public void onClick(View v) {
 
             if (mAdapter.isActionModeActive()) {

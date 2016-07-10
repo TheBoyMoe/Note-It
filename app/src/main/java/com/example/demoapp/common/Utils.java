@@ -31,6 +31,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -414,6 +415,16 @@ public class Utils {
     public static int dpToPx(Activity activity,int dp) {
         Resources r = activity.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    public static void setTitleText(TextView tv, String title) {
+        if (!title.isEmpty()) {
+            Timber.i("%s: title: %s", Constants.LOG_TAG, title);
+            tv.setText(title);
+            tv.setVisibility(View.VISIBLE);
+        } else {
+            tv.setVisibility(View.GONE);
+        }
     }
 
     }
