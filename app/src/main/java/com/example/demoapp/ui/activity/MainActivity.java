@@ -2,6 +2,7 @@ package com.example.demoapp.ui.activity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,11 +28,13 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
+    private static final String PREF_IS_FIRST_RUN = "isFirstRun";
     private static final String FILE_PATH = "file_path_uri";
     private static final String MODEL_FRAGMENT = "model_fragment";
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
     private String mFullSizePath;
+    private SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,30 +73,18 @@ public class MainActivity extends AppCompatActivity
         mBtnTrigger = (FloatingActionsMenu) findViewById(R.id.button_trigger);
 
         FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_btn);
-        if(textNoteBtn != null) {
-            textNoteBtn.setOnClickListener(this);
-            textNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_text_btn), R.color.half_black));
-        }
-
         FloatingActionButton videoNoteBtn = (FloatingActionButton) findViewById(R.id.action_video_btn);
-        if (videoNoteBtn != null) {
-            videoNoteBtn.setOnClickListener(this);
-            videoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_video_btn), R.color.half_black));
-        }
-
         FloatingActionButton audioNoteBtn = (FloatingActionButton) findViewById(R.id.action_audio_btn);
-        if (audioNoteBtn != null) {
-            audioNoteBtn.setOnClickListener(this);
-            audioNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_audio_btn), R.color.half_black));
-        }
-
         FloatingActionButton photoNoteBtn = (FloatingActionButton) findViewById(R.id.action_photo_btn);
-        if (photoNoteBtn != null) {
-            photoNoteBtn.setOnClickListener(this);
-            photoNoteBtn.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, R.drawable.action_photo_btn), R.color.half_black));
-        }
+
+        setUpActionButton(textNoteBtn, R.drawable.action_text_btn);
+        setUpActionButton(videoNoteBtn, R.drawable.action_video_btn);
+        setUpActionButton(audioNoteBtn, R.drawable.action_audio_btn);
+        setUpActionButton(photoNoteBtn, R.drawable.action_photo_btn);
+
 
     }
+
 
     // contract methods
     @Override
@@ -257,4 +248,15 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putString(FILE_PATH, mFullSizePath);
     }
+
+
+    // HELPER METHODS
+
+    private void setUpActionButton(FloatingActionButton actionButton, int buttonIcon) {
+        actionButton.setOnClickListener(this);
+        actionButton.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, buttonIcon), R.color.colorButtonIcon));
+    }
+
+
+
 }
