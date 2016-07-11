@@ -65,7 +65,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
             mAudioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Utils.generateAudioFileName());
 
             // Timber.i("%s: file path: %s", Constants.LOG_TAG, mAudioFile);
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);  // FIXME broken in api 23
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mRecorder.setOutputFile(mAudioFile.getAbsolutePath());
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);

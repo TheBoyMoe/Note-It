@@ -3,6 +3,7 @@ package com.example.demoapp.ui.activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
@@ -200,10 +201,16 @@ public class MainActivity extends AppCompatActivity
 
                 // generate filePath
                 Uri videoUri = data.getData();
-                String str = "/storage";
+                Timber.i("%s: videoUri: %s", Constants.LOG_TAG, videoUri);
+                String str = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    str = "/media";
+                } else {
+                    str = "/storage";
+                }
                 int position = videoUri.toString().indexOf(str);
-                String filePath = videoUri.toString().substring(position);
-                Timber.i("%s: videoUri: %s, filePath: %s", Constants.LOG_TAG, videoUri, filePath);
+                String filePath = videoUri.toString().substring(position); // FIXME
+                Timber.i("%s: filePath: %s", Constants.LOG_TAG, filePath);
 
 
                 // generate thumbnailPath

@@ -176,13 +176,14 @@ public class Utils {
 
 
     public static Bitmap generateBitmap(String path, int imageSize) {
-//        return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
+        // FIXME returns null
+        //return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
         return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), imageSize);
     }
 
     public static Uri getImageUri(Context context, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes); //FIXME
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
@@ -201,7 +202,6 @@ public class Utils {
 
 
     public static String generateImagePathFromVideo(Context context, String filePath, int imageSize) {
-        Timber.i("%s: check filePath: %s", Constants.LOG_TAG, filePath);
         Bitmap bitmap = generateBitmap(filePath,  imageSize);
         Timber.i("%s: bitmap: %s", Constants.LOG_TAG, bitmap);
         Uri bitmapUri = getImageUri(context, bitmap);
@@ -244,7 +244,7 @@ public class Utils {
                 Environment.DIRECTORY_PICTURES), "NoteTakingApp");
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
+        if (! mediaStorageDir.exists()){  // FIXME missing permission api 23
             if (! mediaStorageDir.mkdirs()){
                 Timber.i("%s: failed to create directory", Constants.LOG_TAG);
                 return null;
