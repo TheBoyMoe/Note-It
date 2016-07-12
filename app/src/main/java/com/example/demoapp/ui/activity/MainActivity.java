@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences mPrefs;
 
     // string array of the req'd permissions
-    private static final String[] REQUIRED_APP_PERMISSIONS = {
+    private static final String[] ALL_REQUIRED_PERMS = {
             WRITE_EXTERNAL_STORAGE,
             RECORD_AUDIO
     };
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+      protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // FIXME check denying WRITE_EXTERNAL_STORAGE before loading adapter -
+        // stops reading audio/video/photos from disk
 
         // cache a reference to a fragment
         MainActivityFragment recyclerFragment =
@@ -109,7 +112,10 @@ public class MainActivity extends AppCompatActivity
         if (isFirstTimeIn()) {
             // seek WRITE_EXTERNAL_STORAGE first time app is run
             // CAMERA permission not required since we're relying on 3rd party app
-            ActivityCompat.requestPermissions(this, PERMS_REQUIRED_SAVE_MEDIA, RESULT_PERMS_INITIAL);
+//            ActivityCompat.requestPermissions(this, PERMS_REQUIRED_SAVE_MEDIA, RESULT_PERMS_INITIAL);
+
+            // check that we have both WRITE_EXTERNAL_STORAGE and RECORD_AUDIO permissions
+            ActivityCompat.requestPermissions(this, ALL_REQUIRED_PERMS, RESULT_PERMS_INITIAL);
         }
 
     }
@@ -151,15 +157,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_video_btn:
                 // launch 3rd party video recording app
                 if (Utils.hasCamera(MainActivity.this)) {
-                    Uri fileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_VIDEO);
-                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                    if (intent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(intent, Constants.VIDEO_REQUEST_CODE);
-                    } else {
-                        Utils.showSnackbar(mLayout, "No app found suitable to record video");
-                    }
+                    recordVideo();
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording video");
                 }
@@ -167,7 +165,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_audio_btn:
                 // launch audio recording
                 if(Utils.hasMicrophone(MainActivity.this)) {
-                    AudioRecorderActivity.launch(MainActivity.this);
+                    recordAudio();
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support recording audio");
                 }
@@ -175,10 +173,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_photo_btn:
                 if (Utils.hasCamera(MainActivity.this)) {
                     // launch 3rd party photo app
-
-                    // TODO check that we have the WRITE_EXTERNAL_STORAGE permission
                     takePicture();
-
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support taking photos");
                 }
@@ -282,9 +277,23 @@ public class MainActivity extends AppCompatActivity
         boolean permissionNotGiven = false;
 
         if (requestCode == RESULT_PERMISSION_TAKE_PICTURE) {
-            if (canTakePicture()) {
-                launchThirdPartyCameraApp();
-            } else if (!shouldShowTakePictureRational()) {
+            if (canWriteToExternalStorage()) {
+                launchCameraApp();
+            } else if (!shouldShowWriteToStorageRational()) {
+                permissionNotGiven = true;
+            }
+        }
+        else if (requestCode == RESULT_PERMISSION_RECORD_VIDEO) {
+            if (canRecordMedia()) {
+                launchVideoApp();
+            } else if (!shouldShowRecordMediaRational()) {
+                permissionNotGiven = true;
+            }
+        }
+        else if (requestCode == RESULT_PERMISSION_RECORD_AUDIO) {
+            if (canRecordMedia()) {
+                launchAudioApp();
+            } else if (!shouldShowRecordMediaRational()) {
                 permissionNotGiven = true;
             }
         }
@@ -331,16 +340,20 @@ public class MainActivity extends AppCompatActivity
                 PackageManager.PERMISSION_GRANTED;
     }
 
-    private boolean canTakePicture() {
+    private boolean canWriteToExternalStorage() {
         // check the req'd permission is held
         return hasPermission(WRITE_EXTERNAL_STORAGE);
     }
+    private boolean canRecordMedia() {
+        // requires WRITE_EXTERNAL_STORAGE & RECORD_AUDIO permissions
+        return canWriteToExternalStorage() && hasPermission(RECORD_AUDIO);
+    }
 
     private void takePicture() {
-        if (canTakePicture()) {
+        if (canWriteToExternalStorage()) {
             // permission given, take the picture
-            launchThirdPartyCameraApp();
-        } else if (!shouldShowTakePictureRational()){
+            launchCameraApp();
+        } else if (!shouldShowWriteToStorageRational()){
             // permission not given, inform user permission req'd to execute feature
             showRationalMessage(getString(R.string.required_permission_feature));
         } else {
@@ -349,6 +362,30 @@ public class MainActivity extends AppCompatActivity
                     permissionsHeld(PERMS_REQUIRED_SAVE_MEDIA), RESULT_PERMISSION_TAKE_PICTURE);
         }
     }
+
+    private void recordVideo() {
+        if (canRecordMedia()) {
+            launchVideoApp();
+        } else if (!shouldShowRecordMediaRational()) { // CHANGED
+            showRationalMessage(getString(R.string.required_permission_feature));
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissionsHeld(ALL_REQUIRED_PERMS), RESULT_PERMISSION_RECORD_VIDEO);
+        }
+
+    }
+
+    private void recordAudio() {
+        if (canRecordMedia()) {
+            launchAudioApp();
+        } else if (!shouldShowRecordMediaRational()) { // CHANGED
+            showRationalMessage(getString(R.string.required_permission_feature));
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    permissionsHeld(ALL_REQUIRED_PERMS), RESULT_PERMISSION_RECORD_AUDIO);
+        }
+    }
+
 
     // determine which permissions have not been given
     private String[] permissionsHeld(String[] permissions) {
@@ -361,12 +398,17 @@ public class MainActivity extends AppCompatActivity
         return result.toArray(new String[result.size()]);
     }
 
-    private boolean shouldShowTakePictureRational() {
+    private boolean shouldShowWriteToStorageRational() {
         return ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE);
     }
 
+    private boolean shouldShowRecordMediaRational() {
+        return shouldShowWriteToStorageRational() ||
+            ActivityCompat.shouldShowRequestPermissionRationale(this, RECORD_AUDIO);
+    }
+
     private void showRationalMessage(String message) {
-        // FIXME add action to the snackbar allowing user to amend permissions in app's settings
+        //  add action to the snackbar allowing user to amend permissions in app's settings
         Utils.showSnackbar(mLayout, message);
         Snackbar snackbar = Snackbar
                 .make(mLayout, message, Snackbar.LENGTH_LONG)
@@ -385,7 +427,7 @@ public class MainActivity extends AppCompatActivity
         snackbar.show();
     }
 
-    private void launchThirdPartyCameraApp() {
+    private void launchCameraApp() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
         if (filePathUri != null) {
@@ -398,5 +440,22 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    private void launchVideoApp() {
+        Uri fileUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_VIDEO);
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, Constants.VIDEO_REQUEST_CODE);
+        } else {
+            Utils.showSnackbar(mLayout, "No app found suitable to record video");
+        }
+    }
+
+    private void launchAudioApp() {
+        AudioRecorderActivity.launch(MainActivity.this);
+    }
+
 
 }
