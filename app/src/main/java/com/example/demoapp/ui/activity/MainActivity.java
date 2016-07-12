@@ -1,13 +1,20 @@
 package com.example.demoapp.ui.activity;
 
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,24 +30,50 @@ import com.example.demoapp.ui.fragment.ModelFragment;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.util.ArrayList;
+
 import timber.log.Timber;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+
+/**
+ * References:
+ * [1] Busy coder's guide to Android development - chapter on runtime permissions support
+ */
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
-    private static final String PREF_IS_FIRST_RUN = "isFirstRun";
+    private static final String IS_FIRST_TIME_IN = "is_first_time_in";
     private static final String FILE_PATH = "file_path_uri";
     private static final String MODEL_FRAGMENT = "model_fragment";
+    private static final int RESULT_PERMS_INITIAL = 101;
+    private static final int RESULT_PERMISSION_TAKE_PICTURE = 102;
+    private static final int RESULT_PERMISSION_RECORD_VIDEO = 103;
+    private static final int RESULT_PERMISSION_RECORD_AUDIO = 104;
+
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
     private String mFullSizePath;
     private SharedPreferences mPrefs;
+
+    // string array of the req'd permissions
+    private static final String[] REQUIRED_APP_PERMISSIONS = {
+            WRITE_EXTERNAL_STORAGE,
+            RECORD_AUDIO
+    };
+    private static final String[] PERMS_REQUIRED_SAVE_MEDIA = {
+            WRITE_EXTERNAL_STORAGE
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,17 +104,13 @@ public class MainActivity extends AppCompatActivity
 
         // button setup
         mBtnTrigger = (FloatingActionsMenu) findViewById(R.id.button_trigger);
+        actionButtonSetup();
 
-        FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_btn);
-        FloatingActionButton videoNoteBtn = (FloatingActionButton) findViewById(R.id.action_video_btn);
-        FloatingActionButton audioNoteBtn = (FloatingActionButton) findViewById(R.id.action_audio_btn);
-        FloatingActionButton photoNoteBtn = (FloatingActionButton) findViewById(R.id.action_photo_btn);
-
-        setUpActionButton(textNoteBtn, R.drawable.action_text_btn);
-        setUpActionButton(videoNoteBtn, R.drawable.action_video_btn);
-        setUpActionButton(audioNoteBtn, R.drawable.action_audio_btn);
-        setUpActionButton(photoNoteBtn, R.drawable.action_photo_btn);
-
+        if (isFirstTimeIn()) {
+            // seek WRITE_EXTERNAL_STORAGE first time app is run
+            // CAMERA permission not required since we're relying on 3rd party app
+            ActivityCompat.requestPermissions(this, PERMS_REQUIRED_SAVE_MEDIA, RESULT_PERMS_INITIAL);
+        }
 
     }
 
@@ -146,24 +175,16 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_photo_btn:
                 if (Utils.hasCamera(MainActivity.this)) {
                     // launch 3rd party photo app
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
-                    if (filePathUri != null) {
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, filePathUri);
-                        mFullSizePath = filePathUri.toString().substring(7);
-                        if (Utils.isAppInstalled(this, intent)) {
-                            startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
-                        } else {
-                            Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
-                        }
-                    }
+
+                    // TODO check that we have the WRITE_EXTERNAL_STORAGE permission
+                    takePicture();
+
                 } else {
-                    Utils.showSnackbar(mLayout, "The device does not support recording video");
+                    Utils.showSnackbar(mLayout, "The device does not support taking photos");
                 }
                 break;
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -249,14 +270,133 @@ public class MainActivity extends AppCompatActivity
         outState.putString(FILE_PATH, mFullSizePath);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // TODO
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // method called back as a result of requestPermissions()
+        boolean permissionNotGiven = false;
+
+        if (requestCode == RESULT_PERMISSION_TAKE_PICTURE) {
+            if (canTakePicture()) {
+                launchThirdPartyCameraApp();
+            } else if (!shouldShowTakePictureRational()) {
+                permissionNotGiven = true;
+            }
+        }
+
+        if (permissionNotGiven) {
+            // show message to user
+           Utils.showSnackbar(mLayout, getString(R.string.permission_not_given_message));
+        }
+
+    }
+
+
 
     // HELPER METHODS
+    private void actionButtonSetup() {
+        FloatingActionButton textNoteBtn = (FloatingActionButton) findViewById(R.id.action_text_btn);
+        FloatingActionButton videoNoteBtn = (FloatingActionButton) findViewById(R.id.action_video_btn);
+        FloatingActionButton audioNoteBtn = (FloatingActionButton) findViewById(R.id.action_audio_btn);
+        FloatingActionButton photoNoteBtn = (FloatingActionButton) findViewById(R.id.action_photo_btn);
+
+        setUpActionButton(textNoteBtn, R.drawable.action_text_btn);
+        setUpActionButton(videoNoteBtn, R.drawable.action_video_btn);
+        setUpActionButton(audioNoteBtn, R.drawable.action_audio_btn);
+        setUpActionButton(photoNoteBtn, R.drawable.action_photo_btn);
+    }
 
     private void setUpActionButton(FloatingActionButton actionButton, int buttonIcon) {
         actionButton.setOnClickListener(this);
         actionButton.setIconDrawable(Utils.tintDrawable(ContextCompat.getDrawable(this, buttonIcon), R.color.colorButtonIcon));
     }
 
+    private boolean isFirstTimeIn() {
+        // default to true first time
+        boolean result = mPrefs.getBoolean(IS_FIRST_TIME_IN, true);
+        if (result) {
+            mPrefs.edit().putBoolean(IS_FIRST_TIME_IN, false).apply();
+        }
+        return result;
+    }
 
+    // check if the req'd permission has been granted
+    private boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(this, permission) ==
+                PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean canTakePicture() {
+        // check the req'd permission is held
+        return hasPermission(WRITE_EXTERNAL_STORAGE);
+    }
+
+    private void takePicture() {
+        if (canTakePicture()) {
+            // permission given, take the picture
+            launchThirdPartyCameraApp();
+        } else if (!shouldShowTakePictureRational()){
+            // permission not given, inform user permission req'd to execute feature
+            showRationalMessage(getString(R.string.required_permission_feature));
+        } else {
+            // otherwise request permission
+            ActivityCompat.requestPermissions(this,
+                    permissionsHeld(PERMS_REQUIRED_SAVE_MEDIA), RESULT_PERMISSION_TAKE_PICTURE);
+        }
+    }
+
+    // determine which permissions have not been given
+    private String[] permissionsHeld(String[] permissions) {
+        ArrayList<String> result = new ArrayList<>();
+        for (String permission : permissions) {
+            if (!hasPermission(permission)) {
+                result.add(permission);
+            }
+        }
+        return result.toArray(new String[result.size()]);
+    }
+
+    private boolean shouldShowTakePictureRational() {
+        return ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE);
+    }
+
+    private void showRationalMessage(String message) {
+        // FIXME add action to the snackbar allowing user to amend permissions in app's settings
+        Utils.showSnackbar(mLayout, message);
+        Snackbar snackbar = Snackbar
+                .make(mLayout, message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.snackbar_action_text, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // launch app settings screen
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    }
+                });
+
+        snackbar.show();
+    }
+
+    private void launchThirdPartyCameraApp() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
+        if (filePathUri != null) {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, filePathUri);
+            mFullSizePath = filePathUri.toString().substring(7); // FIXME change to '/storage'
+            if (Utils.isAppInstalled(this, intent)) {
+                startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
+            } else {
+                Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
+            }
+        }
+    }
 
 }

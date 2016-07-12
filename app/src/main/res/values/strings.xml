@@ -25,4 +25,8 @@
     <string name="error_playing_audio">Error playing audio file</string>
     <string name="menu_delete_item_label">Delete item</string>
     <string name="photo_note_content_description">Photo</string>
+    <string name="required_permission_feature">Grant the required permissions to carry on</string>
+    <string name="permission_not_given_message">You need to provide the required permissions to execute the feature</string>
+    <string name="snackbar_action_text">Change app permissions</string>
+
 </resources>
