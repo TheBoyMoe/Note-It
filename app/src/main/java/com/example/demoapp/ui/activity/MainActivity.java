@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -32,8 +31,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 
-import timber.log.Timber;
-
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -46,7 +43,8 @@ public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
     private static final String IS_FIRST_TIME_IN = "is_first_time_in";
-    private static final String FILE_PATH = "file_path_uri";
+    private static final String PHOTO_FILE_PATH = "photo_file_path";
+    private static final String VIDEO_FILE_PATH = "video_fire_path";
     private static final String MODEL_FRAGMENT = "model_fragment";
     private static final int RESULT_PERMS_INITIAL = 101;
     private static final int RESULT_PERMISSION_TAKE_PICTURE = 102;
@@ -55,7 +53,8 @@ public class MainActivity extends AppCompatActivity
 
     private FloatingActionsMenu mBtnTrigger;
     private CoordinatorLayout mLayout;
-    private String mFullSizePath;
+    private String mPhotoFullSizePath;
+    private String mVideoPath;
     private SharedPreferences mPrefs;
 
     // string array of the req'd permissions
@@ -128,7 +127,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (savedInstanceState != null) {
-            mFullSizePath = savedInstanceState.getString(FILE_PATH);
+            mPhotoFullSizePath = savedInstanceState.getString(PHOTO_FILE_PATH);
+            mVideoPath = savedInstanceState.getString(VIDEO_FILE_PATH);
         }
 
         // button setup
@@ -200,48 +200,34 @@ public class MainActivity extends AppCompatActivity
                 new InsertItemThread(this, values).start();
             } else if (requestCode == Constants.VIDEO_REQUEST_CODE) {
 
-                // generate filePath
-                Uri videoUri = data.getData();
-                Timber.i("%s: videoUri: %s", Constants.LOG_TAG, videoUri);
-                String str = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    str = "/media";
-                } else {
-                    str = "/storage";
-                }
-                int position = videoUri.toString().indexOf(str);
-                String filePath = videoUri.toString().substring(position); // FIXME
-                Timber.i("%s: filePath: %s", Constants.LOG_TAG, filePath);
-
-
                 // generate thumbnailPath
                 String thumbnailPath = Utils.generateImagePathFromVideo(MainActivity.this,
-                        filePath, MediaStore.Video.Thumbnails.MINI_KIND);
+                        mVideoPath, MediaStore.Video.Thumbnails.MINI_KIND);
 
                 // generate full screen preview image
                 String previewPath = Utils.generateImagePathFromVideo(MainActivity.this,
-                        filePath, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
+                        mVideoPath, MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
 
                 // insert video item into database
                 ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_VIDEO,
-                        "", "", filePath, previewPath, thumbnailPath,
+                        "", "", mVideoPath, previewPath, thumbnailPath,
                         Constants.VIDEO_MIMETYPE);
                 new InsertItemThread(this, values).start();
 
             } else  if (requestCode == Constants.PHOTO_REQUEST_CODE) {
 
                 // generate thumbnail
-                String thumbnailPath = Utils.generatePreviewImage(mFullSizePath, 300, 300);
+                String thumbnailPath = Utils.generatePreviewImage(mPhotoFullSizePath, 300, 300);
                 // generate preview maintaining aspect ratio
-                String previewPath = Utils.generateScaledPreviewImage(mFullSizePath, 1024, 1024);
+                String previewPath = Utils.generateScaledPreviewImage(mPhotoFullSizePath, 1024, 1024);
 
                 // insert photo item into database
                 ContentValues values = Utils.setContentValuesMediaNote(
                         Utils.generateCustomId(),
                         Constants.ITEM_TYPE_PHOTO,
-                        "", "", mFullSizePath, previewPath, thumbnailPath, // save references to preview/thumbnail to database
+                        "", "", mPhotoFullSizePath, previewPath, thumbnailPath,
                         Constants.PHOTO_MIMETYPE);
                 new InsertItemThread(this, values).start();
             }
@@ -256,7 +242,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(FILE_PATH, mFullSizePath);
+        outState.putString(PHOTO_FILE_PATH, mPhotoFullSizePath);
+        outState.putCharSequence(VIDEO_FILE_PATH, mVideoPath);
     }
 
     @Override
@@ -427,19 +414,13 @@ public class MainActivity extends AppCompatActivity
         Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
         if (filePathUri != null) {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, filePathUri);
-
-            String pattern = "/storage";
-            int position = filePathUri.toString().indexOf(pattern);
-            mFullSizePath = filePathUri.toString().substring(position);
-            //mFullSizePath = filePathUri.toString().substring(7); // FIXME change to '/storage'
-
             if (Utils.isAppInstalled(this, intent)) {
                 startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
             } else {
                 Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
             }
+            mPhotoFullSizePath = generateFilePath(filePathUri);
         }
-
     }
 
     private void launchVideoApp() {
@@ -452,10 +433,17 @@ public class MainActivity extends AppCompatActivity
         } else {
             Utils.showSnackbar(mLayout, "No app found suitable to record video");
         }
+        mVideoPath = generateFilePath(fileUri);
     }
 
     private void launchAudioApp() {
         AudioRecorderActivity.launch(MainActivity.this);
+    }
+
+    private String generateFilePath(Uri uriPath) {
+        String pattern = "/storage";
+        int position = uriPath.toString().indexOf(pattern);
+        return uriPath.toString().substring(position);
     }
 
 

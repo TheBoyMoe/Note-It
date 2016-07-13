@@ -176,8 +176,6 @@ public class Utils {
 
 
     public static Bitmap generateBitmap(String path, int imageSize) {
-        // FIXME returns null
-        //return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), MediaStore.Video.Thumbnails.MINI_KIND);
         return ThumbnailUtils.createVideoThumbnail(new File(path).getAbsolutePath(), imageSize);
     }
 
@@ -202,6 +200,7 @@ public class Utils {
 
 
     public static String generateImagePathFromVideo(Context context, String filePath, int imageSize) {
+        Timber.i("%s: filepath: %s, size: %d", Constants.LOG_TAG, filePath, imageSize);
         Bitmap bitmap = generateBitmap(filePath,  imageSize);
         Timber.i("%s: bitmap: %s", Constants.LOG_TAG, bitmap);
         Uri bitmapUri = getImageUri(context, bitmap);
