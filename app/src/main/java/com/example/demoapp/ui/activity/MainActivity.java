@@ -42,6 +42,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class MainActivity extends AppCompatActivity
         implements MainActivityFragment.Contract, View.OnClickListener{
 
+    private static final String TRACK_PERMISSION_STATE = "track_permission_state";
     private static final String IS_FIRST_TIME_IN = "is_first_time_in";
     private static final String PHOTO_FILE_PATH = "photo_file_path";
     private static final String VIDEO_FILE_PATH = "video_fire_path";
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private String mPhotoFullSizePath;
     private String mVideoPath;
     private SharedPreferences mPrefs;
+    private boolean mIsInPermission = false;
 
     // string array of the req'd permissions
     private static final String[] ALL_REQUIRED_PERMS = {
@@ -103,6 +105,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (savedInstanceState != null) {
+            mPhotoFullSizePath = savedInstanceState.getString(PHOTO_FILE_PATH);
+            mVideoPath = savedInstanceState.getString(VIDEO_FILE_PATH);
+            mIsInPermission = savedInstanceState.getBoolean(TRACK_PERMISSION_STATE, false);
+        }
+
         // FIXME check denying WRITE_EXTERNAL_STORAGE before loading adapter -
         // stops reading audio/video/photos from disk
 
@@ -126,16 +134,12 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
 
-        if (savedInstanceState != null) {
-            mPhotoFullSizePath = savedInstanceState.getString(PHOTO_FILE_PATH);
-            mVideoPath = savedInstanceState.getString(VIDEO_FILE_PATH);
-        }
-
         // button setup
         mBtnTrigger = (FloatingActionsMenu) findViewById(R.id.button_trigger);
         actionButtonSetup();
 
-        if (isFirstTimeIn()) {
+        if (isFirstTimeIn() && !mIsInPermission) {
+            mIsInPermission = true;
             // check that we have both WRITE_EXTERNAL_STORAGE and RECORD_AUDIO permissions
             ActivityCompat.requestPermissions(this, ALL_REQUIRED_PERMS, RESULT_PERMS_INITIAL);
         }
@@ -244,18 +248,14 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
         outState.putString(PHOTO_FILE_PATH, mPhotoFullSizePath);
         outState.putCharSequence(VIDEO_FILE_PATH, mVideoPath);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // TODO
+        outState.putBoolean(TRACK_PERMISSION_STATE, mIsInPermission);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // method called back as a result of requestPermissions()
         boolean permissionNotGiven = false;
+        mIsInPermission = false;
 
         if (requestCode == RESULT_PERMISSION_TAKE_PICTURE) {
             if (canWriteToExternalStorage()) {
