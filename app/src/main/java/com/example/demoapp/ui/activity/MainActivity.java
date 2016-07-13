@@ -68,8 +68,34 @@ public class MainActivity extends AppCompatActivity
     };
 
 
+    // contract methods
     @Override
-      protected void onCreate(Bundle savedInstanceState) {
+    public void onNoteItemClick(long id, String title, String description) {
+        // launch activity displaying text note
+        TextNoteActivity.launch(MainActivity.this, id, title, description);
+    }
+
+    @Override
+    public void onVideoItemClick(long id, String filePath, String previewPath, String mimeType) {
+        // launch activity displaying video note
+        VideoNoteActivity.launch(MainActivity.this, id, filePath, previewPath, mimeType);
+    }
+
+    @Override
+    public void onPhotoItemClick(long id, String previewPath) {
+        // launch activity to display photo
+        PhotoNoteActivity.launch(this, id, previewPath);
+    }
+
+    @Override
+    public void onAudioItemClick(long id, String title, String description, String filePath) {
+        // launch activity to display the audio note
+        AudioNoteActivity.launch(MainActivity.this, id, title, description, filePath);
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
@@ -83,7 +109,7 @@ public class MainActivity extends AppCompatActivity
 
         // cache a reference to a fragment
         MainActivityFragment recyclerFragment =
-            (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if (recyclerFragment == null) {
             recyclerFragment = MainActivityFragment.newInstance();
@@ -110,48 +136,17 @@ public class MainActivity extends AppCompatActivity
         actionButtonSetup();
 
         if (isFirstTimeIn()) {
-            // seek WRITE_EXTERNAL_STORAGE first time app is run
-            // CAMERA permission not required since we're relying on 3rd party app
-//            ActivityCompat.requestPermissions(this, PERMS_REQUIRED_SAVE_MEDIA, RESULT_PERMS_INITIAL);
-
             // check that we have both WRITE_EXTERNAL_STORAGE and RECORD_AUDIO permissions
             ActivityCompat.requestPermissions(this, ALL_REQUIRED_PERMS, RESULT_PERMS_INITIAL);
         }
 
     }
 
-
-    // contract methods
-    @Override
-    public void onNoteItemClick(long id, String title, String description) {
-        // launch activity displaying text note
-        TextNoteActivity.launch(MainActivity.this, id, title, description);
-    }
-
-    @Override
-    public void onVideoItemClick(long id, String filePath, String previewPath, String mimeType) {
-        // launch activity displaying video note
-        VideoNoteActivity.launch(MainActivity.this, id, filePath, previewPath, mimeType);
-    }
-
-    @Override
-    public void onPhotoItemClick(long id, String previewPath) {
-        // launch activity to display photo
-        PhotoNoteActivity.launch(this, id, previewPath);
-    }
-
-    @Override
-    public void onAudioItemClick(long id, String title, String description, String filePath) {
-        // launch activity to display the audio note
-        AudioNoteActivity.launch(MainActivity.this, id, title, description, filePath);
-    }
-
-    // handle fab button clicks
     @Override
     public void onClick(View view) {
+        // handle fab button clicks
         switch (view.getId()) {
             case R.id.action_text_btn:
-                // launch text note activity
                 TextNoteActivity.launch(MainActivity.this);
                 break;
             case R.id.action_video_btn:
@@ -172,7 +167,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.action_photo_btn:
                 if (Utils.hasCamera(MainActivity.this)) {
-                    // launch 3rd party photo app
                     takePicture();
                 } else {
                     Utils.showSnackbar(mLayout, "The device does not support taking photos");
@@ -344,6 +338,7 @@ public class MainActivity extends AppCompatActivity
         // check the req'd permission is held
         return hasPermission(WRITE_EXTERNAL_STORAGE);
     }
+
     private boolean canRecordMedia() {
         // requires WRITE_EXTERNAL_STORAGE & RECORD_AUDIO permissions
         return canWriteToExternalStorage() && hasPermission(RECORD_AUDIO);
@@ -432,13 +427,19 @@ public class MainActivity extends AppCompatActivity
         Uri filePathUri = Utils.generateMediaFileUri(Constants.ITEM_TYPE_PHOTO);
         if (filePathUri != null) {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, filePathUri);
-            mFullSizePath = filePathUri.toString().substring(7); // FIXME change to '/storage'
+
+            String pattern = "/storage";
+            int position = filePathUri.toString().indexOf(pattern);
+            mFullSizePath = filePathUri.toString().substring(position);
+            //mFullSizePath = filePathUri.toString().substring(7); // FIXME change to '/storage'
+
             if (Utils.isAppInstalled(this, intent)) {
                 startActivityForResult(intent, Constants.PHOTO_REQUEST_CODE);
             } else {
                 Utils.showSnackbar(mLayout, "No app found suitable to capture photos");
             }
         }
+
     }
 
     private void launchVideoApp() {
