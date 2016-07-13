@@ -7,20 +7,28 @@
 
     <include layout="@layout/toolbar"/>
 
-    <ImageView
-        android:id="@+id/video_note_preview"
-        android:contentDescription="@string/image_view_description"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"/>
+        android:layout_below="@id/toolbar"
+        android:layout_marginBottom="?attr/actionBarSize">
 
-    <ImageView
-        android:src="@drawable/action_play_video"
-        android:layout_centerInParent="true"
-        android:contentDescription="@string/video_thumbnail"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>
+        <ImageView
+            android:id="@+id/video_note_preview"
+            android:contentDescription="@string/image_view_description"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:src="@drawable/action_play_video"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/video_thumbnail"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+    </RelativeLayout>
+
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_info_btn"

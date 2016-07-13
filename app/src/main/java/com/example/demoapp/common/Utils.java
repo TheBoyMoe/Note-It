@@ -225,7 +225,7 @@ public class Utils {
         Picasso.with(context)
                 .load(new File(thumbnailPath))
                 .fit() // scale image to fit image view element
-                .centerCrop()
+                .centerInside()
                 .placeholder(R.drawable.action_video_placeholder)
                 .error(R.drawable.action_video_placeholder)
                 .into(view);

@@ -17,9 +17,6 @@ import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
 
 public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contract>
         implements View.OnClickListener{
@@ -76,13 +73,7 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
         }
 
         // load image
-        Picasso.with(getActivity())
-                .load(new File(mPreviewPath))
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.action_video_placeholder)
-                .error(R.drawable.action_video_placeholder)
-                .into(image);
+        Utils.loadPreviewWithPicasso(getActivity(), mPreviewPath, image);
 
         return view;
     }
