@@ -102,8 +102,14 @@ public class TextNoteFragment extends ContractFragment<TextNoteFragment.Contract
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_delete) {
-            getContract().delete(mId);
+        switch (item.getItemId() ) {
+            case R.id.action_delete:
+                getContract().delete(mId);
+                return true;
+            case android.R.id.home:
+                getActivity().supportFinishAfterTransition();
+                // getActivity().onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

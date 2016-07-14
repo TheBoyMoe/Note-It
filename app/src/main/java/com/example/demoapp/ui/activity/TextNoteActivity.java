@@ -5,7 +5,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
@@ -23,12 +26,19 @@ public class TextNoteActivity extends AppCompatActivity
         activity.startActivity(intent);
     }
 
-    public static void launch(Activity activity, long id, String title, String description) {
+    @SuppressWarnings("unchecked")
+    public static void launch(Activity activity, View layout, long id, String title, String description) {
         Intent intent = new Intent(activity, TextNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
         intent.putExtra(Constants.ITEM_TITLE, title);
         intent.putExtra(Constants.ITEM_DESCRIPTION, description);
-        activity.startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(
+                        activity,
+                        new Pair<View, String>(layout.findViewById(R.id.item_title), activity.getString(R.string.title_transition)),
+                        new Pair<View, String>(layout.findViewById(R.id.item_description), activity.getString(R.string.description_transition))
+                );
+        activity.startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -79,6 +89,7 @@ public class TextNoteActivity extends AppCompatActivity
                         .commit();
         }
     }
+
 
 
 }

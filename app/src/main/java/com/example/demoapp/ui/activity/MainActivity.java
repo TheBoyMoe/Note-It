@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNoteItemClick(long id, String title, String description) {
         // launch activity displaying text note
-        TextNoteActivity.launch(MainActivity.this, id, title, description);
+        TextNoteActivity.launch(MainActivity.this, mLayout, id, title, description);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onAudioItemClick(long id, String title, String description, String filePath) {
         // launch activity to display the audio note
-        AudioNoteActivity.launch(MainActivity.this, id, title, description, filePath);
+        AudioNoteActivity.launch(MainActivity.this, mLayout, id, title, description, filePath);
     }
 
 

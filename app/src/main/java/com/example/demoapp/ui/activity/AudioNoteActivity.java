@@ -5,7 +5,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
@@ -24,13 +27,19 @@ public class AudioNoteActivity extends AppCompatActivity implements
         activity.startActivity(intent);
     }
 
-    public static void launch(Activity activity, long id, String title, String description, String filePath) {
+    @SuppressWarnings("unchecked")
+    public static void launch(Activity activity, View layout, long id, String title, String description, String filePath) {
         Intent intent = new Intent(activity, AudioNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
         intent.putExtra(Constants.ITEM_TITLE, title);
         intent.putExtra(Constants.ITEM_DESCRIPTION, description);
         intent.putExtra(Constants.ITEM_FILE_PATH, filePath);
-        activity.startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(
+                        activity,
+                        new Pair<View, String>(layout.findViewById(R.id.item_title), activity.getString(R.string.title_transition))
+                );
+        activity.startActivity(intent, options.toBundle());
     }
 
     @Override
