@@ -26,11 +26,13 @@
                 tools:text="Dummy Text"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:transitionName="@string/title_transition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/item_description"
+                android:transitionName="@string/description_transition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"/>

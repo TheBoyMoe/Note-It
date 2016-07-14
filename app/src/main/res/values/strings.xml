@@ -28,5 +28,8 @@
     <string name="required_permission_feature">Click on the link to enable permissions</string>
     <string name="permission_not_given_message">You need to provide the required permissions to execute the feature</string>
     <string name="snackbar_action_text">Change app permissions</string>
+    <string name="title_transition">titleTransition</string>
+    <string name="description_transition">descriptionTransition</string>
+    <string name="thumbnail_transition">imagePreviewTransition</string>
 
 </resources>

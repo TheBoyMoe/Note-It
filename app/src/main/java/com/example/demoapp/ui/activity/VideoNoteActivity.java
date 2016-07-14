@@ -29,6 +29,7 @@ public class VideoNoteActivity extends AppCompatActivity
         activity.startActivity(intent);
     }
 
+    @SuppressWarnings("unchecked")
     public static void launch(Activity activity, View layout, long id, String filePath, String previewPath, String mimeType) {
 
         Intent intent = new Intent(activity, VideoNoteActivity.class);
@@ -39,7 +40,7 @@ public class VideoNoteActivity extends AppCompatActivity
         ActivityOptionsCompat options = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(
                         activity,
-                        new Pair<View, String>(layout.findViewById(R.id.item_thumbnail), "imagePreviewTransition")
+                        new Pair<View, String>(layout.findViewById(R.id.item_thumbnail), activity.getString(R.string.thumbnail_transition))
                 );
         activity.startActivity(intent, options.toBundle());
     }

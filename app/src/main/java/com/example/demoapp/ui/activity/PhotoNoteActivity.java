@@ -27,7 +27,7 @@ public class PhotoNoteActivity extends AppCompatActivity
         ActivityOptionsCompat options = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(
                         activity,
-                        new Pair<View, String>(layout.findViewById(R.id.item_thumbnail), "imagePreviewTransition")
+                        new Pair<View, String>(layout.findViewById(R.id.item_thumbnail), activity.getString(R.string.thumbnail_transition))
                 );
         activity.startActivity(intent, options.toBundle());
     }

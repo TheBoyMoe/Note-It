@@ -23,7 +23,7 @@
             <ImageView
                 android:id="@+id/item_thumbnail"
                 android:contentDescription="@string/item_thumbnail"
-                android:transitionName="imagePreviewTransition"
+                android:transitionName="@string/thumbnail_transition"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
                 android:layout_width="match_parent"

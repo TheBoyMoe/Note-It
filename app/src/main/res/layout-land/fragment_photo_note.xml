@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/photo_note_image"
         android:layout_centerHorizontal="true"
-        android:transitionName="imagePreviewTransition"
+        android:transitionName="@string/thumbnail_transition"
         android:layout_below="@id/toolbar"
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
