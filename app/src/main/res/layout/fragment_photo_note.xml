@@ -10,6 +10,7 @@
     <ImageView
         android:id="@+id/photo_note_image"
         android:layout_below="@id/toolbar"
+        android:transitionName="imagePreviewTransition"
         android:contentDescription="@string/photo_note_content_description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

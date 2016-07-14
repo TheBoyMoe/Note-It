@@ -91,7 +91,8 @@ public class PhotoNoteFragment extends ContractFragment<PhotoNoteFragment.Contra
                 getContract().delete(mId);
                 return true;
             case android.R.id.home:
-                super.getActivity().onBackPressed();
+                //super.getActivity().onBackPressed();
+                getActivity().supportFinishAfterTransition();
                 return true;
         }
         return super.onOptionsItemSelected(item);

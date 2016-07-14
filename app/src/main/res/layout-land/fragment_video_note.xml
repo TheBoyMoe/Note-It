@@ -23,7 +23,7 @@
         <ImageView
             android:src="@drawable/action_play_video"
             android:layout_centerInParent="true"
-            android:contentDescription="@string/video_thumbnail"
+            android:contentDescription="@string/item_thumbnail"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
 
