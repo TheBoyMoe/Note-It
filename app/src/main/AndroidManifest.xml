@@ -53,8 +53,10 @@
                 android:value=".ui.activity.MainActivity"/>
         </activity>
 
+        <!-- don't destroy/create activity on device rotation -->
         <activity
             android:name=".ui.activity.AudioRecorderActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AudioRecorderTheme"/>
 
         <activity

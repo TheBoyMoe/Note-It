@@ -31,6 +31,11 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         void delete(long id);
     }
 
+    private static final String STATE_PLAY_BUTTON = "play_button_state";
+    private static final String STATE_PAUSE_BUTTON = "pause_button_state";
+    private static final String STATE_STOP_BUTTON = "stop_button_state";
+    private static final String STATE_PLAYER = "player_state";
+
     private View mView;
     private EditText mEditTitle;
     private EditText mEditDescription;
@@ -62,14 +67,15 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        // stop onDestroy() being called - maintain audio playback during device rotation
+        setRetainInstance(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_audio_note, container, false);
-
-        // add toolbar
+          // add toolbar
         Toolbar toolbar = (Toolbar) mView.findViewById(R.id.toolbar);
         if (toolbar != null) {
             Utils.setupToolbar(getActivity(), toolbar);
@@ -110,11 +116,16 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
                 mEditDescription.setText(mDescription);
         }
 
+        // restore states
         if (savedInstanceState != null) {
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
+            mPlay.setEnabled(savedInstanceState.getBoolean(STATE_PLAY_BUTTON));
+            mPause.setEnabled(savedInstanceState.getBoolean(STATE_PAUSE_BUTTON));
+            mStop.setEnabled(savedInstanceState.getBoolean(STATE_STOP_BUTTON));
+        } else {
+            mPlayerSetup();
         }
 
-        mPlayerSetup();
 
         return mView;
     }
@@ -123,6 +134,11 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
+
+        // save button states
+        outState.putBoolean(STATE_PLAY_BUTTON, mPlay.isEnabled());
+        outState.putBoolean(STATE_PAUSE_BUTTON, mPause.isEnabled());
+        outState.putBoolean(STATE_STOP_BUTTON, mStop.isEnabled());
     }
 
     @Override
@@ -214,7 +230,7 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
             mPlayer.seekTo(0);
             mPlay.setEnabled(true);
         } catch(Exception e) {
-            Timber.e("%s Error playing audio file: %s", Constants.LOG_TAG, e.getMessage());
+            Timber.e("%s Error stopping audio file: %s", Constants.LOG_TAG, e.getMessage());
             Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
         }
     }

@@ -34,7 +34,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_recorder);
 
@@ -45,7 +45,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         mRecorder = new MediaRecorder();
         mRecorder.setOnErrorListener(this);
@@ -53,7 +53,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         mRecorder.release();
         mRecorder = null;
         super.onPause();
@@ -65,7 +65,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
             mAudioFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Utils.generateAudioFileName());
 
             // Timber.i("%s: file path: %s", Constants.LOG_TAG, mAudioFile);
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);  // FIXME broken in api 23
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mRecorder.setOutputFile(mAudioFile.getAbsolutePath());
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
