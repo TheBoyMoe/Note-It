@@ -72,28 +72,24 @@ public class MainActivity extends AppCompatActivity
     // contract methods
     @Override
     public void onNoteItemClick(long id, String title, String description) {
-        // launch activity displaying text note
         TextNoteActivity.launch(MainActivity.this, mLayout, id, title, description);
     }
 
     @Override
     public void onVideoItemClick(long id, String filePath, String previewPath, String mimeType) {
-        // launch activity displaying video note
         VideoNoteActivity.launch(MainActivity.this, mLayout, id, filePath, previewPath, mimeType);
     }
 
     @Override
     public void onPhotoItemClick(long id, String previewPath) {
-        // launch activity to display photo
         PhotoNoteActivity.launch(this, mLayout, id, previewPath);
     }
 
     @Override
     public void onAudioItemClick(long id, String title, String description, String filePath) {
-        // launch activity to display the audio note
         AudioNoteActivity.launch(MainActivity.this, mLayout, id, title, description, filePath);
     }
-
+    // END
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

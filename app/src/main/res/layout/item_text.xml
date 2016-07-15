@@ -25,7 +25,6 @@
                 android:id="@+id/item_title"
                 tools:text="Dummy Text"
                 style="@style/TextStyle.Title"
-                android:layout_marginBottom="@dimen/dimen_small"
                 android:transitionName="@string/title_transition"/>
 
             <TextView

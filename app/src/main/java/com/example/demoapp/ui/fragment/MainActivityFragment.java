@@ -322,7 +322,13 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
                     mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mTitle.setText(mTitleText);
-                    mDescription.setText(cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION)));
+                    if (mDescriptionText != null && !mDescriptionText.isEmpty()) {
+                        mDescription.setText(mDescriptionText);
+                        mDescription.setPadding(0, 8, 0, 0);
+                        mDescription.setVisibility(View.VISIBLE);
+                    } else {
+                        mDescription.setVisibility(View.GONE);
+                    }
                     break;
             }
         }
