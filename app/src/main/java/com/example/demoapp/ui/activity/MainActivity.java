@@ -1,6 +1,7 @@
 package com.example.demoapp.ui.activity;
 
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity
             WRITE_EXTERNAL_STORAGE
     };
 
+    public static void launch(Activity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.startActivity(intent);
+    }
 
     // contract methods
     @Override

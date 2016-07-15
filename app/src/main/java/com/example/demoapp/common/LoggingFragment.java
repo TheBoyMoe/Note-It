@@ -1,4 +1,4 @@
-package com.example.demoapp.ui.fragment;
+package com.example.demoapp.common;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.demoapp.common.Constants;
 
 import timber.log.Timber;
 
