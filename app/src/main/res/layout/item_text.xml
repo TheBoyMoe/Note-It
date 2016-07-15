@@ -24,18 +24,14 @@
             <TextView
                 android:id="@+id/item_title"
                 tools:text="Dummy Text"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:transitionName="@string/title_transition"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                style="@style/TextStyle.Title"
+                android:layout_marginBottom="@dimen/dimen_small"
+                android:transitionName="@string/title_transition"/>
 
             <TextView
                 android:id="@+id/item_description"
                 android:transitionName="@string/description_transition"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"/>
+                style="@style/TextStyle.Description"/>
 
         </LinearLayout>
 

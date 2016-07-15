@@ -31,21 +31,32 @@
     </style>
 
 
-    <style name="TextStyle"/>
-
-    <style name="TextStyle.TextNote">
-        <item name="android:fontFamily">sans-serif-condensed</item>
+    <!-- Text style -->
+    <style name="TextStyle">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="TextStyle.TextNote.Title">
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="TextStyle.TextNote.Description">
+    <style name="TextStyle.Title">
+        <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="TextStyle.Description">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextStyle.Title.Note">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TextStyle.Description.Note">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <!-- END -->
+
 
     <!-- button menu style -->
     <style name="menu_labels_style">

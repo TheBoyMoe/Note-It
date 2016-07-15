@@ -18,7 +18,7 @@
             android:transitionName="@string/title_transition"
             android:layout_marginBottom="@dimen/dimen_normal"
             android:background="@android:color/transparent"
-            style="@style/TextStyle.TextNote.Title"
+            style="@style/TextStyle.Title.Note"
             android:imeOptions="actionDone"/>
 
         <EditText
@@ -26,7 +26,7 @@
             android:hint="@string/description_hint"
             android:layout_below="@id/audio_note_title"
             android:background="@android:color/transparent"
-            style="@style/TextStyle.TextNote.Description"
+            style="@style/TextStyle.Description.Note"
             android:imeOptions="actionDone"/>
 
         <!-- audio player controls -->
