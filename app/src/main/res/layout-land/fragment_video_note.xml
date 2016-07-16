@@ -16,7 +16,6 @@
         <ImageView
             android:id="@+id/video_note_preview"
             android:contentDescription="@string/image_view_description"
-            android:transitionName="@string/thumbnail_transition"
             android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

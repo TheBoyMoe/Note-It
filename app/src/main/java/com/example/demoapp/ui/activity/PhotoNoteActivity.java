@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
@@ -20,16 +17,11 @@ public class PhotoNoteActivity extends AppCompatActivity
 
 
     @SuppressWarnings("unchecked")
-    public static void launch(Activity activity, View layout, long id, String previewPath) {
+    public static void launch(Activity activity, long id, String previewPath) {
         Intent intent = new Intent(activity, PhotoNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
         intent.putExtra(Constants.ITEM_PREVIEW_PATH, previewPath);
-        ActivityOptionsCompat options = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(
-                        activity,
-                        new Pair<View, String>(layout.findViewById(R.id.item_thumbnail), activity.getString(R.string.thumbnail_transition))
-                );
-        activity.startActivity(intent, options.toBundle());
+        activity.startActivity(intent);
     }
 
     @Override

@@ -15,7 +15,6 @@
         <EditText
             android:id="@+id/note_text_title"
             android:hint="@string/title_hint"
-            android:transitionName="@string/title_transition"
             android:background="@android:color/transparent"
             style="@style/TextStyle.Title.Note"
             android:layout_marginBottom="@dimen/dimen_normal"
@@ -24,7 +23,6 @@
         <EditText
             android:id="@+id/note_text_description"
             android:hint="@string/description_hint"
-            android:transitionName="@string/description_transition"
             android:background="@android:color/transparent"
             style="@style/TextStyle.Description.Note"
             android:imeOptions="actionDone"/>

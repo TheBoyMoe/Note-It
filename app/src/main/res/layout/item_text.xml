@@ -24,12 +24,10 @@
             <TextView
                 android:id="@+id/item_title"
                 tools:text="Dummy Text"
-                style="@style/TextStyle.Title"
-                android:transitionName="@string/title_transition"/>
+                style="@style/TextStyle.Title"/>
 
             <TextView
                 android:id="@+id/item_description"
-                android:transitionName="@string/description_transition"
                 style="@style/TextStyle.Description"/>
 
         </LinearLayout>

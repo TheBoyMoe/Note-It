@@ -6,10 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
@@ -30,19 +27,14 @@ public class VideoNoteActivity extends AppCompatActivity
     }
 
     @SuppressWarnings("unchecked")
-    public static void launch(Activity activity, View layout, long id, String filePath, String previewPath, String mimeType) {
+    public static void launch(Activity activity, long id, String filePath, String previewPath, String mimeType) {
 
         Intent intent = new Intent(activity, VideoNoteActivity.class);
         intent.putExtra(Constants.ITEM_ID, id);
         intent.putExtra(Constants.ITEM_FILE_PATH, filePath);
         intent.putExtra(Constants.ITEM_PREVIEW_PATH, previewPath);
         intent.putExtra(Constants.ITEM_MIME_TYPE, mimeType);
-        ActivityOptionsCompat options = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(
-                        activity,
-                        new Pair<View, String>(layout.findViewById(R.id.item_thumbnail), activity.getString(R.string.thumbnail_transition))
-                );
-        activity.startActivity(intent, options.toBundle());
+        activity.startActivity(intent);
     }
 
 

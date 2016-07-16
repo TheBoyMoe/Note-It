@@ -33,7 +33,6 @@
                 android:id="@+id/item_title"
                 tools:text="Item Text"
                 style="@style/TextStyle.Title"
-                android:transitionName="@string/title_transition"
                 android:padding="@dimen/dimen_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
