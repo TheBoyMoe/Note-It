@@ -31,5 +31,6 @@
     <string name="title_transition">titleTransition</string>
     <string name="description_transition">descriptionTransition</string>
     <string name="thumbnail_transition">imagePreviewTransition</string>
+    <string name="action_about_title">About</string>
 
 </resources>
