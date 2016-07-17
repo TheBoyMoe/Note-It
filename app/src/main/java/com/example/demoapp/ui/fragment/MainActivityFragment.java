@@ -54,7 +54,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, MenuInflater inflater, Menu menu) {
-        inflater.inflate(R.menu.menu_delete, menu);
+        inflater.inflate(R.menu.menu_delete_white, menu);
         return true;
     }
 
@@ -114,6 +114,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         void onAudioItemClick(long id, String title, String description, String filePath);
         void onVideoItemClick(long id, String filePath, String thumbnailPath, String mimeType);
         void onPhotoItemClick(long id, String filePath);
+        // TODO add method to handle previewActivity
     }
 
     public MainActivityFragment() {}
@@ -302,6 +303,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
 
             switch (mViewType) {
+                // TODO amend photo and video
                 case Constants.ITEM_TYPE_VIDEO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
@@ -352,6 +354,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                         getContract().onVideoItemClick(mId, mFilePath, mPreviewPath, mMimeType);
                         break;
                     case Constants.ITEM_TYPE_PHOTO:
+                        // TODO amend
                         getContract().onPhotoItemClick(mId, mPreviewPath);
                         break;
                 }

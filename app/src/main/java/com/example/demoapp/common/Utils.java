@@ -170,7 +170,7 @@ public class Utils {
             toolbar.setTitleTextColor(ContextCompat.getColor(activity, R.color.colorPrimaryText));
             // add overflow icon via the menu, use this method to tint them
             toolbar.setOverflowIcon(Utils.tintDrawable(ContextCompat
-                    .getDrawable(activity, R.drawable.action_delete_black), R.color.colorButtonIcon));
+                    .getDrawable(activity, R.drawable.action_delete), R.color.colorButtonIcon));
         }
     }
 
@@ -225,7 +225,7 @@ public class Utils {
         Picasso.with(context)
                 .load(new File(thumbnailPath))
                 .fit() // scale image to fit image view element
-                .centerInside()
+                .centerCrop()
                 .placeholder(R.drawable.action_video_placeholder)
                 .error(R.drawable.action_video_placeholder)
                 .into(view);
@@ -243,7 +243,7 @@ public class Utils {
                 Environment.DIRECTORY_PICTURES), "NoteTakingApp");
 
         // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){  // FIXME missing permission api 23
+        if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
                 Timber.i("%s: failed to create directory", Constants.LOG_TAG);
                 return null;

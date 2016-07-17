@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPhotoItemClick(long id, String previewPath) {
-        PhotoNoteActivity.launch(this, id, previewPath);
+        // PhotoNoteActivity.launch(this, id, previewPath);
+        PreviewActivity.launch(this, id, "", "", "", previewPath, "");
     }
 
     @Override
@@ -226,7 +227,7 @@ public class MainActivity extends AppCompatActivity
                 // generate thumbnail
                 String thumbnailPath = Utils.generatePreviewImage(mPhotoFullSizePath, 300, 300);
                 // generate preview maintaining aspect ratio
-                String previewPath = Utils.generateScaledPreviewImage(mPhotoFullSizePath, 1024, 1024);
+                String previewPath = Utils.generateScaledPreviewImage(mPhotoFullSizePath, 1400, 1400);
 
                 // insert photo item into database
                 ContentValues values = Utils.setContentValuesMediaNote(

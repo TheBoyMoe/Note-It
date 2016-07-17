@@ -3,7 +3,7 @@
     <string name="empty_list_item">No items to show</string>
     <string name="title_hint">add a title</string>
     <string name="description_hint">add a description</string>
-    <string name="image_view_description">Video file</string>
+    <string name="image_view_description">Preview photo</string>
     <string name="video_fragment_text_view">Press and hold to select video</string>
     <string name="video_list_activity_title">Pick a video</string>
     <string name="item_thumbnail">Item thumbnail image</string>

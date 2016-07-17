@@ -85,6 +85,16 @@
                 android:value=".ui.activity.PhotoNoteActivity"/>
         </activity>
 
+        <activity
+            android:name=".ui.activity.PreviewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".ui.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.MainActivity"/>
+        </activity>
+
     </application>
 
 </manifest>
