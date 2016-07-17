@@ -211,15 +211,15 @@ public class Utils {
     }
 
 
-    public static void loadThumbnailWithPicasso(Context context, String thumbnailPath, ImageView view) {
-        Picasso.with(context)
-                .load(new File(thumbnailPath))
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.action_video_placeholder)
-                .error(R.drawable.action_video_placeholder)
-                .into(view);
-    }
+//    public static void loadThumbnailWithPicasso(Context context, String thumbnailPath, ImageView view) {
+//        Picasso.with(context)
+//                .load(new File(thumbnailPath))
+//                .fit()
+//                .centerCrop()
+//                .placeholder(R.drawable.action_video_placeholder)
+//                .error(R.drawable.action_video_placeholder)
+//                .into(view);
+//    }
 
     public static void loadPreviewWithPicasso(Context context, String thumbnailPath, ImageView view) {
         Picasso.with(context)

@@ -312,7 +312,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mPreviewPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_PREVIEW_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     Utils.setTitleText(mTitle, mTitleText);
-                    Utils.loadThumbnailWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
+                    Utils.loadPreviewWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
                     break;
                 case Constants.ITEM_TYPE_AUDIO:
                     mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
