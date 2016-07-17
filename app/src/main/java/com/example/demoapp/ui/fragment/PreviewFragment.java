@@ -82,11 +82,8 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
         }
 
         final ImageView preview = (ImageView) view.findViewById(R.id.preview_image);
-
-
-        //ImageView playLogo = (ImageView) view.findViewById(R.id.play_logo);
-        //mTitle = (EditText) view.findViewById(R.id.preview_title);
-        //mDescription = (EditText) view.findViewById(R.id.preview_description);
+        mTitle = (EditText) view.findViewById(R.id.preview_title);
+        mDescription = (EditText) view.findViewById(R.id.preview_description);
 
 
         if (getArguments() != null) {
@@ -121,7 +118,7 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_delete_black, menu);
+        inflater.inflate(R.menu.menu_delete_white, menu);
     }
 
     @Override
@@ -149,10 +146,7 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if (actionBar != null)
             actionBar.setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(Utils
-                .tintDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_back), android.R.color.white));
-        toolbar.setOverflowIcon(Utils
-                    .tintDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_delete), android.R.color.white));
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.action_back_white));
     }
 
 
