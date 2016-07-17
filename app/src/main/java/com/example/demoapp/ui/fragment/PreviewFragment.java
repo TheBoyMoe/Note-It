@@ -22,8 +22,6 @@ import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
 
-import timber.log.Timber;
-
 public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>
         implements View.OnClickListener{
 
@@ -105,9 +103,6 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>
             mPreviewPath = getArguments().getString(Constants.ITEM_PREVIEW_PATH);
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
 
-            // check if title/description texts are empty before setting title/description
-            Timber.i("%s: id: %d, title: %s, description: %s, filePath: %s, previewPath: %s, mimeType: %s",
-                    Constants.LOG_TAG, mId, titleText, descriptionText, mFilePath, mPreviewPath, mMimeType);
             if (titleText != null && !titleText.isEmpty()) {
                 mTitle.setText(titleText);
             }
