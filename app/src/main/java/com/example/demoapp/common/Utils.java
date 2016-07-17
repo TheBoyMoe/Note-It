@@ -214,23 +214,13 @@ public class Utils {
     }
 
 
-//    public static void loadThumbnailWithPicasso(Context context, String thumbnailPath, ImageView view) {
-//        Picasso.with(context)
-//                .load(new File(thumbnailPath))
-//                .fit()
-//                .centerCrop()
-//                .placeholder(R.drawable.action_video_placeholder)
-//                .error(R.drawable.action_video_placeholder)
-//                .into(view);
-//    }
-
-    public static void loadPreviewWithPicasso(Context context, String thumbnailPath, ImageView view) {
+    public static void loadPreviewWithPicasso(Context context, String previewPath, ImageView view) {
         Picasso.with(context)
-                .load(new File(thumbnailPath))
-                .fit() // scale image to fit image view element
+                .load(new File(previewPath))
+                .fit() // scale image to fit image view element - also scales the placeholder
                 .centerCrop()
-                .placeholder(R.drawable.action_video_placeholder)
-                .error(R.drawable.action_video_placeholder)
+                //.placeholder(tintDrawable(ContextCompat.getDrawable(context, R.drawable.action_video_placeholder), R.color.colorPrimary))
+                //.error(R.drawable.action_video_placeholder)
                 .into(view);
     }
 
