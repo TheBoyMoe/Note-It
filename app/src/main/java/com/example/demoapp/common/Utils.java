@@ -27,10 +27,13 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -425,4 +428,29 @@ public class Utils {
         }
     }
 
+    public static void setDescriptionText(TextView tv, String description) {
+        if (!description.isEmpty()) {
+            tv.setText(description);
+            tv.setVisibility(View.VISIBLE);
+            tv.setPadding(0,8,0,0);
+        } else {
+            tv.setVisibility(View.GONE);
+        }
     }
+
+
+    // determine the screens dimensions
+    public static LinearLayout.LayoutParams getScreenDimensions(Activity activity) {
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = activity.getResources().getDisplayMetrics().density;
+        int width = Math.round(outMetrics.widthPixels / density);
+        int height = Math.round(outMetrics.heightPixels / density);
+        Timber.i("%s: width: %d, height: %d", Constants.LOG_TAG, width, height);
+
+        return new LinearLayout.LayoutParams(width, height);
+    }
+
+}

@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onVideoItemClick(long id, String filePath, String previewPath, String mimeType) {
+        // TODO amend - use PreviewActivity include title and description
         VideoNoteActivity.launch(MainActivity.this, id, filePath, previewPath, mimeType);
     }
 
     @Override
-    public void onPhotoItemClick(long id, String previewPath) {
-        // PhotoNoteActivity.launch(this, id, previewPath);
-        PreviewActivity.launch(this, id, "", "", "", previewPath, "");
+    public void onPhotoItemClick(long id, String title, String description, String previewPath, String mimeType) {
+        PreviewActivity.launch(this, id, title, description, "", previewPath, mimeType); // not supplying filePath
     }
 
     @Override

@@ -113,7 +113,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         void onNoteItemClick(long id, String title, String description);
         void onAudioItemClick(long id, String title, String description, String filePath);
         void onVideoItemClick(long id, String filePath, String thumbnailPath, String mimeType);
-        void onPhotoItemClick(long id, String filePath);
+        void onPhotoItemClick(long id, String title, String description, String previewPath, String mimeType);
         // TODO add method to handle previewActivity
     }
 
@@ -301,36 +301,26 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
         public void bindViewHolder(Cursor cursor) {
             mId = cursor.getLong(cursor.getColumnIndex(Constants.ITEM_ID));
+            mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
+            mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
 
             switch (mViewType) {
-                // TODO amend photo and video
                 case Constants.ITEM_TYPE_VIDEO:
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
-                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                 case Constants.ITEM_TYPE_PHOTO:
-                    mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
+                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     mPreviewPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_PREVIEW_PATH));
                     mThumbnailPath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_THUMBNAIL_PATH));
                     Utils.setTitleText(mTitle, mTitleText);
                     Utils.loadPreviewWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
                     break;
                 case Constants.ITEM_TYPE_AUDIO:
-                    mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
-                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
                     Utils.setTitleText(mTitle, mTitleText);
                     break;
                 case Constants.ITEM_TYPE_TEXT:
-                    mTitleText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_TITLE));
-                    mDescriptionText = cursor.getString(cursor.getColumnIndex(Constants.ITEM_DESCRIPTION));
                     mTitle.setText(mTitleText);
-                    if (mDescriptionText != null && !mDescriptionText.isEmpty()) {
-                        mDescription.setText(mDescriptionText);
-                        mDescription.setPadding(0, 8, 0, 0);
-                        mDescription.setVisibility(View.VISIBLE);
-                    } else {
-                        mDescription.setVisibility(View.GONE);
-                    }
+                    Utils.setDescriptionText(mDescription, mDescriptionText);
                     break;
             }
         }
@@ -351,11 +341,11 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                         getContract().onAudioItemClick(mId, mTitleText, mDescriptionText, mFilePath);
                         break;
                     case Constants.ITEM_TYPE_VIDEO:
+                        // TODO
                         getContract().onVideoItemClick(mId, mFilePath, mPreviewPath, mMimeType);
                         break;
                     case Constants.ITEM_TYPE_PHOTO:
-                        // TODO amend
-                        getContract().onPhotoItemClick(mId, mPreviewPath);
+                        getContract().onPhotoItemClick(mId, mTitleText, mDescriptionText, mPreviewPath, mMimeType);
                         break;
                 }
             }

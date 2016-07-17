@@ -3,6 +3,7 @@ package com.example.demoapp.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +22,16 @@ import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
 
-public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
+import timber.log.Timber;
+
+public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>
+        implements View.OnClickListener{
+
+    private ImageView preview;
+
 
     public interface Contract {
-        void playVideo(String filePath, long id);
-        void save(String title, String description);
+        void playVideo(long id, String flePath, String mimeType);
         void update(long id, String title, String description);
         void delete(long id);
         void quit();
@@ -35,12 +41,10 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
     private EditText mDescription;
 
     private long mId;
-    private String mTitleText;
-    private String mDescriptionText;
     private String mFilePath;
     private String mPreviewPath;
     private String mMimeType;
-    private boolean mZoom = false;
+
 
     public PreviewFragment() {}
 
@@ -75,28 +79,41 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO handle quit(), save(), update() contract methods
-                    Utils.showToast(getActivity(), "clicked on back!");
+                    // retrieve title & description and propagate upto hosting activity
+                    String title = mTitle.getText() != null ? mTitle.getText().toString() : "";
+                    String description = mDescription.getText() != null ? mDescription.getText().toString() : "";
+                    if (title.isEmpty()) {
+                        getContract().quit();
+                    } else  if (mId > 0){
+                        updateAndQuit(title, description);
+                    }
                 }
             });
         }
 
-        final ImageView preview = (ImageView) view.findViewById(R.id.preview_image);
+        ImageView preview = (ImageView) view.findViewById(R.id.preview_image);;
         mTitle = (EditText) view.findViewById(R.id.preview_title);
         mDescription = (EditText) view.findViewById(R.id.preview_description);
-
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
 
         if (getArguments() != null) {
             // fetch note details from args bundle
-            mId = getArguments().getLong(Constants.ITEM_ID);
-            mTitleText = getArguments().getString(Constants.ITEM_TITLE);
-            mDescriptionText = getArguments().getString(Constants.ITEM_DESCRIPTION);
+            mId = getArguments().getLong(Constants.ITEM_ID, 0);
+            String titleText = getArguments().getString(Constants.ITEM_TITLE);
+            String descriptionText = getArguments().getString(Constants.ITEM_DESCRIPTION);
             mFilePath = getArguments().getString(Constants.ITEM_FILE_PATH);
             mPreviewPath = getArguments().getString(Constants.ITEM_PREVIEW_PATH);
             mMimeType = getArguments().getString(Constants.ITEM_MIME_TYPE);
 
-            // TODO check if title/description texts are empty before setting title/description
-
+            // check if title/description texts are empty before setting title/description
+            Timber.i("%s: id: %d, title: %s, description: %s, filePath: %s, previewPath: %s, mimeType: %s",
+                    Constants.LOG_TAG, mId, titleText, descriptionText, mFilePath, mPreviewPath, mMimeType);
+            if (titleText != null && !titleText.isEmpty()) {
+                mTitle.setText(titleText);
+            }
+            if (descriptionText != null && !descriptionText.isEmpty()) {
+                mDescription.setText(descriptionText);
+            }
         }
 
         if (savedInstanceState != null) {
@@ -106,14 +123,15 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
         }
 
         Utils.loadPreviewWithPicasso(getActivity(), mPreviewPath, preview);
+
+        // display fab and onClickListener on VideoNote fragments
         if (mMimeType.equals(Constants.VIDEO_MIMETYPE)) {
-            //playLogo.setVisibility(View.VISIBLE);
-            // TODO show/hide fab which will launch playVideo()
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(this);
         }
 
         return view;
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -124,10 +142,8 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // handle delete
             case R.id.action_delete:
-                Utils.showToast(getActivity(), "Clicked delete");
-                //getContract().delete(mId);
+                getContract().delete(mId);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -149,6 +165,14 @@ public class PreviewFragment extends ContractFragment<PreviewFragment.Contract>{
             toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.action_back_white));
     }
 
+    private void updateAndQuit(String title, String description) {
+        getContract().update(mId, title, description);
+    }
+
+    @Override
+    public void onClick(View v) {
+        getContract().playVideo(mId, mFilePath, mMimeType);
+    }
 
 
 }

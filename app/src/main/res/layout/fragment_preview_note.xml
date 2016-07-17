@@ -57,5 +57,14 @@
              android:layout_width="match_parent"
              android:layout_alignParentTop="true"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:src="@drawable/action_play_video"/>
+
 
 </RelativeLayout>

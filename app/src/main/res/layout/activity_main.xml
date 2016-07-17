@@ -46,9 +46,9 @@
         app:fab_addButtonStrokeVisible="false"
         app:fab_expandDirection="up"
         app:layout_behavior="com.example.demoapp.custom.CustomFloatingActionMenuBehaviour"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginBottom="@dimen/action_button_margin"
+        android:layout_marginRight="@dimen/action_button_margin"
+        android:layout_marginEnd="@dimen/action_button_margin">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/action_photo_btn"

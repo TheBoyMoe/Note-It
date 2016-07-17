@@ -1,20 +1,30 @@
 package com.example.demoapp.ui.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
+import com.example.demoapp.common.Utils;
+import com.example.demoapp.thread.UpdateItemThread;
 import com.example.demoapp.ui.fragment.PreviewFragment;
+
+import java.io.File;
 
 public class PreviewActivity extends AppCompatActivity
         implements PreviewFragment.Contract{
 
     private CoordinatorLayout mLayout;
+    private FloatingActionButton mFab;
+    private String mFilePath;
+    private String mMimeType;
 
     public static void launch(Activity activity, long id, String title,
               String description, String filePath, String previewPath, String mimeType) {
@@ -32,8 +42,9 @@ public class PreviewActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_layout);
+        setContentView(R.layout.activity_note_layout );
         mLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+        //mFab = (FloatingActionButton) findViewById(R.id.fab);
 
         PreviewFragment fragment =
             (PreviewFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
@@ -57,30 +68,45 @@ public class PreviewActivity extends AppCompatActivity
 
     // impl contract methods
     @Override
-    public void playVideo(String filePath, long id) {
+    public void playVideo(long id, String filePath, String mimeType ) {
+//        mMimeType = mimeType;
+//        mFilePath = filePath;
+//        if (mMimeType.equals(Constants.VIDEO_MIMETYPE)) {
+//            mFab.setVisibility(View.VISIBLE);
+//            mFab.setOnClickListener(this);
+//        }
 
-    }
-
-    @Override
-    public void save(String title, String description) {
-
+        if(filePath != null && mimeType != null) {
+            Uri video = Uri.fromFile(new File(filePath));
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(video, mimeType);
+            if (Utils.isAppInstalled(this, intent)) {
+                startActivity(intent);
+            } else {
+                Utils.showSnackbar(mLayout, "No suitable app found to play video");
+            }
+        } else {
+            Utils.showSnackbar(mLayout, "Error, video file not found");
+        }
     }
 
     @Override
     public void update(long id, String title, String description) {
-
+        // update note in the database
+        ContentValues values = Utils.updateContentValues(id, title, description);
+        new UpdateItemThread(this, values).start();
+        finish();
     }
 
     @Override
     public void delete(long id) {
-
+        Utils.deleteItemFromDevice(this, id);
     }
 
     @Override
     public void quit() {
-
+        finish();
     }
-
 
 
 }
