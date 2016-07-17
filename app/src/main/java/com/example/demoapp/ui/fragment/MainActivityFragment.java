@@ -233,8 +233,23 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             if(cursor != null) {
                 holder.bindViewHolder(cursor);
                 int position = cursor.getPosition();
+                // highlight any selected notes
                 holder.itemView.setBackgroundColor(ContextCompat.getColor(
-                    getActivity(), isSelected(position) ? R.color.colorPrimary : R.color.colorSecondaryBackground));
+                    getActivity(), isSelected(position) ? R.color.colorAccent : R.color.colorSecondaryBackground));
+                // set the icon color of audio & video notes to match selected color
+                ImageView videoIv = holder.mPlayIcon;
+                ImageView audioIv = holder.mThumbnail;
+                String mimeType = holder.mMimeType;
+
+                if (audioIv != null && mimeType != null && mimeType.equals(Constants.AUDIO_MIMETYPE)) {
+                    audioIv.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                            isSelected(position) ? R.drawable.action_microphone_selected : R.drawable.action_microphone));
+                }
+                if (videoIv != null && mimeType != null && mimeType.equals(Constants.VIDEO_MIMETYPE)) {
+                    videoIv.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                            isSelected(position) ? R.drawable.action_play_selected : R.drawable.action_play));
+                }
+
             }
         }
 
@@ -262,12 +277,13 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
     }
 
-    private class CustomViewHolder extends RecyclerView.ViewHolder
+    public class CustomViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnLongClickListener {
 
         TextView mTitle;
         TextView mDescription;
         ImageView mThumbnail;
+        ImageView mPlayIcon;
 
         long mId;
         int mViewType;
@@ -277,6 +293,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
         String mPreviewPath;
         String mThumbnailPath;
         String mMimeType;
+
 
 
         public CustomViewHolder(View itemView, int viewType) {
@@ -289,9 +306,10 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     mTitle = (TextView) itemView.findViewById(R.id.item_title);
                     mDescription = (TextView) itemView.findViewById(R.id.item_description);
                     break;
+                case Constants.ITEM_TYPE_VIDEO:
+                    mPlayIcon = (ImageView) itemView.findViewById(R.id.item_play_icon);
                 case Constants.ITEM_TYPE_PHOTO:
                 case Constants.ITEM_TYPE_AUDIO:
-                case Constants.ITEM_TYPE_VIDEO:
                     mTitle = (TextView) itemView.findViewById(R.id.item_title);
                     mThumbnail = (ImageView) itemView.findViewById(R.id.item_thumbnail);
                     break;
@@ -314,7 +332,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     Utils.loadPreviewWithPicasso(getActivity(), mThumbnailPath, mThumbnail);
                     break;
                 case Constants.ITEM_TYPE_AUDIO:
+                    mMimeType = cursor.getString(cursor.getColumnIndex(Constants.ITEM_MIME_TYPE));
                     mFilePath = cursor.getString(cursor.getColumnIndex(Constants.ITEM_FILE_PATH));
+//                    mThumbnail.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_microphone_selected));
                     Utils.setTitleText(mTitle, mTitleText);
                     break;
                 case Constants.ITEM_TYPE_TEXT:

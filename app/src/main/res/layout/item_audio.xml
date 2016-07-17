@@ -24,7 +24,6 @@
             <ImageView
                 android:id="@+id/item_thumbnail"
                 android:contentDescription="@string/audio_item_image"
-                android:src="@drawable/action_microphone"
                 android:scaleType="fitCenter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

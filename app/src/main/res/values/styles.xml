@@ -18,6 +18,9 @@
     <!-- allow contextual actionbar to float over the toolbar when visible -->
     <style name="AppTheme.ContextActionBar" parent="AppTheme.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
+        <!-- set background color of context action bar -->
+        <item name="actionModeBackground">@color/colorAccent</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>

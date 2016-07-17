@@ -64,8 +64,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        app:backgroundTint="@color/colorPrimaryDark"
-        android:src="@drawable/action_play_video"/>
+        app:backgroundTint="@color/colorAccent"
+        android:src="@drawable/action_play"/>
 
 
 </RelativeLayout>
