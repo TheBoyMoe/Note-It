@@ -32,7 +32,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dimen_xlarge"
+            android:layout_marginBottom="@dimen/dimen_normal"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
