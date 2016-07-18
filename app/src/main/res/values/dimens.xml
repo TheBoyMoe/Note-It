@@ -20,6 +20,7 @@
     <dimen name="column_size">160dp</dimen>
     <dimen name="column_spacing">10dp</dimen>
     <dimen name="audio_btn_size">56dp</dimen>
+    <dimen name="progress_bar_margin">62dp</dimen>
     <dimen name="corner_radius">0dp</dimen>
     <dimen name="item_elevation">3dp</dimen>
     <dimen name="thumbnail_height">160dp</dimen>

@@ -12,6 +12,13 @@
         <item name="windowActionModeOverlay">true</item>
         <!-- enable window content transitions supported in api 21+ -->
         <item name="android:windowContentTransitions">true</item>
+        <!-- context action bar background -->
+        <item name="actionModeBackground">@color/colorAccent</item>
+    </style>
+
+    <style name="CustomProgressBarTheme" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:progressBackgroundTint">@color/colorPrimaryLight</item>
     </style>
 
 </resources>

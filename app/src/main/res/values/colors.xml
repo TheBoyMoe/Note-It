@@ -3,6 +3,7 @@
     <color name="colorPrimary">@color/primary</color>
     <color name="colorPrimaryDark">@color/primary_dark</color>
     <color name="colorPrimaryDarker">@color/primary_darker</color>
+    <color name="colorPrimaryLight">@color/primary_light</color>
     <color name="colorAccent">@color/accent</color>
     <color name="colorAccentDark">@color/accent_dark</color>
     <color name="colorPrimaryBackground">@color/primary_background</color>
