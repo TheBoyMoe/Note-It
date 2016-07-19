@@ -45,18 +45,14 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     }
 
     private static final String STATE_PLAY_BUTTON = "play_button_state";
-    // private static final String STATE_PAUSE_BUTTON = "pause_button_state";
     private static final String STATE_STOP_BUTTON = "stop_button_state";
     private static final String STATE_IS_PLAYING = "is_playing";
     private static final String STATE_CURRENT_POSITION = "current_position";
-    // private static final int PROGRESS_DELAY = 100;
-    // private static final int MAX_PROGRESS = 100;
 
     private View mView;
     private EditText mEditTitle;
     private EditText mEditDescription;
     private ImageButton mPlayButton;
-    //private ImageButton mPause;
     private ImageButton mStopButton;
     private AppCompatSeekBar mProgressBar;
 
@@ -145,7 +141,6 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
             mIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING, false);
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
             mPlayButton.setEnabled(savedInstanceState.getBoolean(STATE_PLAY_BUTTON));
-            //mPause.setEnabled(savedInstanceState.getBoolean(STATE_PAUSE_BUTTON));
             mStopButton.setEnabled(savedInstanceState.getBoolean(STATE_STOP_BUTTON));
             mIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING);
             if (mIsPlaying) {
@@ -167,7 +162,6 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
 
         // save button states
         outState.putBoolean(STATE_PLAY_BUTTON, mPlayButton.isEnabled());
-        //outState.putBoolean(STATE_PAUSE_BUTTON, mPause.isEnabled());
         outState.putBoolean(STATE_STOP_BUTTON, mStopButton.isEnabled());
         outState.putBoolean(STATE_IS_PLAYING, mIsPlaying);
         outState.putInt(STATE_CURRENT_POSITION, mCurrentPosition);
@@ -187,14 +181,12 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
                 return true;
             case android.R.id.home:
                 getActivity().supportFinishAfterTransition();
-                //getActivity().onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
-    /** MediaPlayer implementation  */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
