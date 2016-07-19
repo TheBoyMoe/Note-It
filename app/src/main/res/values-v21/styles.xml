@@ -16,9 +16,9 @@
         <item name="actionModeBackground">@color/colorAccent</item>
     </style>
 
-    <style name="CustomProgressBarTheme" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:progressBackgroundTint">@color/colorPrimaryLight</item>
-    </style>
+    <!--<style name="CustomProgressBarTheme" parent="Theme.AppCompat.Light">-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+        <!--<item name="android:progressBackgroundTint">@color/colorPrimaryLight</item>-->
+    <!--</style>-->
 
 </resources>

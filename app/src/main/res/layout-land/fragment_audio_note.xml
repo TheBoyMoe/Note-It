@@ -28,47 +28,9 @@
             style="@style/TextStyle.Description.Note"
             android:imeOptions="actionDone"/>
 
-        <!-- audio player controls -->
-        <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginBottom="@dimen/dimen_normal"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/action_play"-->
-                <!--android:background="@color/colorNeutral"-->
-                <!--android:src="@drawable/action_audio_play"-->
-                <!--android:contentDescription="@string/audio_playback"-->
-                <!--android:enabled="false"-->
-                <!--android:layout_width="@dimen/audio_btn_size"-->
-                <!--android:layout_height="@dimen/audio_btn_size"/>-->
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/action_pause"-->
-                <!--android:src="@drawable/action_audio_pause"-->
-                <!--android:background="@color/colorNeutral"-->
-                <!--android:contentDescription="@string/pause_playback"-->
-                <!--android:layout_marginLeft="@dimen/dimen_xxlarge"-->
-                <!--android:layout_marginRight="@dimen/dimen_xxlarge"-->
-                <!--android:layout_width="@dimen/audio_btn_size"-->
-                <!--android:layout_height="@dimen/audio_btn_size"/>-->
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/action_stop"-->
-                <!--android:background="@color/colorNeutral"-->
-                <!--android:src="@drawable/action_audio_stop"-->
-                <!--android:contentDescription="@string/stop_playback"-->
-                <!--android:layout_width="@dimen/audio_btn_size"-->
-                <!--android:layout_height="@dimen/audio_btn_size"/>-->
-
-        <!--</LinearLayout>-->
-
 
         <RelativeLayout
-
+            android:background="@drawable/player_wrapper"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dimen_normal"
             android:layout_marginRight="@dimen/dimen_xlarge"
@@ -87,12 +49,12 @@
                 android:layout_width="@dimen/audio_btn_size"
                 android:layout_height="@dimen/audio_btn_size"/>
 
-            <ProgressBar
+            <android.support.v7.widget.AppCompatSeekBar
                 android:id="@+id/progress_bar"
                 android:indeterminate="false"
-                android:progress="10"
-                android:theme="@style/CustomProgressBarTheme"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_bar"
+                android:thumb="@drawable/progress_bar_thumb"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/progress_bar_margin"
                 android:layout_marginRight="@dimen/progress_bar_margin"

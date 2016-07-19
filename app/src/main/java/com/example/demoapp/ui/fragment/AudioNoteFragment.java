@@ -26,6 +26,16 @@ import java.util.Random;
 
 import timber.log.Timber;
 
+
+/**
+ * References
+ * [1] http://stackoverflow.com/questions/8956218/android-seekbar-setonseekbarchangelistener
+ * [2] http://www.mopri.de/2010/timertask-bad-do-it-the-android-way-use-a-handler/
+ * [3] http://www.androidhive.info/2012/03/android-building-audio-player-tutorial/
+ * [4] http://stackoverflow.com/questions/21864890/change-progress-music-when-clicked-on-seekbar-in-android
+ * [5] http://united-coders.com/nico-heid/an-android-seekbar-for-your-mediaplayer/
+ *
+ */
 public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contract> implements
         View.OnClickListener,
         MediaPlayer.OnCompletionListener{

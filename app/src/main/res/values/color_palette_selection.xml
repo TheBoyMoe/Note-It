@@ -19,6 +19,9 @@
     <color name="active_state">#ffff9999</color>
     <color name="dragging_state" >#ffffdddd</color>
     <color name="normal_state">#fff0f0f0</color>
+    <color name="player_background">#F0E3F2FD</color>
+    <color name="player_gradient_end">@color/accent_dark</color>
+    <color name="player_gradient_start">@color/accent</color>
 
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#e5e5e5</color>
