@@ -52,7 +52,6 @@
             <android.support.v7.widget.AppCompatSeekBar
                 android:id="@+id/progress_bar"
                 android:indeterminate="false"
-                android:progress="0"
                 android:progressDrawable="@drawable/progress_bar"
                 android:thumb="@drawable/progress_bar_thumb"
                 android:layout_centerVertical="true"

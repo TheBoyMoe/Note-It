@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,14 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 
 import com.example.demoapp.R;
 import com.example.demoapp.common.Constants;
 import com.example.demoapp.common.ContractFragment;
 import com.example.demoapp.common.Utils;
-
-import java.util.Random;
 
 import timber.log.Timber;
 
@@ -47,28 +45,31 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     }
 
     private static final String STATE_PLAY_BUTTON = "play_button_state";
-    private static final String STATE_PAUSE_BUTTON = "pause_button_state";
+    // private static final String STATE_PAUSE_BUTTON = "pause_button_state";
     private static final String STATE_STOP_BUTTON = "stop_button_state";
-    private static final String STATE_PLAYER = "player_state";
-    private static final int PROGRESS_DELAY = 100;
-    private static final int MAX_PROGRESS = 100;
+    private static final String STATE_IS_PLAYING = "is_playing";
+    private static final String STATE_CURRENT_POSITION = "current_position";
+    // private static final int PROGRESS_DELAY = 100;
+    // private static final int MAX_PROGRESS = 100;
 
     private View mView;
     private EditText mEditTitle;
     private EditText mEditDescription;
-    private ImageButton mPlay;
+    private ImageButton mPlayButton;
     //private ImageButton mPause;
-    private ImageButton mStop;
-    private ProgressBar mProgressBar;
+    private ImageButton mStopButton;
+    private AppCompatSeekBar mProgressBar;
 
     private long mId;
     private String mTitle;
     private String mDescription;
     private String mFilePath;
-    private boolean mIsPlaying = false;
+    private boolean mIsPlaying;
+    private int mCurrentPosition;
+    private int mDuration;
 
     private MediaPlayer mPlayer;
-    private Handler mHandler;
+    private Handler mSeekHandler;
 
     public AudioNoteFragment(){}
 
@@ -140,14 +141,17 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
 
         // restore states
         if (savedInstanceState != null) {
+            mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_POSITION, 0);
+            mIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING, false);
             mFilePath = savedInstanceState.getString(Constants.ITEM_FILE_PATH);
-            mPlay.setEnabled(savedInstanceState.getBoolean(STATE_PLAY_BUTTON));
+            mPlayButton.setEnabled(savedInstanceState.getBoolean(STATE_PLAY_BUTTON));
             //mPause.setEnabled(savedInstanceState.getBoolean(STATE_PAUSE_BUTTON));
-            mStop.setEnabled(savedInstanceState.getBoolean(STATE_STOP_BUTTON));
-            mIsPlaying = savedInstanceState.getBoolean(STATE_PLAYER);
+            mStopButton.setEnabled(savedInstanceState.getBoolean(STATE_STOP_BUTTON));
+            mIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING);
             if (mIsPlaying) {
-                mPlay.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_pause));
+                mPlayButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_pause));
             }
+            mProgressBar.setProgress(mCurrentPosition);
         } else {
             mPlayerSetup();
         }
@@ -162,10 +166,11 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         outState.putString(Constants.ITEM_FILE_PATH, mFilePath);
 
         // save button states
-        outState.putBoolean(STATE_PLAY_BUTTON, mPlay.isEnabled());
+        outState.putBoolean(STATE_PLAY_BUTTON, mPlayButton.isEnabled());
         //outState.putBoolean(STATE_PAUSE_BUTTON, mPause.isEnabled());
-        outState.putBoolean(STATE_STOP_BUTTON, mStop.isEnabled());
-        outState.putBoolean(STATE_PLAYER, mIsPlaying);
+        outState.putBoolean(STATE_STOP_BUTTON, mStopButton.isEnabled());
+        outState.putBoolean(STATE_IS_PLAYING, mIsPlaying);
+        outState.putInt(STATE_CURRENT_POSITION, mCurrentPosition);
     }
 
     @Override
@@ -194,15 +199,13 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_play:
-                if (!mIsPlaying) {
-                    play();
-                } else {
+                if (mIsPlaying) {
+                    mCurrentPosition = getCurrentPosition();
                     pause();
+                } else {
+                    play();
                 }
                 break;
-            //case R.id.action_pause:
-            //    pause();
-            //    break;
             case R.id.action_stop:
                 stop();
                 break;
@@ -212,13 +215,14 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacksAndMessages(null);
-        if (mStop.isEnabled()) {
+        if (mStopButton.isEnabled()) {
             stop();
         }
-        mPlayer.reset();
-        mPlayer.release();
-        mPlayer = null;
+        if (mPlayer != null) {
+            mPlayer.reset();
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 
     @Override
@@ -230,89 +234,88 @@ public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contra
         try {
             mPlayer = MediaPlayer.create(getActivity(), Uri.parse(mFilePath));
             mPlayer.setOnCompletionListener(this);
-            mPlay.setEnabled(true);
+            mDuration = mPlayer.getDuration();
+            Timber.i("%s: duration: %d", Constants.LOG_TAG, mDuration);
+            mPlayButton.setEnabled(true);
         } catch (Exception e) {
             Timber.e("%s Error playing audio file: %s", Constants.LOG_TAG, e.getMessage());
             Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
         }
-        //mPause.setEnabled(false);
-        mStop.setEnabled(false);
+        mStopButton.setEnabled(false);
     }
 
     private void play() {
-        mIsPlaying = true;
-        mPlayer.start();
-        mPlay.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_pause));
-        //mPlay.setEnabled(false);
-        //mPause.setEnabled(true);
-        mStop.setEnabled(true);
-        //progressBarAnimation();
+        if (mPlayer != null) {
+            mPlayer.start();
+            mIsPlaying = true;
+            mSeekHandler.postDelayed(onProgressUpdater, 1000);
+            mPlayButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_pause));
+            mStopButton.setEnabled(true);
+        }
     }
 
     private void pause() {
-        mIsPlaying = false;
-        mPlayer.pause();
-        mPlay.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_play));
-        //mPlay.setEnabled(true);
-        //mPause.setEnabled(false);
-        mStop.setEnabled(true);
+        if (mPlayer != null) {
+            mPlayer.pause();
+            mIsPlaying = false;
+            mSeekHandler.removeCallbacks(onProgressUpdater);
+            mPlayButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_play));
+            mStopButton.setEnabled(true);
+        }
     }
 
     private void stop() {
-        mIsPlaying = false;
-        mPlayer.stop();
-        mPlay.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_play));
-        mStop.setEnabled(false);
-        //mPause.setEnabled(false);
-        try {
-            mPlayer.prepare();
-            mPlayer.seekTo(0);
-            mPlay.setEnabled(true);
-        } catch(Exception e) {
-            Timber.e("%s Error stopping audio file: %s", Constants.LOG_TAG, e.getMessage());
-            Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
+        if (mPlayer != null) {
+            mPlayer.stop();
+            mIsPlaying = false;
+            mSeekHandler.removeCallbacks(onProgressUpdater);
+            mPlayButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.action_audio_play));
+            mStopButton.setEnabled(false);
+            mCurrentPosition = 0;
+            mProgressBar.setProgress(mCurrentPosition);
+            try {
+                mPlayer.prepare();
+                mPlayer.seekTo(0);
+                mPlayButton.setEnabled(true);
+            } catch (Exception e) {
+                Timber.e("%s Error stopping audio file: %s", Constants.LOG_TAG, e.getMessage());
+                Utils.showSnackbar(mView, getString(R.string.error_playing_audio));
+            }
         }
     }
 
     private void playerControlsSetup() {
-        mHandler = new Handler();
+        mSeekHandler = new Handler();
 
-        mPlay = (ImageButton) mView.findViewById(R.id.action_play);
-        //mPause = (ImageButton) mView.findViewById(R.id.action_pause);
-        mStop = (ImageButton) mView.findViewById(R.id.action_stop);
-        mProgressBar = (ProgressBar) mView.findViewById(R.id.progress_bar);
+        mPlayButton = (ImageButton) mView.findViewById(R.id.action_play);
+        mStopButton = (ImageButton) mView.findViewById(R.id.action_stop);
+        mProgressBar = (AppCompatSeekBar) mView.findViewById(R.id.progress_bar);
 
-        mPlay.setOnClickListener(this);
-        //mPause.setOnClickListener(this);
-        mStop.setOnClickListener(this);
+        mPlayButton.setOnClickListener(this);
+        mStopButton.setOnClickListener(this);
     }
 
-    private void progressBarAnimation() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int currentProgress = 0;
-                int total = mPlayer.getDuration();
-                mProgressBar.setMax(total);
-                while (mPlayer != null && currentProgress < total) {
-                    currentProgress = mPlayer.getCurrentPosition();
-                    mProgressBar.setProgress(currentProgress);
-                }
-//                if (currentProgress > 100) {
-//                    currentProgress = 100;
-//                }
+    private int getCurrentPosition() {
+        int currentPosition = 0;
+        if (mPlayer != null) {
+            currentPosition = mPlayer.getCurrentPosition();
+        }
+        return currentPosition;
+    }
 
-//                if (currentProgress <= MAX_PROGRESS) {
-//                    progressBarAnimation();
-//                }
+    public Runnable onProgressUpdater = new Runnable() {
+        @Override
+        public void run() {
+            if (mPlayer != null) {
+                mCurrentPosition = getCurrentPosition();
+                Timber.i("%s: current position: %d, duration: %d", Constants.LOG_TAG, mCurrentPosition, mDuration);
+                mProgressBar.setMax(mDuration);
+                mProgressBar.setProgress(mCurrentPosition);
+                // repeat every second
+                mSeekHandler.postDelayed(onProgressUpdater, 1000);
             }
-        }, PROGRESS_DELAY);
-    }
-
-    private int getNewProgress() {
-        Random random = new Random();
-        return random.nextInt(5);
-    }
+        }
+    };
 
 
 }
