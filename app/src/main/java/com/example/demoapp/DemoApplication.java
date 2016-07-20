@@ -33,9 +33,6 @@ public class DemoApplication extends Application{
             Timber.plant(new StethoTree());
         }
 
-        // detect memory leaks
-        // LeakCanary.install(this);
-
     }
 
 

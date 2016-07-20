@@ -243,7 +243,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
 
                 if (audioIv != null && mimeType != null && mimeType.equals(Constants.AUDIO_MIMETYPE)) {
                     audioIv.setImageDrawable(ContextCompat.getDrawable(getActivity(),
-                            isSelected(position) ? R.drawable.action_microphone_selected : R.drawable.action_microphone));
+                            isSelected(position) ? R.drawable.action_mic_selected : R.drawable.action_mic));
                 }
                 if (videoIv != null && mimeType != null && mimeType.equals(Constants.VIDEO_MIMETYPE)) {
                     videoIv.setImageDrawable(ContextCompat.getDrawable(getActivity(),
