@@ -32,7 +32,6 @@ import timber.log.Timber;
  * [3] http://www.androidhive.info/2012/03/android-building-audio-player-tutorial/
  * [4] http://stackoverflow.com/questions/21864890/change-progress-music-when-clicked-on-seekbar-in-android
  * [5] http://united-coders.com/nico-heid/an-android-seekbar-for-your-mediaplayer/
- *
  */
 public class AudioNoteFragment extends ContractFragment<AudioNoteFragment.Contract> implements
         View.OnClickListener,

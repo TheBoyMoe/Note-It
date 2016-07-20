@@ -19,6 +19,11 @@ import java.io.IOException;
 
 import timber.log.Timber;
 
+/**
+ * References: Toggle button and button drawable
+ * [1] http://stackoverflow.com/questions/18598255/android-create-a-toggle-button-with-image-and-no-text
+ * [2] http://www.android4devs.com/2015/03/how-to-make-floating-action-button-fab.html
+ */
 public class AudioRecorderActivity extends AppCompatActivity implements
         CompoundButton.OnCheckedChangeListener,
         MediaRecorder.OnErrorListener,

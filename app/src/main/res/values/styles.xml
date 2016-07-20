@@ -39,11 +39,18 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    <!--<style name="CustomProgressBarTheme" parent="Theme.AppCompat.Light">-->
-        <!--<item name="colorAccent">@color/colorPrimaryDark</item>-->
-        <!--<item name="android:progressBackgroundTint" tools:targetApi="lollipop">@color/colorPrimaryLight</item>-->
-    <!--</style>-->
 
+    <!-- Toggle button theme -->
+    <style name="AudioRecorder.Button.Toggle" parent="android:Widget">
+        <item name="android:background">@drawable/icon_toggle_background</item>
+        <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
+    </style>
+
+    <style name="AppToggleButton" parent="@android:style/Theme.Black">
+        <item name="android:buttonStyleToggle">@style/AudioRecorder.Button.Toggle</item>
+        <item name="android:textOff"/>
+        <item name="android:textOn"/>
+    </style>
 
     <!-- Text style -->
     <style name="TextStyle">
