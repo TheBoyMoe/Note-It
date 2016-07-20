@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:padding="@dimen/dimen_normal"
               android:layout_width="180dp"
               android:layout_height="180dp">
 
-    <!--<TextView-->
-        <!--android:text="@string/toggle_button_label"-->
-        <!--android:textSize="18sp"-->
-        <!--android:layout_marginTop="@dimen/dimen_large"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
+    <TextView
+        android:id="@+id/toggle_button_label"
+        android:text="@string/toggle_button_label"
+        style="@style/TextStyle.Title.Note"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <ToggleButton
         android:id="@+id/toggle_button"
         style="@style/AppToggleButton"
         android:background="@drawable/icon_toggle_background"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/toggle_button_label"
+        android:layout_marginTop="@dimen/dimen_small"
         android:layout_width="@dimen/toggle_btn_size"
         android:layout_height="@dimen/toggle_btn_size"/>
 

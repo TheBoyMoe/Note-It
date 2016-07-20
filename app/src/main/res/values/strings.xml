@@ -14,7 +14,8 @@
     <string name="dialog_positive_text">Agree</string>
     <string name="dialog_negative_text">Cancel</string>
     <string name="video_dialog_title">Confirm video selection</string>
-    <string name="toggle_button_label">Speak now, press to stop</string>
+    <string name="toggle_button_label">Press to record</string>
+    <string name="toggle_button_label_stop">Press to stop</string>
     <string name="error_max_duration">Maximum duration reached</string>
     <string name="error_max_file_size">Maximum file size reached</string>
     <string name="error_unknown">Unknown error occurred</string>

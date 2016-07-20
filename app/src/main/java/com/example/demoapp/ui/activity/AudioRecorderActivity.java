@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.demoapp.R;
@@ -31,6 +32,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
 
     private MediaRecorder mRecorder = null;
     private File mAudioFile;
+    private TextView mButtonLabel;
 
 
     public static void launch(Activity activity) {
@@ -43,6 +45,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_recorder);
 
+        mButtonLabel = (TextView) findViewById(R.id.toggle_button_label);
         ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle_button);
         if (toggle != null)
             toggle.setOnCheckedChangeListener(this);
@@ -79,6 +82,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
             try {
                 mRecorder.prepare();
                 mRecorder.start();
+                mButtonLabel.setText(getString(R.string.toggle_button_label_stop));
             } catch (IOException e) {
                 Timber.e("%s Error recording audio: %s", Constants.LOG_TAG, e.getMessage());
                 Utils.showToast(this, getString(R.string.error_generic));
@@ -91,6 +95,7 @@ public class AudioRecorderActivity extends AppCompatActivity implements
                 Utils.showToast(this, getString(R.string.error_generic));
             }
             mRecorder.reset();
+            mButtonLabel.setText(getString(R.string.toggle_button_label));
 
             // send back file path to MainActivity
             Intent intent =  new Intent();
