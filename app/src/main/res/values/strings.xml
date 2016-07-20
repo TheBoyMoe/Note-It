@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DemoApp</string>
+    <string name="app_name">Note-It</string>
     <string name="empty_list_item">No items to show</string>
     <string name="title_hint">add a title</string>
     <string name="description_hint">add a description</string>

@@ -114,9 +114,6 @@ public class MainActivity extends AppCompatActivity
             mIsInPermission = savedInstanceState.getBoolean(TRACK_PERMISSION_STATE, false);
         }
 
-        // FIXME check denying WRITE_EXTERNAL_STORAGE before loading adapter -
-        // stops reading audio/video/photos from disk
-
         // cache a reference to a fragment
         MainActivityFragment recyclerFragment =
                 (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
