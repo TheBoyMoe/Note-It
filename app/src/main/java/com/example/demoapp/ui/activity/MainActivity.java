@@ -381,7 +381,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    // determine which permissions have not been given
+    // determine which permissions have not been given - use when multiple permission req'd
+    // iterate through them all and determine which have not been given
     private String[] permissionsHeld(String[] permissions) {
         ArrayList<String> result = new ArrayList<>();
         for (String permission : permissions) {
@@ -403,7 +404,7 @@ public class MainActivity extends AppCompatActivity
 
     private void showRationalMessage(String message) {
         //  add action to the snackbar allowing user to amend permissions in app's settings
-        Utils.showSnackbar(mLayout, message);
+        // Utils.showSnackbar(mLayout, message);
         Snackbar snackbar = Snackbar
                 .make(mLayout, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.snackbar_action_text, new View.OnClickListener() {

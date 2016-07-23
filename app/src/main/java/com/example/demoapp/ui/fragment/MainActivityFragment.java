@@ -153,8 +153,9 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                 getResources().getDimensionPixelSize(R.dimen.dimen_vertical_space)));
         mAdapter = new CustomRecyclerViewAdapter(getActivity(), mCursor);
         mAdapter.setMultiChoiceModeListener((AppCompatActivity)getActivity(), this);
-        if (isAdded())
+        if (isAdded()) {
             recyclerView.setAdapter(mAdapter);
+        }
 
         if (savedInstanceState != null) {
             mAdapter.restoreInstanceState(savedInstanceState);
@@ -249,7 +250,6 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
                     videoIv.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                             isSelected(position) ? R.drawable.action_play_selected : R.drawable.action_play));
                 }
-
             }
         }
 
@@ -344,7 +344,7 @@ public class MainActivityFragment extends ContractFragment<MainActivityFragment.
             }
         }
 
-                @Override
+        @Override
         public void onClick(View v) {
 
             if (mAdapter.isActionModeActive()) {
