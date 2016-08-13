@@ -4,7 +4,17 @@ Note-It Android App
 Inspired by Google Keep, Note-It allows you to create and save text, photo audio and video notes. 
 Note titles and descriptions are saved to an SQLite database. All images, video and audio are saved
 to the device's external storage. Notes are displayed in the main screen via a RecyclerView 
-implementing a Staggered Layout Manager. Each note is shown in a CardView. 
+implementing a Staggered Layout Manager. Each note is shown in a CardView.
+
+The app was a learning exercise in the implementation of the following:
+- SQLite database
+- Phone layout using activities/fragments
+- activity/fragment communication via interfaces
+- RecyclerView implementing Multi Choice Mode
+- Android 6 Permissions
+- EventBus 
+- Background Threading
+- Android CardView
 
 Pre-requisites
 --------------
