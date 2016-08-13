@@ -12,7 +12,8 @@ The app was a learning exercise in the implementation of the following:
 - activity/fragment communication via interfaces
 - RecyclerView implementing Multi Choice Mode
 - Android 6 Permissions
-- EventBus 
+- EventBus
+- Media Player and Camera
 - Background Threading
 - Android CardView
 
